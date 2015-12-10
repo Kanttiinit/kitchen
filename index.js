@@ -1,12 +1,5 @@
-var mongoose = require('mongoose');
-var AreaSchema = require('./schema/Area.js');
-mongoose.connect('mongodb://localhost/test');
+var models = require('./models');
 
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-	const Area = mongoose.model('Area', AreaSchema);
-	area = new Area({name: 'asd'});
-	area.save();
-	console.log('yes');
+models.sequelize.sync().then(() => {
+	console.log(true);
 });
