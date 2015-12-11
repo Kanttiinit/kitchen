@@ -1,8 +1,13 @@
+const AdminInterface = React.createClass({
+   render() {
+      return <p>asd</p>;
+   }
+});
 
 const LoginForm = React.createClass({
    submit(event) {
       event.preventDefault();
-      $.post('/login', {
+      $.post('/admin/login', {
          password: this.state.password
       }, response => {
          this.props.setLoggedIn(response.loggedIn);
@@ -29,7 +34,7 @@ const BaseView = React.createClass({
       return {loggedIn: undefined};
    },
    componentDidMount() {
-      $.get('/login', response => {
+      $.get('/admin/login', response => {
          this.setLoggedIn(response.loggedIn);
       });
    },
@@ -41,7 +46,7 @@ const BaseView = React.createClass({
          return <p>Loading...</p>;
 
       if (this.state.loggedIn)
-         return (<h1>loggedIn</h1>);
+         return <AdminInterface setLoggedIn={this.setLoggedIn.bind(this)} />;
 
       return <LoginForm setLoggedIn={this.setLoggedIn.bind(this)} />;
    }

@@ -7,23 +7,17 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
-	secret: 'keyboard cat',
-	resave: false,
-	saveUninitialized: true,
-	cookie: { secure: true }
+	secret: process.env.SESSION_SECRET || 'secret',
+	resave: true,
+	saveUninitialized: true
 }))
 
 app.use('/admin', express.static('admin'));
 
+app.use('/admin', require('./routers/admin.js'));
+
 app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
-})
-.get('/login', (req, res) => {
-	res.json({loggedIn: false});
-})
-.post('/login', (req, res) => {
-	if (req.body.password === 'max')
-		res.json({loggedIn: true});
 })
 .get('/', (req, res) => {
 	res.send('asd');
