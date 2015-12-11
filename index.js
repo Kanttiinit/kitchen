@@ -15,12 +15,13 @@ app.use(session({
 app.use('/admin', express.static('admin'));
 
 app.use('/admin', require('./routers/admin.js'));
+app.use('/api', require('./routers/api.js'));
 
 app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
 })
 .get('/', (req, res) => {
-	res.send('asd');
+	res.send('kanttiinit.fi');
 });
 
 models.sequelize.sync().then(() => {
