@@ -1,6 +1,14 @@
 const AdminInterface = React.createClass({
    getInitialState() {
-      return {};
+      return {
+         areas: []
+      };
+   },
+   componentDidMount() {
+      this.updateAreas();
+   },
+   updateAreas() {
+      $.get('/api/areas', response => this.setState({areas: response}));
    },
    logOut() {
       $.post('/admin/logout', () => {
@@ -9,7 +17,23 @@ const AdminInterface = React.createClass({
    },
    createArea(event) {
       event.preventDefault();
-      const params = $('#area-form').serializeArray().reduce((o, v) => { o[v.name] = v.value; return o; }, {});
+      const form = $('#area-form');
+      const params = form.serializeArray().reduce((o, v) => { o[v.name] = v.value; return o; }, {});
+      $.post('/api/areas/', params, response => {
+         form[0].reset();
+         this.toggle('showAreaForm');
+         this.updateAreas();
+      });
+   },
+   editArea(area) {
+
+   },
+   deleteArea(area) {
+      if (confirm('Are you sure?'))
+         $.ajax({type: 'DELETE', url: '/api/areas/' + area.id})
+         .then(response => {
+            this.updateAreas();
+         });
    },
    toggle(what) {
       return () => {
@@ -37,20 +61,45 @@ const AdminInterface = React.createClass({
                      </div>
                      <div className="form-group">
                         <label for="area-name">Latitude</label>
-                        <input type="number" name="latitude" className="form-control" />
+                        <input type="number" min="0" step="0.0000001" name="latitude" className="form-control" />
                      </div>
                      <div className="form-group">
                         <label for="area-name">Longitude</label>
-                        <input type="number" name="longitude" className="form-control" />
+                        <input type="number" min="0" step="0.0000001" name="longitude" className="form-control" />
                      </div>
                      <div className="form-group">
                         <label for="area-name">Location radius (in kilometers)</label>
-                        <input type="number" name="locationRadius" className="form-control" />
+                        <input type="number" step="0.1" min="1" name="locationRadius" className="form-control" />
                      </div>
                      <button className="btn btn-primary">Create</button>
                   </form>
                </div>
             </div>
+            <table className="table table-striped table-hover">
+               <thead>
+                  <tr>
+                     <th>Name</th>
+                     <th>Image</th>
+                     <th>Location</th>
+                     <th>Location radius</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {this.state.areas.map(area =>
+                     (<tr>
+                        <td>{area.name}</td>
+                        <td>{area.image}</td>
+                        <td>{area.latitude}, {area.longitude}</td>
+                        <td>{area.locationRadius}</td>
+                        <td>
+                           <button onClick={this.editArea.bind(this, area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+                           <button onClick={this.deleteArea.bind(this, area)} className="btn btn-xs btn-danger">Delete</button>
+                        </td>
+                     </tr>)
+                  )}
+               </tbody>
+            </table>
             <h1>Restaurants</h1>
          </div>
       );
@@ -73,7 +122,7 @@ const LoginForm = React.createClass({
       return (
          <form className="form-inline" onSubmit={this.submit}>
             <h1>Log in</h1>
-            <input className="form-control" type="password" onChange={this.passwordChanged} placeholder="Password" />
+            <input className="form-control" type="password" onChange={this.passwordChanged} placeholder="Password" />&nbsp;
             <button type="submit" className="btn btn-primary">Log in</button>
          </form>
       );
