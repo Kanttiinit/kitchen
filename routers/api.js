@@ -41,16 +41,24 @@ router
 
 })
 
-.get('/restaurant', (req, res) => {
-
+.get('/restaurants', (req, res) => {
+   models.Restaurant.findAll()
+   .then(restaurants => res.json(restaurants));
 })
-.post('/restaurant', auth, (req, res) => {
-
+.post('/restaurants', auth, (req, res) => {
+   models.Restaurant.create(cleanBody(req.body))
+   .then(restaurant => {
+      res.json(restaurant);
+   });
 })
-.delete('/restaurant/:id', auth, (req, res) => {
-
+.delete('/restaurants/:id', auth, (req, res) => {
+   models.Restaurant.findById(req.params.id)
+   .then(restaurant => restaurant.destroy())
+   .then(() => {
+      res.json({message: 'deleted'});
+   });
 })
-.put('/restaurant/:id', auth, (req, res) => {
+.put('/restaurants/:id', auth, (req, res) => {
 
 });
 

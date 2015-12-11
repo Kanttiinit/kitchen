@@ -1,80 +1,90 @@
+const Form = React.createClass({
+   getInitialState() {
+      return {};
+   },
+   create(event) {
+      event.preventDefault();
+      const type = this.props.type;
+      const form = $('#' + type + '-form');
+      const params = form.serializeArray().reduce((o, v) => { o[v.name] = v.value; return o; }, {});
+      $.post('/api/' + type + 's', params, response => {
+         form[0].reset();
+         this.toggle();
+         this.props.onCreated(response);
+      });
+   },
+   toggle() {
+      this.setState({showForm: !this.state.showForm});
+   },
+   render() {
+      const {type, fields} = this.props;
+      return (
+         <div className="panel panel-success">
+            <div className="panel-heading" onClick={this.toggle}>New {type}</div>
+            <div className={'panel-body' + (this.state.showForm ? '' : ' hide')}>
+               <form id={type + '-form'} onSubmit={this.create}>
+                  {fields.map(field =>
+                     (<div className="form-group">
+                        <label for="area-name">{field.title}</label>
+                        <input type={field.type || 'text'} {...field.attributes} name={field.name || field.title.toLowerCase()} className="form-control" />
+                     </div>)
+                  )}
+                  <button className="btn btn-primary">Create</button>
+               </form>
+            </div>
+         </div>
+      );
+   }
+});
+
 const AdminInterface = React.createClass({
    getInitialState() {
       return {
-         areas: []
+         areas: [],
+         restaurants: []
       };
    },
    componentDidMount() {
       this.updateAreas();
+      this.updateRestaurants();
    },
    updateAreas() {
       $.get('/api/areas', response => this.setState({areas: response}));
+   },
+   updateRestaurants() {
+      $.get('/api/restaurants', response => this.setState({restaurants: response}));
    },
    logOut() {
       $.post('/admin/logout', () => {
          this.props.setLoggedIn(false);
       });
    },
-   createArea(event) {
-      event.preventDefault();
-      const form = $('#area-form');
-      const params = form.serializeArray().reduce((o, v) => { o[v.name] = v.value; return o; }, {});
-      $.post('/api/areas/', params, response => {
-         form[0].reset();
-         this.toggle('showAreaForm');
-         this.updateAreas();
-      });
-   },
-   editArea(area) {
+   edit(area) {
 
    },
-   deleteArea(area) {
+   delete(type, item) {
       if (confirm('Are you sure?'))
-         $.ajax({type: 'DELETE', url: '/api/areas/' + area.id})
-         .then(response => {
-            this.updateAreas();
+         $.ajax({
+            type: 'DELETE',
+            url: '/api/' + type + 's/' + item.id,
+            success: response => {
+               this.updateAreas();
+               this.updateRestaurants();
+            }
          });
-   },
-   toggle(what) {
-      return () => {
-         const o = {};
-         o[what] = !this.state[what];
-         this.setState(o);
-      };
    },
    render() {
       return (
          <div>
             <button className="btn btn-warning pull-right" onClick={this.logOut}>Log out</button>
             <h1>Areas</h1>
-            <div className="panel panel-success">
-               <div className="panel-heading" onClick={this.toggle('showAreaForm')}>New area</div>
-               <div className={'panel-body' + (this.state.showAreaForm ? '' : ' hide')}>
-                  <form id="area-form" onSubmit={this.createArea}>
-                     <div className="form-group">
-                        <label for="area-name">Name</label>
-                        <input type="text" name="name" className="form-control" />
-                     </div>
-                     <div className="form-group">
-                        <label for="area-name">Image</label>
-                        <input type="text" name="image" className="form-control" />
-                     </div>
-                     <div className="form-group">
-                        <label for="area-name">Latitude</label>
-                        <input type="number" min="0" step="0.0000001" name="latitude" className="form-control" />
-                     </div>
-                     <div className="form-group">
-                        <label for="area-name">Longitude</label>
-                        <input type="number" min="0" step="0.0000001" name="longitude" className="form-control" />
-                     </div>
-                     <div className="form-group">
-                        <label for="area-name">Location radius (in kilometers)</label>
-                        <input type="number" step="0.1" min="1" name="locationRadius" className="form-control" />
-                     </div>
-                     <button className="btn btn-primary">Create</button>
-                  </form>
-               </div>
-            </div>
+            <Form type="area" onCreated={this.updateAreas} fields={[
+               {title: 'Name'},
+               {title: 'Image'},
+               {title: 'Latitude', type: 'number', attributes: {step: '0.0000001'}},
+               {title: 'Longitude', type: 'number', attributes: {step: '0.0000001'}},
+               {title: 'Location radius (in kilometers)', type: 'number', attributes: {step: 0.1, min: 0.5}}
+            ]} />
             <table className="table table-striped table-hover">
                <thead>
                   <tr>
@@ -93,14 +103,51 @@ const AdminInterface = React.createClass({
                         <td>{area.latitude}, {area.longitude}</td>
                         <td>{area.locationRadius}</td>
                         <td>
-                           <button onClick={this.editArea.bind(this, area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
-                           <button onClick={this.deleteArea.bind(this, area)} className="btn btn-xs btn-danger">Delete</button>
+                           <button onClick={this.edit.bind(this, 'area', area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+                           <button onClick={this.delete.bind(this, 'area', area)} className="btn btn-xs btn-danger">Delete</button>
                         </td>
                      </tr>)
                   )}
                </tbody>
             </table>
             <h1>Restaurants</h1>
+               <Form type="restaurant" onCreated={this.updateRestaurants} fields={[
+                  {title: 'Name'},
+                  {title: 'Image'},
+                  {title: 'URL'},
+                  {title: 'Menu URL', name: 'menuUrl'},
+                  {title: 'Opening Hours', name: 'openingHours'},
+                  {title: 'Latitude', type: 'number', attributes: {step: 0.0000001}},
+                  {title: 'Longitude', type: 'number', attributes: {step: 0.0000001}}
+               ]} />
+            <table className="table table-striped table-hover">
+               <thead>
+                  <tr>
+                     <th>Name</th>
+                     <th>Image</th>
+                     <th>URL</th>
+                     <th>Menu URL</th>
+                     <th>Opening Hours</th>
+                     <th>Location</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {this.state.restaurants.map(restaurant =>
+                     (<tr>
+                        <td>{restaurant.name}</td>
+                        <td>{restaurant.image}</td>
+                        <td>{restaurant.url}</td>
+                        <td>{restaurant.menuUrl}</td>
+                        <td>{restaurant.openingHours}</td>
+                        <td>{restaurant.latitude}, {restaurant.longitude}</td>
+                        <td>
+                           <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+                           <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
+                        </td>
+                     </tr>)
+                  )}
+               </tbody>
+            </table>
          </div>
       );
    }
@@ -142,9 +189,6 @@ const BaseView = React.createClass({
       this.setState({loggedIn});
    },
    render() {
-      if (this.state.loggedIn === undefined)
-         return <p>Loading...</p>;
-
       if (this.state.loggedIn)
          return <AdminInterface setLoggedIn={this.setLoggedIn.bind(this)} />;
 

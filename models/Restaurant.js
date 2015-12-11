@@ -2,7 +2,7 @@ module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Restaurant', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
 		name: DataTypes.STRING,
-		logo: DataTypes.STRING,
+		image: DataTypes.STRING,
 		url: DataTypes.STRING,
 		menuUrl: DataTypes.STRING,
 		latitude: DataTypes.DOUBLE,
