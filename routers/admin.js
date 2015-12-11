@@ -18,4 +18,5 @@ module.exports = express.Router()
 })
 .post('/logout', (req, res) => {
 	req.session.loggedIn = false;
+   res.json({loggedIn: false});
 });
