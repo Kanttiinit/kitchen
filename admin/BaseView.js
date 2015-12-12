@@ -1,3 +1,5 @@
+const Input = ReactBootstrap.Input;
+
 const Form = React.createClass({
    getInitialState() {
       return {};
@@ -5,30 +7,25 @@ const Form = React.createClass({
    create(event) {
       event.preventDefault();
       const type = this.props.type;
-      const form = $('#' + type + '-form');
-      const params = form.serializeArray().reduce((o, v) => { o[v.name] = v.value; return o; }, {});
-      $.post('/api/' + type + 's', params, response => {
-         form[0].reset();
+      const form = document.querySelector('#' + type + '-form');
+      axios.post('/' + type + 's', form.serialize())
+      .then(response => {
+         form.reset();
          this.toggle();
-         this.props.onCreated(response);
+         this.props.onCreated(response.data);
       });
    },
    toggle() {
       this.setState({showForm: !this.state.showForm});
    },
    render() {
-      const {type, fields} = this.props;
+      const {type, children} = this.props;
       return (
          <div className="panel panel-success">
             <div className="panel-heading" onClick={this.toggle}>New {type}</div>
             <div className={'panel-body' + (this.state.showForm ? '' : ' hide')}>
                <form id={type + '-form'} onSubmit={this.create}>
-                  {fields.map(field =>
-                     (<div className="form-group">
-                        <label for="area-name">{field.title}</label>
-                        <input type={field.type || 'text'} {...field.attributes} name={field.name || field.title.toLowerCase()} className="form-control" />
-                     </div>)
-                  )}
+                  {children}
                   <button className="btn btn-primary">Create</button>
                </form>
             </div>
@@ -49,13 +46,13 @@ const AdminInterface = React.createClass({
       this.updateRestaurants();
    },
    updateAreas() {
-      $.get('/api/areas', response => this.setState({areas: response}));
+      axios.get('/areas').then(response => this.setState({areas: response.data}));
    },
    updateRestaurants() {
-      $.get('/api/restaurants', response => this.setState({restaurants: response}));
+      axios.get('/restaurants').then(response => this.setState({restaurants: response.data}));
    },
    logOut() {
-      $.post('/admin/logout', () => {
+      axios.post('/admin/logout').then(response => {
          this.props.setLoggedIn(false);
       });
    },
@@ -64,13 +61,10 @@ const AdminInterface = React.createClass({
    },
    delete(type, item) {
       if (confirm('Are you sure?'))
-         $.ajax({
-            type: 'DELETE',
-            url: '/api/' + type + 's/' + item.id,
-            success: response => {
-               this.updateAreas();
-               this.updateRestaurants();
-            }
+         axios.delete('/' + type + 's/' + item.id)
+         .then(response => {
+            this.updateAreas();
+            this.updateRestaurants();
          });
    },
    render() {
@@ -78,13 +72,13 @@ const AdminInterface = React.createClass({
          <div>
             <button className="btn btn-warning pull-right" onClick={this.logOut}>Log out</button>
             <h1>Areas</h1>
-            <Form type="area" onCreated={this.updateAreas} fields={[
-               {title: 'Name'},
-               {title: 'Image'},
-               {title: 'Latitude', type: 'number', attributes: {step: '0.0000001'}},
-               {title: 'Longitude', type: 'number', attributes: {step: '0.0000001'}},
-               {title: 'Location radius (in kilometers)', type: 'number', attributes: {step: 0.1, min: 0.5}}
-            ]} />
+            <Form type="area" onCreated={this.updateAreas}>
+               <Input type="text" label="Name" name="name" />
+               <Input type="text" label="Image" name="image" />
+               <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
+               <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
+               <Input type="number" label="Location radius (in kilometers)" name="locationRadius" step="0.1" min="0.5" />
+            </Form>
             <table className="table table-striped table-hover">
                <thead>
                   <tr>
@@ -111,15 +105,15 @@ const AdminInterface = React.createClass({
                </tbody>
             </table>
             <h1>Restaurants</h1>
-               <Form type="restaurant" onCreated={this.updateRestaurants} fields={[
-                  {title: 'Name'},
-                  {title: 'Image'},
-                  {title: 'URL'},
-                  {title: 'Menu URL', name: 'menuUrl'},
-                  {title: 'Opening Hours', name: 'openingHours'},
-                  {title: 'Latitude', type: 'number', attributes: {step: 0.0000001}},
-                  {title: 'Longitude', type: 'number', attributes: {step: 0.0000001}}
-               ]} />
+               <Form type="restaurant" onCreated={this.updateRestaurants}>
+                  <Input type="text" label="Name" name="name" />
+                  <Input type="text" label="Image" name="image" />
+                  <Input type="url" label="URL" name="url" />
+                  <Input type="url" label="Menu URL" name="menuUrl" />
+                  <Input type="text" label="Opening Hours" name="openingHours" />
+                  <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
+                  <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
+               </Form>
             <table className="table table-striped table-hover">
                <thead>
                   <tr>
@@ -156,10 +150,10 @@ const AdminInterface = React.createClass({
 const LoginForm = React.createClass({
    submit(event) {
       event.preventDefault();
-      $.post('/admin/login', {
+      axios.post('/admin/login', {
          password: this.state.password
-      }, response => {
-         this.props.setLoggedIn(response.loggedIn);
+      }).then(response => {
+         this.props.setLoggedIn(response.data.loggedIn);
       });
    },
    passwordChanged(event) {
@@ -181,8 +175,8 @@ const BaseView = React.createClass({
       return {loggedIn: undefined};
    },
    componentDidMount() {
-      $.get('/admin/login', response => {
-         this.setLoggedIn(response.loggedIn);
+      axios.get('/admin/login').then(response => {
+         this.setLoggedIn(response.data.loggedIn);
       });
    },
    setLoggedIn(loggedIn) {
@@ -196,7 +190,18 @@ const BaseView = React.createClass({
    }
 });
 
-ReactDOM.render(
-  <BaseView />,
-  document.querySelector('.container')
-);
+ReactDOM.render(<BaseView />, document.querySelector('.container'));
+
+HTMLFormElement.prototype.serialize = function() {
+   var valueFunctions = {
+      'INPUT/number': function(element) { return Number(element.value); },
+      'INPUT/radio': function(element) { return true; },
+      'INPUT/checkbox': function(element) { return element.checked; }
+   };
+   return [].slice.call(this.querySelectorAll('input, select, textarea'))
+   .reduce((obj, element) => {
+      var valueFunction = valueFunctions[element.nodeName + '/' + element.type];
+      obj[element.name] = valueFunction ? valueFunction(element) : element.value;
+      return obj;
+   }, {});
+};

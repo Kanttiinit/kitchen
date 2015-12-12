@@ -4,6 +4,7 @@ const models = require('../models');
 const router = express.Router();
 
 const auth = (req, res, next) => {
+   req.loggedIn = req.session.loggedIn;
    if (req.session.loggedIn)
       next();
    else
