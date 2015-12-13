@@ -34,6 +34,23 @@ const Form = React.createClass({
    }
 });
 
+const Table = React.createClass({
+   render() {
+      const {headers, data, renderItem, sortBy} = this.props;
+      let items = sortBy ? data.sort((a, b) => a[sortBy] > b[sortBy] ? 1 : -1) : data;
+      return (
+      <table className="table table-striped table-hover">
+         <thead>
+            <tr>{headers.map(h => <th>{h}</th>)}</tr>
+         </thead>
+         <tbody>
+            {items.map(item => renderItem(item))}
+         </tbody>
+      </table>
+      );
+   }
+});
+
 const AdminInterface = React.createClass({
    getInitialState() {
       return {
@@ -67,6 +84,36 @@ const AdminInterface = React.createClass({
             this.updateRestaurants();
          });
    },
+   renderAreaItem(area) {
+      return (
+         <tr>
+            <td>{area.name}</td>
+            <td>{area.image}</td>
+            <td>{area.latitude}, {area.longitude}</td>
+            <td>{area.locationRadius}</td>
+            <td>
+               <button onClick={this.edit.bind(this, 'area', area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+               <button onClick={this.delete.bind(this, 'area', area)} className="btn btn-xs btn-danger">Delete</button>
+            </td>
+         </tr>
+      );
+   },
+   renderRestaurantItem(restaurant) {
+      return (
+         <tr>
+            <td>{restaurant.name}</td>
+            <td>{restaurant.image}</td>
+            <td>{restaurant.url}</td>
+            <td>{restaurant.menuUrl}</td>
+            <td>{restaurant.openingHours}</td>
+            <td>{restaurant.latitude}, {restaurant.longitude}</td>
+            <td>
+               <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+               <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
+            </td>
+         </tr>
+      );
+   },
    render() {
       return (
          <div>
@@ -79,31 +126,11 @@ const AdminInterface = React.createClass({
                <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
                <Input type="number" label="Location radius (in kilometers)" name="locationRadius" step="0.1" min="0.5" />
             </Form>
-            <table className="table table-striped table-hover">
-               <thead>
-                  <tr>
-                     <th>Name</th>
-                     <th>Image</th>
-                     <th>Location</th>
-                     <th>Location radius</th>
-                     <th></th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {this.state.areas.map(area =>
-                     (<tr>
-                        <td>{area.name}</td>
-                        <td>{area.image}</td>
-                        <td>{area.latitude}, {area.longitude}</td>
-                        <td>{area.locationRadius}</td>
-                        <td>
-                           <button onClick={this.edit.bind(this, 'area', area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
-                           <button onClick={this.delete.bind(this, 'area', area)} className="btn btn-xs btn-danger">Delete</button>
-                        </td>
-                     </tr>)
-                  )}
-               </tbody>
-            </table>
+            <Table
+               headers={['Name', 'Image', 'Location', 'Location radius', '']}
+               data={this.state.areas}
+               renderItem={this.renderAreaItem}
+               sortBy="name" />
             <h1>Restaurants</h1>
                <Form type="restaurant" onCreated={this.updateRestaurants}>
                   <Input type="text" label="Name" name="name" />
@@ -114,34 +141,11 @@ const AdminInterface = React.createClass({
                   <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
                   <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
                </Form>
-            <table className="table table-striped table-hover">
-               <thead>
-                  <tr>
-                     <th>Name</th>
-                     <th>Image</th>
-                     <th>URL</th>
-                     <th>Menu URL</th>
-                     <th>Opening Hours</th>
-                     <th>Location</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {this.state.restaurants.map(restaurant =>
-                     (<tr>
-                        <td>{restaurant.name}</td>
-                        <td>{restaurant.image}</td>
-                        <td>{restaurant.url}</td>
-                        <td>{restaurant.menuUrl}</td>
-                        <td>{restaurant.openingHours}</td>
-                        <td>{restaurant.latitude}, {restaurant.longitude}</td>
-                        <td>
-                           <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
-                           <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
-                        </td>
-                     </tr>)
-                  )}
-               </tbody>
-            </table>
+            <Table
+               headers={['Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
+               data={this.state.restaurants}
+               renderItem={this.renderRestaurantItem}
+               sortBy="name" />
          </div>
       );
    }
@@ -175,14 +179,15 @@ const BaseView = React.createClass({
       return {loggedIn: undefined};
    },
    componentDidMount() {
-      axios.get('/admin/login').then(response => {
-         this.setLoggedIn(response.data.loggedIn);
-      });
+      axios.get('/admin/login').then(response => this.setLoggedIn(response.data.loggedIn));
    },
    setLoggedIn(loggedIn) {
       this.setState({loggedIn});
    },
    render() {
+      if (this.state.loggedIn === undefined)
+         return <p></p>;
+
       if (this.state.loggedIn)
          return <AdminInterface setLoggedIn={this.setLoggedIn.bind(this)} />;
 
@@ -194,13 +199,12 @@ ReactDOM.render(<BaseView />, document.querySelector('.container'));
 
 HTMLFormElement.prototype.serialize = function() {
    var valueFunctions = {
-      'INPUT/number': function(element) { return Number(element.value); },
-      'INPUT/radio': function(element) { return true; },
-      'INPUT/checkbox': function(element) { return element.checked; }
+      'INPUTnumber': function(element) { return Number(element.value); },
+      'INPUTcheckbox': function(element) { return element.checked; }
    };
    return [].slice.call(this.querySelectorAll('input, select, textarea'))
    .reduce((obj, element) => {
-      var valueFunction = valueFunctions[element.nodeName + '/' + element.type];
+      var valueFunction = valueFunctions[element.nodeName + element.type];
       obj[element.name] = valueFunction ? valueFunction(element) : element.value;
       return obj;
    }, {});
