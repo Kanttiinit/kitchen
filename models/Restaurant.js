@@ -12,6 +12,7 @@ module.exports = function(sequelize, DataTypes) {
 		classMethods: {
 			associate(models) {
 				models.Restaurant.hasMany(models.Menu, {as: 'Menus'});
+				models.Restaurant.belongsTo(models.Area);
 			}
 		}
 	});

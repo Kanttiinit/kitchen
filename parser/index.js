@@ -24,9 +24,4 @@ const process = url => {
 // http://www.amica.fi/modules/json/json/Index?costNumber=0191&language=en&firstDay=%year%-%month%-%day%
 // http://api.teknolog.fi/taffa/fi/html/week/
 
-process('http://api.teknolog.fi/taffa/fi/html/week/')
-.then(r => {
-	console.log(util.inspect(r, false, null));
-}, error => console.log(error));
-
 module.exports = process;

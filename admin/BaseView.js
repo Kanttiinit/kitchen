@@ -101,6 +101,7 @@ const AdminInterface = React.createClass({
    renderRestaurantItem(restaurant) {
       return (
          <tr>
+            <td>{restaurant.Area ? restaurant.Area.name : 'none'}</td>
             <td>{restaurant.name}</td>
             <td>{restaurant.image}</td>
             <td>{restaurant.url}</td>
@@ -140,9 +141,12 @@ const AdminInterface = React.createClass({
                   <Input type="text" label="Opening Hours" name="openingHours" />
                   <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
                   <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
+                  <Input type="select" label="Area" name="AreaId">
+                     {this.state.areas.map(area => <option value={area.id}>{area.name}</option>)}
+                  </Input>
                </Form>
             <Table
-               headers={['Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
+               headers={['Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
                data={this.state.restaurants}
                renderItem={this.renderRestaurantItem}
                sortBy="name" />

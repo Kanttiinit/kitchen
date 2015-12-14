@@ -21,6 +21,17 @@ const cleanBody = body => {
 };
 
 router
+.param('areaId', (req, res, next) => {
+   models.Area.findById(req.params.areaId)
+   .then(area => {
+      if (area) {
+         req.area = area;
+         next();
+      } else {
+         res.status(404).json({message: 'no such area'});
+      }
+   });
+})
 .get('/areas', (req, res) => {
    models.Area.findAll()
    .then(areas => res.json(areas));
@@ -31,19 +42,19 @@ router
       res.json(area);
    });
 })
-.delete('/areas/:id', auth, (req, res) => {
-   models.Area.findById(req.params.id)
-   .then(area => area.destroy())
-   .then(() => {
-      res.json({message: 'deleted'});
-   });
+.delete('/areas/:areaId', auth, (req, res) => {
+   req.area.destroy().then(() => res.json({message: 'deleted'}));
 })
-.put('/areas/:id', auth, (req, res) => {
+.put('/areas/:areaId', auth, (req, res) => {
 
+})
+.get('/areas/:areaId/restaurants', (req, res) => {
+   req.area.getRestaurants()
+   .then(restaurants => res.json({area: req.area, restaurants: restaurants}));
 })
 
 .get('/restaurants', (req, res) => {
-   models.Restaurant.findAll()
+   models.Restaurant.findAll({include: [{model: models.Area}]})
    .then(restaurants => res.json(restaurants));
 })
 .post('/restaurants', auth, (req, res) => {
