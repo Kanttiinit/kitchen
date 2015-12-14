@@ -97,15 +97,20 @@ const AdminInterface = React.createClass({
             this.updateRestaurants();
          });
    },
+   fetchMenu(restaurant) {
+      axios.post('/restaurants/fetch/' + restaurant.id)
+      .then(() => console.log('asd'));
+   },
    renderAreaItem(area) {
       return (
          <tr>
+            <td>{area.id}</td>
             <td>{area.name}</td>
             <td>{area.image}</td>
             <td>{area.latitude}, {area.longitude}</td>
             <td>{area.locationRadius}</td>
             <td>
-               <button onClick={this.edit.bind(this, 'area', area)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+               <button onClick={this.edit.bind(this, 'area', area)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'area', area)} className="btn btn-xs btn-danger">Delete</button>
             </td>
          </tr>
@@ -114,15 +119,17 @@ const AdminInterface = React.createClass({
    renderRestaurantItem(restaurant) {
       return (
          <tr>
+            <td>{restaurant.id}</td>
             <td>{restaurant.Area ? restaurant.Area.name : 'none'}</td>
             <td>{restaurant.name}</td>
             <td>{restaurant.image}</td>
-            <td>{restaurant.url}</td>
-            <td>{restaurant.menuUrl}</td>
+            <td>{restaurant.url ? <a href={restaurant.url} target="_blank">Open</a> : null}</td>
+            <td>{restaurant.menuUrl ? <a href={restaurant.menuUrl} target="_blank">Open</a> : null}</td>
             <td>{restaurant.openingHours}</td>
             <td>{restaurant.latitude}, {restaurant.longitude}</td>
             <td>
-               <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-primary">Edit</button>&nbsp;
+               <button onClick={this.fetchMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Fetch menu</button>&nbsp;
+               <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
             </td>
          </tr>
@@ -141,7 +148,7 @@ const AdminInterface = React.createClass({
                <Input type="number" label="Location radius (in kilometers)" name="locationRadius" step="0.1" min="0.5" />
             </Form>
             <Table
-               headers={['Name', 'Image', 'Location', 'Location radius', '']}
+               headers={['ID', 'Name', 'Image', 'Location', 'Location radius', '']}
                data={this.state.areas}
                renderItem={this.renderAreaItem}
                sortBy="name" />
@@ -159,7 +166,7 @@ const AdminInterface = React.createClass({
                   </Input>
                </Form>
             <Table
-               headers={['Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
+               headers={['ID', 'Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
                data={this.state.restaurants}
                renderItem={this.renderRestaurantItem}
                sortBy="name" />

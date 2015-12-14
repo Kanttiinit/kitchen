@@ -15,8 +15,8 @@ app.use(session({
 
 app.use('/admin', express.static('admin'));
 
-app.use('/admin', require('./routers/admin.js'));
-app.use('/', require('./routers/api.js'));
+app.use('/admin', require('./routers/admin'));
+app.use('/', require('./routers/api'));
 
 app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');

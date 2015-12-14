@@ -2,7 +2,7 @@ const models = require('./models');
 const parser = require('./parser');
 const schedule = require('node-schedule');
 
-const updateMenu = restaurant => {
+const updateMenu = (restaurant, models) => {
    return parser(restaurant.menuUrl)
    .then(menus => {
       console.log('\tFound ' + menus.length + ' days of menues.');
@@ -22,12 +22,10 @@ const process = (restaurants, i) => {
    const restaurant = restaurants[i];
    console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name);
    if (restaurant)
-      updateMenu(restaurant).then(() => process(restaurants, i + 1));
+      updateMenu(restaurant, models).then(() => process(restaurants, i + 1));
 };
 
-if (module.parent) {
-   module.exports = updateMenu;
-} else {
+if (!module.parent) {
    models.sequelize.sync().then(() => {
       schedule.scheduleJob('0 0 * * * *', () => {
          models.Restaurant.findAll()
@@ -38,3 +36,5 @@ if (module.parent) {
       });
    });
 }
+
+module.exports = updateMenu;

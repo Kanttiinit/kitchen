@@ -1,6 +1,7 @@
 const express = require('express');
 const models = require('../models');
 const worker = require('../worker');
+const sequelize = require('sequelize');
 
 const router = express.Router();
 
@@ -10,15 +11,6 @@ const auth = (req, res, next) => {
       next();
    else
       res.status(403).json({message: 'unauhtorized'});
-};
-
-const cleanBody = body => {
-   var cleaned = {};
-   for (var key in body) {
-      if (body[key])
-         cleaned[key] = isNaN(body[key]) ? body[key] : Number(body[key]);
-   }
-   return cleaned;
 };
 
 router
@@ -38,22 +30,28 @@ router
    .then(areas => res.json(areas));
 })
 .post('/areas', auth, (req, res) => {
-   models.Area.create(cleanBody(req.body))
+   models.Area.create(req.body)
    .then(area => res.json(area));
 })
 .delete('/areas/:areaId', auth, (req, res) => {
    req.area.destroy().then(() => res.json({message: 'deleted'}));
 })
 .put('/areas/:areaId', auth, (req, res) => {
-   req.area.update(cleanBody(req.body))
+   req.area.update(req.body)
    .then(area => res.json(area));
 })
 .get('/areas/:areaId/menus', (req, res) => {
    req.area.getRestaurants({
       attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
       include: [
-         { model: models.Menu }
-      ]
+         {
+            model: models.Menu,
+            where: {
+               date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
+            }
+         }
+      ],
+      order: sequelize.col('date')
    })
    .then(restaurants => res.json(restaurants));
 })
@@ -74,16 +72,21 @@ router
    .then(restaurants => res.json(restaurants));
 })
 .post('/restaurants', auth, (req, res) => {
-   models.Restaurant.create(cleanBody(req.body))
+   models.Restaurant.create(req.body)
    .then(restaurant => {
-      worker(restaurant).then(() => res.json(restaurant));
+      worker(restaurant);
+      res.json(restaurant);
    });
+})
+.post('/restaurants/fetch/:restaurantId', auth, (req, res) => {
+   worker(req.restaurant, models)
+   .then(() => res.json({message: 'ok'}));
 })
 .delete('/restaurants/:restaurantId', auth, (req, res) => {
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
 })
 .put('/restaurants/:restaurantId', auth, (req, res) => {
-   req.restaurant.update(cleanBody(req.body))
+   req.restaurant.update(req.body)
    .then(restaurant => res.json(restaurant));
 });
 
