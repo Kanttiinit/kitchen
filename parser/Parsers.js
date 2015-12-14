@@ -11,7 +11,7 @@ const parsers = [
 			.then(feed => {
 				var days = [];
 				var date = moment().startOf('week');
-				for (var day in feed.menus) {				
+				for (var day in feed.menus) {
 					date.add({days: 1});
 					days.push({
 						date: moment(date).toDate(),
@@ -21,7 +21,7 @@ const parsers = [
 								properties: course.properties ? course.properties.split(", ") : undefined
 							};
 						})
-					});	
+					});
 				}
 				return days;
 			});
@@ -59,7 +59,7 @@ const parsers = [
 			.then(json => {
 				return json.MenusForDays.map(day => {
 					return {
-						date: day.Date,
+						date: moment(day.Date),
 						courses: day.SetMenus
 						.map(x => x.Components.map(y => x.Name + ': ' + y))
 						.reduce((a, x) => a.concat(x), [])

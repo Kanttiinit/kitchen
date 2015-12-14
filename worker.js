@@ -8,10 +8,21 @@ const updateMenu = (restaurant, models) => {
       console.log('\tFound ' + menus.length + ' days of menues.');
       return Promise.all(
          menus.map(menu =>
-            models.Menu.upsert({
-               date: menu.date,
-               RestaurantId: restaurant.id,
-               courses: menu.courses
+            models.Menu.findOne({
+               where: {
+                  date: menu.date,
+                  RestaurantId: restaurant.id
+               }
+            })
+            .then(existing => {
+               if (existing)
+                  return existing.update({courses: menu.courses});
+
+               return models.Menu.create({
+                  date: menu.date,
+                  RestaurantId: restaurant.id,
+                  courses: menu.courses
+               })
             })
          )
       );

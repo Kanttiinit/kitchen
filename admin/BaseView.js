@@ -97,9 +97,8 @@ const AdminInterface = React.createClass({
             this.updateRestaurants();
          });
    },
-   fetchMenu(restaurant) {
-      axios.post('/restaurants/fetch/' + restaurant.id)
-      .then(() => console.log('asd'));
+   updateMenu(restaurant) {
+      axios.post('/restaurants/update/' + restaurant.id);
    },
    renderAreaItem(area) {
       return (
@@ -128,7 +127,7 @@ const AdminInterface = React.createClass({
             <td>{restaurant.openingHours}</td>
             <td>{restaurant.latitude}, {restaurant.longitude}</td>
             <td>
-               <button onClick={this.fetchMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Fetch menu</button>&nbsp;
+               <button onClick={this.updateMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Fetch menu</button>&nbsp;
                <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
             </td>

@@ -45,6 +45,7 @@ router
       attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
       include: [
          {
+            required: false,
             model: models.Menu,
             where: {
                date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
@@ -78,9 +79,9 @@ router
       res.json(restaurant);
    });
 })
-.post('/restaurants/fetch/:restaurantId', auth, (req, res) => {
+.post('/restaurants/update/:restaurantId', auth, (req, res) => {
    worker(req.restaurant, models)
-   .then(() => res.json({message: 'ok'}));
+   .then(() => res.json({message: 'ok'})).catch(e => console.log(e));
 })
 .delete('/restaurants/:restaurantId', auth, (req, res) => {
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
