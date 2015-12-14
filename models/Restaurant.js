@@ -16,14 +16,6 @@ module.exports = function(sequelize, DataTypes) {
 				models.Restaurant.hasMany(models.Menu);
 				models.Restaurant.belongsTo(models.Area);
 			}
-		},
-		hooks: {
-			afterCreate(instance) {
-				worker(instance);
-			},
-			afterUpdate(instance) {
-				worker(instance);
-			}
 		}
 	});
 };

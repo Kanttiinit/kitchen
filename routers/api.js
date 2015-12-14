@@ -1,5 +1,6 @@
 const express = require('express');
 const models = require('../models');
+const worker = require('../worker');
 
 const router = express.Router();
 
@@ -38,15 +39,14 @@ router
 })
 .post('/areas', auth, (req, res) => {
    models.Area.create(cleanBody(req.body))
-   .then(area => {
-      res.json(area);
-   });
+   .then(area => res.json(area));
 })
 .delete('/areas/:areaId', auth, (req, res) => {
    req.area.destroy().then(() => res.json({message: 'deleted'}));
 })
 .put('/areas/:areaId', auth, (req, res) => {
-
+   req.area.update(cleanBody(req.body))
+   .then(area => res.json(area));
 })
 .get('/areas/:areaId/menus', (req, res) => {
    req.area.getRestaurants({
@@ -58,6 +58,17 @@ router
    .then(restaurants => res.json(restaurants));
 })
 
+.param('restaurantId', (req, res, next) => {
+   models.Restaurant.findById(req.params.restaurantId)
+   .then(restaurant => {
+      if (restaurant) {
+         req.restaurant = restaurant;
+         next();
+      } else {
+         res.status(404).json({message: 'no such restaurant'});
+      }
+   });
+})
 .get('/restaurants', auth, (req, res) => {
    models.Restaurant.findAll({include: [{model: models.Area}]})
    .then(restaurants => res.json(restaurants));
@@ -65,18 +76,15 @@ router
 .post('/restaurants', auth, (req, res) => {
    models.Restaurant.create(cleanBody(req.body))
    .then(restaurant => {
-      res.json(restaurant);
+      worker(restaurant).then(() => res.json(restaurant));
    });
 })
-.delete('/restaurants/:id', auth, (req, res) => {
-   models.Restaurant.findById(req.params.id)
-   .then(restaurant => restaurant.destroy())
-   .then(() => {
-      res.json({message: 'deleted'});
-   });
+.delete('/restaurants/:restaurantId', auth, (req, res) => {
+   req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
 })
-.put('/restaurants/:id', auth, (req, res) => {
-
+.put('/restaurants/:restaurantId', auth, (req, res) => {
+   req.restaurant.update(cleanBody(req.body))
+   .then(restaurant => res.json(restaurant));
 });
 
 module.exports = router;

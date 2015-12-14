@@ -4,29 +4,42 @@ const Form = React.createClass({
    getInitialState() {
       return {};
    },
-   create(event) {
+   save(event) {
       event.preventDefault();
       const type = this.props.type;
-      const form = document.querySelector('#' + type + '-form');
-      axios.post('/' + type + 's', form.serialize())
-      .then(response => {
-         form.reset();
+      const promise = this.state.editing
+         ? axios.put('/' + type + 's/' + this.refs.id.refs.input.value, this.refs.form.serialize({ignore: ['id']}))
+         : axios.post('/' + type + 's', this.refs.form.serialize({ignore: ['id']}));
+
+      promise.then(response => {
+         this.refs.form.reset();
          this.toggle();
          this.props.onCreated(response.data);
       });
+   },
+   prepareForEditing(data) {
+      this.setState({editing: true, showForm: true});
+      this.refs.form.populate(data);
+   },
+   cancelEditing() {
+      this.setState({editing: false, showForm: false});
+      this.refs.form.reset();
    },
    toggle() {
       this.setState({showForm: !this.state.showForm});
    },
    render() {
       const {type, children} = this.props;
+      const {editing, showForm} = this.state;
       return (
          <div className="panel panel-success">
-            <div className="panel-heading" onClick={this.toggle}>New {type}</div>
-            <div className={'panel-body' + (this.state.showForm ? '' : ' hide')}>
-               <form id={type + '-form'} onSubmit={this.create}>
+            <div className="panel-heading" onClick={this.toggle}>{editing ? 'Edit' : 'New'} {type}</div>
+            <div className={'panel-body' + (showForm ? '' : ' hide')}>
+               <form ref="form" onSubmit={this.save}>
                   {children}
-                  <button className="btn btn-primary">Create</button>
+                  <Input ref="id" type="hidden" name="id" />
+                  <button type="submit" className="btn btn-primary">{editing ? 'Save' : 'Create'}</button>&nbsp;
+                  {editing ? <button onClick={this.cancelEditing} className="btn btn-warning">Cancel</button> : null}
                </form>
             </div>
          </div>
@@ -73,8 +86,8 @@ const AdminInterface = React.createClass({
          this.props.setLoggedIn(false);
       });
    },
-   edit(area) {
-
+   edit(type, item) {
+      this.refs[type + 'Form'].prepareForEditing(item);
    },
    delete(type, item) {
       if (confirm('Are you sure?'))
@@ -120,7 +133,7 @@ const AdminInterface = React.createClass({
          <div>
             <button className="btn btn-warning pull-right" onClick={this.logOut}>Log out</button>
             <h1>Areas</h1>
-            <Form type="area" onCreated={this.updateAreas}>
+            <Form ref="areaForm" type="area" onCreated={this.updateAreas}>
                <Input type="text" label="Name" name="name" />
                <Input type="text" label="Image" name="image" />
                <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
@@ -133,7 +146,7 @@ const AdminInterface = React.createClass({
                renderItem={this.renderAreaItem}
                sortBy="name" />
             <h1>Restaurants</h1>
-               <Form type="restaurant" onCreated={this.updateRestaurants}>
+               <Form ref="restaurantForm" type="restaurant" onCreated={this.updateRestaurants}>
                   <Input type="text" label="Name" name="name" />
                   <Input type="text" label="Image" name="image" />
                   <Input type="url" label="URL" name="url" />
@@ -190,7 +203,7 @@ const BaseView = React.createClass({
    },
    render() {
       if (this.state.loggedIn === undefined)
-         return <p></p>;
+         return null;
 
       if (this.state.loggedIn)
          return <AdminInterface setLoggedIn={this.setLoggedIn.bind(this)} />;
@@ -201,15 +214,21 @@ const BaseView = React.createClass({
 
 ReactDOM.render(<BaseView />, document.querySelector('.container'));
 
-HTMLFormElement.prototype.serialize = function() {
-   var valueFunctions = {
-      'INPUTnumber': function(element) { return Number(element.value); },
-      'INPUTcheckbox': function(element) { return element.checked; }
-   };
-   return [].slice.call(this.querySelectorAll('input, select, textarea'))
-   .reduce((obj, element) => {
-      var valueFunction = valueFunctions[element.nodeName + element.type];
-      obj[element.name] = valueFunction ? valueFunction(element) : element.value;
+HTMLFormElement.prototype.populate = function(values) {
+   for (var name in values) {
+      var element = this.querySelector('[name=' + name + ']');
+      if (element)
+         element.value = values[name];
+   }
+};
+
+HTMLFormElement.prototype.serialize = function(options) {
+   options = options || {};
+   options.ignore = options.ignore || [];
+   return [].slice.call(this.elements).reduce((obj, element) => {
+      if (element.nodeName !== 'BUTTON' && options.ignore.indexOf(element.name) === -1 && element.value) {
+         obj[element.name] = isNaN(element.value) ? element.value : Number(element.value);
+      }
       return obj;
    }, {});
 };
