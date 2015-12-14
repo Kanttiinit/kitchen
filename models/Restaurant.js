@@ -1,3 +1,5 @@
+const worker = require('../worker.js');
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Restaurant', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
@@ -11,8 +13,16 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		classMethods: {
 			associate(models) {
-				models.Restaurant.hasMany(models.Menu, {as: 'Menus'});
+				models.Restaurant.hasMany(models.Menu);
 				models.Restaurant.belongsTo(models.Area);
+			}
+		},
+		hooks: {
+			afterCreate(instance) {
+				worker(instance);
+			},
+			afterUpdate(instance) {
+				worker(instance);
 			}
 		}
 	});

@@ -33,7 +33,7 @@ router
    });
 })
 .get('/areas', (req, res) => {
-   models.Area.findAll()
+   models.Area.findAll({attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius']})
    .then(areas => res.json(areas));
 })
 .post('/areas', auth, (req, res) => {
@@ -48,12 +48,17 @@ router
 .put('/areas/:areaId', auth, (req, res) => {
 
 })
-.get('/areas/:areaId/restaurants', (req, res) => {
-   req.area.getRestaurants()
-   .then(restaurants => res.json({area: req.area, restaurants: restaurants}));
+.get('/areas/:areaId/menus', (req, res) => {
+   req.area.getRestaurants({
+      attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
+      include: [
+         { model: models.Menu }
+      ]
+   })
+   .then(restaurants => res.json(restaurants));
 })
 
-.get('/restaurants', (req, res) => {
+.get('/restaurants', auth, (req, res) => {
    models.Restaurant.findAll({include: [{model: models.Area}]})
    .then(restaurants => res.json(restaurants));
 })
