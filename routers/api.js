@@ -26,7 +26,15 @@ router
    });
 })
 .get('/areas', (req, res) => {
-   models.Area.findAll({attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius']})
+   models.Area.findAll({
+      attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'],
+      include: [
+         {
+            model: models.Restaurant,
+            attributes: ['id', 'name', 'url', 'image', 'latitude', 'longitude']
+         }
+      ]
+   })
    .then(areas => res.json(areas));
 })
 .post('/areas', auth, (req, res) => {
@@ -40,21 +48,30 @@ router
    req.area.update(req.body)
    .then(area => res.json(area));
 })
-.get('/areas/:areaId/menus', (req, res) => {
-   req.area.getRestaurants({
-      attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
-      include: [
-         {
-            required: false,
-            model: models.Menu,
-            where: {
-               date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
+
+.get('/menus/:restaurantIds', (req, res) => {
+   const ids = req.params.restaurantIds.split(',');
+   if (ids.every(n => !isNaN(n))) {
+      models.Restaurant.findAll({
+         where: {
+            id: {$in: ids.map(n => +n)}
+         },
+         attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
+         include: [
+            {
+               required: false,
+               model: models.Menu,
+               where: {
+                  date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
+               }
             }
-         }
-      ],
-      order: sequelize.col('date')
-   })
-   .then(restaurants => res.json(restaurants));
+         ],
+         order: sequelize.col('date')
+      })
+      .then(restaurants => res.json(restaurants));
+   } else {
+      res.status(400).json({message: 'invalid list of restaurant ids'});
+   }
 })
 
 .param('restaurantId', (req, res, next) => {
