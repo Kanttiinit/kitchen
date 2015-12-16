@@ -1,5 +1,6 @@
 const moment = require('moment');
 const jsdom = require('jsdom').jsdom;
+const fetch = require('node-fetch');
 
 const propertyRegex = /\b([A-Z]{1,2})\b/g;
 
@@ -18,7 +19,7 @@ const parsers = [
 						courses: feed.menus[day].map(course => {
 							return {
 								title: course.title_fi,
-								properties: course.properties ? course.properties.split(", ") : undefined
+								properties: course.properties ? course.properties.split(", ") : []
 							};
 						})
 					});
@@ -41,10 +42,11 @@ const parsers = [
 					return {
 						date: moment(p.textContent.split(/\s/).pop(), 'DD.MM.YYYY').toDate(),
 						courses: [].slice.call(p.nextElementSibling.querySelectorAll('li')).map(course => {
+							const properties = course.textContent.match(/([A-Z]{1,2}\s?)+$/);
 							// return course
 							return {
-								title: course.textContent.replace(propertyRegex, '').trim(),
-								properties: course.textContent.match(propertyRegex)
+								title: course.textContent.replace(/([A-Z]{1,2}\s?)+$/, '').trim(),
+								properties: properties ? properties[0].match(propertyRegex) : []
 							};
 						}).filter(course => course.title) // filter out empty-titled courses
 					};
@@ -61,14 +63,14 @@ const parsers = [
 					return {
 						date: moment(day.Date),
 						courses: day.SetMenus
-						.map(x => x.Components.map(y => x.Name + ': ' + y))
+						.map(x => x.Components.map(y => (x.Name ? (x.Name + ': ') : '') + y))
 						.reduce((a, x) => a.concat(x), [])
 						.map(course => {
 							const regex = /\s\(.+\)$/;
 							const properties = course.match(regex);
 							return {
 								title: course.replace(regex, ''),
-								properties: properties ? properties[0].match(propertyRegex) : undefined
+								properties: properties ? properties[0].match(propertyRegex) : []
 							};
 						})
 					};
@@ -78,8 +80,10 @@ const parsers = [
 	}
 ];
 
-module.exports = url => {
+const parse = url => {
 	const parser = parsers.find(p => url.match(p.pattern));
 	if (parser)
 		return parser.parser;
-};
+}
+
+module.exports = parse;
