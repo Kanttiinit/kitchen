@@ -36,15 +36,21 @@ const worker = (restaurants, i) => {
       updateMenu(restaurant).then(() => worker(restaurants, i + 1));
 };
 
+const updateAllRestaurants = () =>
+   models.Restaurant.findAll()
+   .then(restaurants => {
+      console.log('Start processing ' + restaurants.length + ' restaurants.\n');
+      worker(restaurants, 0);
+   });
+
 if (!module.parent) {
    models.sequelize.sync().then(() => {
-      schedule.scheduleJob('0 0 * * * *', () => {
-         models.Restaurant.findAll()
-         .then(restaurants => {
-            console.log('Start processing ' + restaurants.length + ' restaurants.\n');
-            worker(restaurants, 0)
-         })
-      });
+      if (process.argv[2] === 'now')
+         updateAllRestaurants();
+      else
+         schedule.scheduleJob('0 0 * * * *', () => {
+            updateAllRestaurants();
+         });
    });
 }
 
