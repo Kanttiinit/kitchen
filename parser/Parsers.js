@@ -25,7 +25,6 @@ const parsers = [
 				json(formatUrl(url, date))
 				.then(feed => {
 					for (var day in feed.menus) {
-						date.add({days: 1});
 						days.push({
 							date: moment(date).toDate(),
 							courses: feed.menus[day].map(course => {
