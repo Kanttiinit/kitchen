@@ -2,7 +2,7 @@ const models = require('./models');
 const parser = require('./parser');
 const schedule = require('node-schedule');
 
-const updateMenu = (restaurant, models) => {
+const updateMenu = restaurant => {
    return parser(restaurant.menuUrl)
    .then(menus => {
       console.log('\tFound ' + menus.length + ' days of menues.');
@@ -29,11 +29,11 @@ const updateMenu = (restaurant, models) => {
    });
 };
 
-const process = (restaurants, i) => {
+const worker = (restaurants, i) => {
    const restaurant = restaurants[i];
    console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name);
    if (restaurant)
-      updateMenu(restaurant, models).then(() => process(restaurants, i + 1));
+      updateMenu(restaurant).then(() => worker(restaurants, i + 1));
 };
 
 if (!module.parent) {
@@ -42,7 +42,7 @@ if (!module.parent) {
          models.Restaurant.findAll()
          .then(restaurants => {
             console.log('Start processing ' + restaurants.length + ' restaurants.\n');
-            process(restaurants, 0)
+            worker(restaurants, 0)
          })
       });
    });
