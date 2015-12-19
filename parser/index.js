@@ -17,6 +17,6 @@ const get = url => {
 // http://api.teknolog.fi/taffa/fi/html/week/
 
 if (!module.parent)
-	get(process.argv[2]).then(r => console.log(r)).catch(err => console.error(err));
+	get(process.argv[2]).then(r => console.log(util.inspect(r, null, null))).catch(err => console.error(err));
 
 module.exports = get;

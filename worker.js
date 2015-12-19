@@ -17,7 +17,7 @@ const updateMenu = restaurant => {
             .then(existing => {
                if (existing)
                   return existing.update({courses: menu.courses});
-
+               
                return models.Menu.create({
                   date: menu.date,
                   RestaurantId: restaurant.id,

@@ -24,9 +24,10 @@ const parsers = [
 			const parseWithDate = date =>
 				json(formatUrl(url, date))
 				.then(feed => {
+					var i = 0;
 					for (var day in feed.menus) {
 						days.push({
-							date: moment(date).toDate(),
+							date: moment(date).add({days: i}).toDate(),
 							courses: feed.menus[day].map(course => {
 								return {
 									title: course.title_fi,
@@ -34,6 +35,7 @@ const parsers = [
 								};
 							})
 						});
+						i++;
 					}
 				});
 			return Promise.all(weeks.map(parseWithDate)).then(() => days);
