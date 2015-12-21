@@ -1,5 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
+const bufferEq = require('buffer-equal-constant-time');
 
 module.exports = express.Router()
 .get('/login', (req, res) => {
@@ -9,7 +10,9 @@ module.exports = express.Router()
 	res.send(crypto.createHash('sha256').update(req.params.password).digest('base64'));
 })
 .post('/login', (req, res) => {
-	if (crypto.createHash('sha256').update(req.body.password).digest('base64') === process.env.PASSWORD) {
+	var passwordHash = new Buffer(crypto.createHash('sha256').update(req.body.password).digest('base64'));
+	var savedHash = new Buffer(process.env.PASSWORD);
+	if ( bufferEq(passwordHash, savedHash) ) {
 		req.session.loggedIn = true;
 		res.json({loggedIn: true});
 	}

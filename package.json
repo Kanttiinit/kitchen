@@ -13,7 +13,8 @@
     "node-schedule": "^0.6.0",
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^3.14.2"
+    "sequelize": "^3.14.2",
+    "buffer-equal-constant-time": "^1.0.1"
   },
   "devDependencies": {},
   "scripts": {
