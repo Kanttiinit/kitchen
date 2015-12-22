@@ -3,7 +3,7 @@ const jsdom = require('jsdom').jsdom;
 const fetch = require('node-fetch');
 
 const propertyRegex = /\b([A-Z]{1,2})\b/g;
-const weeks = [moment(), moment().add({weeks: 1})].map(d => d.startOf('week').add({days: 1}));
+const getWeeks = () => [moment(), moment().add({weeks: 1})].map(d => d.startOf('week').add({days: 1}));
 
 const formatUrl = (url, date) => {
 	date = date || moment();
@@ -38,7 +38,7 @@ const parsers = [
 						i++;
 					}
 				});
-			return Promise.all(weeks.map(parseWithDate)).then(() => days);
+			return Promise.all(getWeeks().map(parseWithDate)).then(() => days);
 		}
 	},
 	{
@@ -90,7 +90,7 @@ const parsers = [
 						};
 					}).filter(day => day.courses.length);
 				});
-			return Promise.all(weeks.map(parseWithDate)).then(l => l.reduce((a, m) => a.concat(m), []));
+			return Promise.all(getWeeks().map(parseWithDate)).then(l => l.reduce((a, m) => a.concat(m), []));
 		}
 	}
 ];
