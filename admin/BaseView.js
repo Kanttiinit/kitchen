@@ -124,7 +124,7 @@ const AdminInterface = React.createClass({
             <td>{restaurant.image}</td>
             <td>{restaurant.url ? <a href={restaurant.url} target="_blank">Open</a> : null}</td>
             <td>{restaurant.menuUrl ? <a href={restaurant.menuUrl} target="_blank">Open</a> : null}</td>
-            <td>{restaurant.openingHours}</td>
+            <td>{restaurant.openingHours ? restaurant.openingHours.join(', ') : 'undefined'}</td>
             <td>{restaurant.latitude}, {restaurant.longitude}</td>
             <td>
                <button onClick={this.updateMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Update menu</button>&nbsp;

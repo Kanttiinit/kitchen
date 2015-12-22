@@ -91,6 +91,7 @@ router
    .then(restaurants => res.json(restaurants));
 })
 .post('/restaurants', auth, (req, res) => {
+   req.body.openingHours = JSON.parse(req.body.openingHours);
    models.Restaurant.create(req.body)
    .then(restaurant => {
       worker(restaurant);
@@ -105,8 +106,12 @@ router
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
 })
 .put('/restaurants/:restaurantId', auth, (req, res) => {
+   req.body.openingHours = JSON.parse(req.body.openingHours);
    req.restaurant.update(req.body)
-   .then(restaurant => res.json(restaurant));
+   .then(restaurant => {
+      worker(restaurant);
+      res.json(restaurant);
+   });
 });
 
 module.exports = router;
