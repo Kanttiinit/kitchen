@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
 		menuUrl: DataTypes.STRING,
 		latitude: DataTypes.DOUBLE,
 		longitude: DataTypes.DOUBLE,
-		openingHours: DataTypes.JSONB
+		openingHours: DataTypes.JSON
 	}, {
 		classMethods: {
 			associate(models) {
