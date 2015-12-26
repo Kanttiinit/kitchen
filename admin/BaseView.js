@@ -124,11 +124,13 @@ const AdminInterface = React.createClass({
             <td>{restaurant.image}</td>
             <td>{restaurant.url ? <a href={restaurant.url} target="_blank">Open</a> : null}</td>
             <td>{restaurant.menuUrl ? <a href={restaurant.menuUrl} target="_blank">Open</a> : null}</td>
-            <td>{restaurant.openingHours ? restaurant.openingHours.join(', ') : 'undefined'}</td>
+            <td>{restaurant.openingHours && restaurant.openingHours.length ? 'defined' : 'undefined'}</td>
             <td>{restaurant.latitude}, {restaurant.longitude}</td>
             <td>
-               <button onClick={this.updateMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Update menu</button>&nbsp;
-               <button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
+               {restaurant.menuUrl
+               ? <button onClick={this.updateMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Update menu</button>
+               : null }
+               &nbsp;<button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
             </td>
          </tr>
@@ -223,8 +225,14 @@ ReactDOM.render(<BaseView />, document.querySelector('.container'));
 HTMLFormElement.prototype.populate = function(values) {
    for (var name in values) {
       var element = this.querySelector('[name=' + name + ']');
-      if (element)
-         element.value = values[name];
+      if (element) {
+         var value = values[name];
+         if (value instanceof Object)
+            try {
+               value = JSON.stringify(value);
+            } catch(e) {}
+         element.value = value;
+      }
    }
 };
 

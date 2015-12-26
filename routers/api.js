@@ -99,10 +99,11 @@ router
    .then(restaurants => res.json(restaurants));
 })
 .post('/restaurants', auth, (req, res) => {
-   req.body.openingHours = JSON.parse(req.body.openingHours);
+   req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
    models.Restaurant.create(req.body)
    .then(restaurant => {
-      worker(restaurant);
+      if (restaurant.menuUrl)
+         worker(restaurant);
       res.json(restaurant);
    });
 })
@@ -117,7 +118,8 @@ router
    req.body.openingHours = JSON.parse(req.body.openingHours);
    req.restaurant.update(req.body)
    .then(restaurant => {
-      worker(restaurant);
+      if (restaurant.menuUrl)
+         worker(restaurant);
       res.json(restaurant);
    });
 });
