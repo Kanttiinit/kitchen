@@ -27,7 +27,7 @@ const parsers = [
 					var i = 0;
 					for (var day in feed.menus) {
 						days.push({
-							date: moment(date).add({days: i}).toDate(),
+							date: moment(date).day(day).toDate(),
 							courses: feed.menus[day].map(course => {
 								return {
 									title: course.title_fi,
