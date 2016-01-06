@@ -92,6 +92,26 @@ const parsers = [
 				});
 			return Promise.all(getWeeks().map(parseWithDate)).then(l => l.reduce((a, m) => a.concat(m), []));
 		}
+	},
+	{
+		pattern: /hyyravintolat\.fi/,
+		parser(url) {
+			return json(url)
+			.then(json => {
+				return json.data.filter(m => m.data.length)
+				.map(m => {
+					return {
+						date: moment(m.date_en, 'ddd DD.MM.').toDate(),
+						courses: m.data.map(c => {
+							return {
+								title: c.name,
+								properties: c.meta[0]
+							};
+						})
+					};
+				});
+			});
+		}
 	}
 ];
 
