@@ -12,10 +12,6 @@ const get = url => {
 	return new Promise((resolve, reject) => reject('there is no parser for ' + url));
 };
 
-// http://www.sodexo.fi/ruokalistat/output/weekly_json/142/%year%/%month%/%day%/fi
-// http://www.amica.fi/modules/json/json/Index?costNumber=0191&language=en&firstDay=%year%-%month%-%day%
-// http://api.teknolog.fi/taffa/fi/html/week/
-
 if (!module.parent)
 	get(process.argv[2]).then(r => console.log(util.inspect(r, null, null))).catch(err => console.error(err));
 
