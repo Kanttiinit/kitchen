@@ -17,7 +17,7 @@ const updateMenu = restaurant => {
             .then(existing => {
                if (existing)
                   return existing.update({courses: menu.courses});
-               
+
                return models.Menu.create({
                   date: menu.date,
                   RestaurantId: restaurant.id,
@@ -48,7 +48,7 @@ if (!module.parent) {
       if (process.argv[2] === 'now')
          updateAllRestaurants();
       else
-         schedule.scheduleJob('0 0 * * * *', () => {
+         schedule.scheduleJob('0 * * * * *', () => {
             updateAllRestaurants();
          });
    });
