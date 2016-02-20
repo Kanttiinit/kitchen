@@ -44,6 +44,7 @@ const parsers = [
 	{
 		pattern: /api.teknolog.fi/,
 		parser(url) {
+			const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
 			return text(url)
 			.then(html => {
 				// parse html
@@ -59,7 +60,7 @@ const parsers = [
 							// return course
 							return {
 								title: course.textContent.replace(/([A-Z]{1,2}\s?)+$/, '').trim(),
-								properties: properties ? properties[0].match(propertyRegex) : []
+								properties: properties ? transformProperties(properties[0].match(propertyRegex)) : []
 							};
 						}).filter(course => course.title) // filter out empty-titled courses
 					};
@@ -97,20 +98,20 @@ const parsers = [
 		pattern: /hyyravintolat\.fi/,
 		parser(url) {
 			return json(url)
-			.then(json => {
-				return json.data.filter(m => m.data.length)
-				.map(m => {
-					return {
+			.then(json =>
+				json.data.filter(m => m.data.length)
+				.map(m =>
+					({
 						date: moment(m.date_en, 'ddd DD.MM.').toDate(),
-						courses: m.data.map(c => {
-							return {
+						courses: m.data.map(c =>
+							({
 								title: c.name,
 								properties: c.meta[0]
-							};
-						})
-					};
-				});
-			});
+							})
+						)
+					})
+				)
+			);
 		}
 	}
 ];

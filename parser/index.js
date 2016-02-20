@@ -9,7 +9,7 @@ const get = url => {
 	if (parser)
 		return parser(url);
 
-	return new Promise((resolve, reject) => reject('there is no parser for ' + url));
+	return Promise.reject('there is no parser for ' + url);
 };
 
 if (!module.parent)
