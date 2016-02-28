@@ -2,7 +2,7 @@ const models = require('./models');
 const parser = require('./parser');
 const schedule = require('node-schedule');
 
-const updateMenu = restaurant => {
+function updateMenu(restaurant) {
    return parser(restaurant.menuUrl)
    .then(menus => {
       console.log('\tFound ' + menus.length + ' days of menues.');
@@ -27,26 +27,32 @@ const updateMenu = restaurant => {
          )
       );
    });
-};
+}
 
-const worker = (restaurants, i) => {
+function worker(restaurants, i) {
+   i = i || 0;
    const restaurant = restaurants[i];
-   console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name);
-   if (restaurant)
-      updateMenu(restaurant).then(() => worker(restaurants, i + 1));
-};
 
-const updateAllRestaurants = () =>
-   models.Restaurant.findAll()
+   if (restaurant) {
+      console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name);
+      return updateMenu(restaurant).then(() => worker(restaurants, i + 1));
+   }
+
+   return Promise.resolve();
+}
+
+function updateAllRestaurants() {
+   return models.Restaurant.findAll()
    .then(restaurants => {
       console.log('Start processing ' + restaurants.length + ' restaurants.\n');
-      worker(restaurants, 0);
+      return worker(restaurants);
    });
+}
 
 if (!module.parent) {
    models.sequelize.sync().then(() => {
       if (process.argv[2] === 'now')
-         updateAllRestaurants();
+         updateAllRestaurants().then(_ => process.exit());
       else
          schedule.scheduleJob('0 * * * * *', () => {
             updateAllRestaurants();
@@ -54,4 +60,4 @@ if (!module.parent) {
    });
 }
 
-module.exports = updateMenu;
+module.exports = {updateMenu, updateAllRestaurants};

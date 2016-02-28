@@ -1,5 +1,3 @@
-const worker = require('../worker.js');
-
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Restaurant', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},

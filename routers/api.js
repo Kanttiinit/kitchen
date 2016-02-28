@@ -103,13 +103,14 @@ router
    models.Restaurant.create(req.body)
    .then(restaurant => {
       if (restaurant.menuUrl)
-         worker(restaurant);
+         worker.updateMenu(restaurant);
       res.json(restaurant);
    });
 })
-.post('/restaurants/update/:restaurantId', auth, (req, res) => {
-   worker(req.restaurant, models)
-   .then(() => res.json({message: 'ok'})).catch(e => console.log(e));
+.post('/restaurants/update', auth, (req, res) => {
+   worker.updateAllRestaurants()
+   .then(_ => res.json({message: 'ok'}))
+   .catch(e => console.error(e));
 })
 .delete('/restaurants/:restaurantId', auth, (req, res) => {
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
@@ -119,7 +120,7 @@ router
    req.restaurant.update(req.body)
    .then(restaurant => {
       if (restaurant.menuUrl)
-         worker(restaurant);
+         worker.updateMenu(restaurant);
       res.json(restaurant);
    });
 });
