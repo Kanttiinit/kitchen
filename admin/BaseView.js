@@ -86,6 +86,11 @@ const AdminInterface = React.createClass({
          this.props.setLoggedIn(false);
       });
    },
+   updateMenus() {
+      this.setState({updatingRestaurants: true});
+      axios.post('/restaurants/update')
+      .then(_ => this.setState({updatingRestaurants: false}));
+   },
    edit(type, item) {
       this.refs[type + 'Form'].prepareForEditing(item);
    },
@@ -96,9 +101,6 @@ const AdminInterface = React.createClass({
             this.updateAreas();
             this.updateRestaurants();
          });
-   },
-   updateMenu(restaurant) {
-      axios.post('/restaurants/update/' + restaurant.id);
    },
    renderAreaItem(area) {
       return (
@@ -116,6 +118,14 @@ const AdminInterface = React.createClass({
       );
    },
    renderRestaurantItem(restaurant) {
+      const formatUrl = (url, date) => {
+      	date = date || moment();
+      	return url
+      		.replace('%year%', date.format('YYYY'))
+      		.replace('%month%', date.format('MM'))
+      		.replace('%day%', date.format('DD'));
+      };
+
       return (
          <tr>
             <td>{restaurant.id}</td>
@@ -123,13 +133,10 @@ const AdminInterface = React.createClass({
             <td>{restaurant.name}</td>
             <td>{restaurant.image}</td>
             <td>{restaurant.url ? <a href={restaurant.url} target="_blank">Open</a> : null}</td>
-            <td>{restaurant.menuUrl ? <a href={restaurant.menuUrl} target="_blank">Open</a> : null}</td>
+            <td>{restaurant.menuUrl ? <a href={formatUrl(restaurant.menuUrl)} target="_blank">Open</a> : null}</td>
             <td>{restaurant.openingHours && restaurant.openingHours.length ? 'defined' : 'undefined'}</td>
             <td>{restaurant.latitude}, {restaurant.longitude}</td>
             <td>
-               {restaurant.menuUrl
-               ? <button onClick={this.updateMenu.bind(this, restaurant)} className="btn btn-xs btn-primary">Update menu</button>
-               : null }
                &nbsp;<button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
             </td>
@@ -139,7 +146,8 @@ const AdminInterface = React.createClass({
    render() {
       return (
          <div>
-            <button className="btn btn-warning pull-right" onClick={this.logOut}>Log out</button>
+            <button className="btn btn-warning pull-right" onClick={this.logOut} style={{marginLeft: '1em'}}>Log out</button>
+            <button className="btn btn-primary pull-right" disabled={this.state.updatingRestaurants} onClick={this.updateMenus}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
             <h1>Areas</h1>
             <Form ref="areaForm" type="area" onCreated={this.updateAreas}>
                <Input type="text" label="Name" name="name" />
@@ -169,8 +177,7 @@ const AdminInterface = React.createClass({
             <Table
                headers={['ID', 'Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
                data={this.state.restaurants}
-               renderItem={this.renderRestaurantItem}
-               sortBy="name" />
+               renderItem={this.renderRestaurantItem} />
          </div>
       );
    }

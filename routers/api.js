@@ -95,7 +95,10 @@ router
    });
 })
 .get('/restaurants', auth, (req, res) => {
-   models.Restaurant.findAll({include: [{model: models.Area}]})
+   models.Restaurant.findAll({
+      include: [{model: models.Area}],
+      order: [['AreaId', 'ASC'], ['name', 'ASC']]
+   })
    .then(restaurants => res.json(restaurants));
 })
 .post('/restaurants', auth, (req, res) => {
