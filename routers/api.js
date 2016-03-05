@@ -3,6 +3,7 @@ const models = require('../models');
 const worker = require('../worker');
 const sequelize = require('sequelize');
 const ua = require('universal-analytics');
+const cors = require('cors');
 
 const visitor = ua(process.env.UA_ID);
 const track = (action, label) => {
@@ -31,7 +32,7 @@ router
       }
    });
 })
-.get('/areas', (req, res) => {
+.get('/areas', cors(), (req, res) => {
    track('/areas');
    models.Area.findAll({
       attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'],
@@ -56,7 +57,7 @@ router
    .then(area => res.json(area));
 })
 
-.get('/menus/:restaurantIds', (req, res) => {
+.get('/menus/:restaurantIds', cors(), (req, res) => {
    const ids = req.params.restaurantIds.split(',');
    track('/menus', req.params.restaurantIds);
    if (ids.every(n => !isNaN(n))) {
