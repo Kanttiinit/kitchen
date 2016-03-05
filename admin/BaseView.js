@@ -135,7 +135,14 @@ const AdminInterface = React.createClass({
             <td>{restaurant.url ? <a href={restaurant.url} target="_blank">Open</a> : null}</td>
             <td>{restaurant.menuUrl ? <a href={formatUrl(restaurant.menuUrl)} target="_blank">Open</a> : null}</td>
             <td>{restaurant.openingHours && restaurant.openingHours.length ? 'defined' : 'undefined'}</td>
-            <td>{restaurant.latitude}, {restaurant.longitude}</td>
+            <td>{restaurant.address}</td>
+            <td>
+               {restaurant.latitude && restaurant.longitude ?
+               <a href={'https://www.google.fi/maps/place/' + restaurant.latitude + ',' + restaurant.longitude}>
+                  {restaurant.latitude}, {restaurant.longitude}
+               </a>
+               : null}
+            </td>
             <td>
                &nbsp;<button onClick={this.edit.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, 'restaurant', restaurant)} className="btn btn-xs btn-danger">Delete</button>
@@ -168,6 +175,7 @@ const AdminInterface = React.createClass({
                   <Input type="url" label="URL" name="url" />
                   <Input type="url" label="Menu URL" name="menuUrl" />
                   <Input type="text" label="Opening Hours" name="openingHours" />
+                  <Input type="text" label="Address" name="address" />
                   <Input type="number" label="Latitude" name="latitude" step="0.0000001" />
                   <Input type="number" label="Longitude" name="longitude" step="0.0000001" />
                   <Input type="select" label="Area" name="AreaId">
@@ -175,7 +183,7 @@ const AdminInterface = React.createClass({
                   </Input>
                </Form>
             <Table
-               headers={['ID', 'Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Location', '']}
+               headers={['ID', 'Area', 'Name', 'Image', 'URL', 'Menu URL', 'Opening Hours', 'Address', 'Location', '']}
                data={this.state.restaurants}
                renderItem={this.renderRestaurantItem} />
          </div>

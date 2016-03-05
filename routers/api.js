@@ -39,7 +39,7 @@ router
       include: [
          {
             model: models.Restaurant,
-            attributes: ['id', 'name', 'url', 'image', 'latitude', 'longitude']
+            attributes: ['id', 'name', 'url', 'image', 'latitude', 'longitude', 'address']
          }
       ]
    })
@@ -65,7 +65,7 @@ router
          where: {
             id: {$in: ids.map(n => +n)}
          },
-         attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours'],
+         attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours', 'address'],
          include: [
             {
                required: false,
