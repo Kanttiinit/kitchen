@@ -39,7 +39,7 @@ router
       include: [
          {
             model: models.Restaurant,
-            attributes: ['id', 'name', 'url', 'image', 'latitude', 'longitude', 'address']
+            attributes: ['id', 'name', 'url', 'image', 'openingHours', 'latitude', 'longitude', 'address']
          }
       ]
    })
