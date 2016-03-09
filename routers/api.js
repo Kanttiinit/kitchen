@@ -84,6 +84,33 @@ router
    }
 })
 
+.param('favoriteId', (req, res, next) => {
+   models.Favorite.findById(req.params.favoriteId)
+   .then(favorite => {
+      if (favorite) {
+         req.favorite = favorite;
+         next();
+      } else {
+         res.status(404).json({message: 'no such favorite'});
+      }
+   });
+})
+.get('/favorites', auth, (req, res) => {
+   models.Favorite.findAll({attributes: ['id', 'name', 'regexp', 'icon']})
+   .then(restaurants => res.json(restaurants));
+})
+.post('/favorites', auth, (req, res) => {
+   models.Favorite.create(req.body)
+   .then(favorite => res.json(favorite));
+})
+.delete('/favorites/:favoriteId', auth, (req, res) => {
+   req.favorite.destroy().then(() => res.json({message: 'deleted'}));
+})
+.put('/favorites/:favoriteId', auth, (req, res) => {
+   req.favorite.update(req.body)
+   .then(favorite => res.json(favorite));
+})
+
 .param('restaurantId', (req, res, next) => {
    models.Restaurant.findById(req.params.restaurantId)
    .then(restaurant => {

@@ -37,13 +37,13 @@ export default class Form extends React.Component {
       const {editing, showForm} = this.state;
       return (
          <div className="panel panel-success">
-            <div className="panel-heading" onClick={this.toggle}>{editing ? 'Edit' : 'New'} {type}</div>
+            <div className="panel-heading" onClick={this.toggle.bind(this)}>{editing ? 'Edit' : 'New'} {type}</div>
             <div className={'panel-body' + (showForm ? '' : ' hide')}>
-               <form ref="form" onSubmit={this.save}>
+               <form ref="form" onSubmit={this.save.bind(this)}>
                   {children}
                   <Input ref="id" type="hidden" name="id" />
                   <button type="submit" className="btn btn-primary">{editing ? 'Save' : 'Create'}</button>&nbsp;
-                  {editing ? <button onClick={this.cancelEditing} className="btn btn-warning">Cancel</button> : null}
+                  {editing ? <button onClick={this.cancelEditing.bind(this)} className="btn btn-warning">Cancel</button> : null}
                </form>
             </div>
          </div>
