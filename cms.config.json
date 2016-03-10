@@ -14,6 +14,11 @@
                "id": "courses",
                "title": "Courses",
                "type": "json"
+            },
+            {
+               "id": "restaurant",
+               "title": "Restaurant",
+               "type": "relation"
             }
          ]
       },
@@ -35,22 +40,26 @@
             {
                "id": "url",
                "title": "URL",
-               "type": "text"
+               "type": "text",
+               "format": "url"
             },
             {
                "id": "menuUrl",
                "title": "Menu URL",
-               "type": "text"
+               "type": "text",
+               "format": "url"
             },
             {
                "id": "latitude",
                "title": "Latitude",
-               "type": "number"
+               "type": "number",
+               "step": 0.0000001
             },
             {
                "id": "longitude",
                "title": "Longitude",
-               "type": "number"
+               "type": "number",
+               "step": 0.0000001
             },
             {
                "id": "address",
@@ -67,7 +76,8 @@
                "id": "area",
                "title": "Area",
                "type": "relation",
-               "contentType": "areas"
+               "contentType": "areas",
+               "displayField": "name"
             }
          ]
       },

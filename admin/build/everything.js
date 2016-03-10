@@ -20964,10 +20964,19 @@
 
 
 	         switch (field.type) {
-	            case 'string':
-	               return {};
+	            case 'text':
+	               return {
+	                  type: field.format || 'text',
+	                  pattern: field.pattern,
+	                  minLength: field.min,
+	                  maxLength: field.max
+	               };
 	            case 'number':
-	               return {};
+	               return {
+	                  max: field.max,
+	                  min: field.min,
+	                  step: field.step
+	               };
 	            default:
 	               return {};
 	         }
@@ -20984,7 +20993,9 @@
 	            name: field.id
 	         };
 
-	         if (field.type === 'relation') return _react2.default.createElement(_reactBootstrap.Input, _extends({ type: 'select' }, basicProps));
+	         if (field.type === 'relation') {
+	            return _react2.default.createElement(_reactBootstrap.Input, _extends({ type: 'select' }, basicProps));
+	         }
 
 	         return _react2.default.createElement(_reactBootstrap.Input, _extends({ type: field.type }, basicProps, this.getSpecificProps()));
 	      }
@@ -21040,7 +21051,7 @@
 	      value: function renderItem(item) {
 	         return _react2.default.createElement(
 	            'tr',
-	            null,
+	            { key: item.id },
 	            _react2.default.createElement(
 	               'td',
 	               null,
@@ -21078,6 +21089,11 @@
 	         var type = this.props.type;
 	         var items = this.state.items;
 
+	         var tableColumns = [{ key: 'id', title: 'ID' }].concat(type.fields.filter(function (_) {
+	            return !_.hideInListing;
+	         }).map(function (f) {
+	            return { key: f.id, title: f.title };
+	         })).concat([{ key: 'actions', title: 'Actions' }]);
 	         return _react2.default.createElement(
 	            'div',
 	            null,
@@ -21090,18 +21106,14 @@
 	               _Form2.default,
 	               { ref: 'form', type: type.id, onCreated: this.update.bind(this) },
 	               type.fields.map(function (f) {
-	                  return _react2.default.createElement(InputField, { field: f });
+	                  return _react2.default.createElement(InputField, { key: f.id, field: f });
 	               })
 	            ),
 	            _react2.default.createElement(
 	               _Table2.default,
 	               {
-	                  headers: ['ID'].concat(type.fields.filter(function (_) {
-	                     return !_.hideInListing;
-	                  }).map(function (t) {
-	                     return t.title;
-	                  })),
-	                  data: this.state.items,
+	                  headers: tableColumns,
+	                  items: this.state.items,
 	                  sortBy: 'name' },
 	               this.renderItem.bind(this)
 	            )
@@ -21129,8 +21141,8 @@
 	      value: function logOut() {
 	         var _this6 = this;
 
-	         _axios2.default.post('/admin/logout').then(function (response) {
-	            _this6.props.setLoggedIn(false);
+	         _axios2.default.post('/admin/logout').then(function (_) {
+	            return _this6.props.setLoggedIn(false);
 	         });
 	      }
 	   }, {
@@ -21162,7 +21174,7 @@
 	            _cmsConfig2.default.contentTypes.filter(function (t) {
 	               return !t.hidden;
 	            }).map(function (t) {
-	               return _react2.default.createElement(ContentTypeEditor, { type: t });
+	               return _react2.default.createElement(ContentTypeEditor, { key: t.id, type: t });
 	            })
 	         );
 	      }
@@ -21177,7 +21189,7 @@
 /* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	   value: true
@@ -21203,43 +21215,71 @@
 	   function Table() {
 	      _classCallCheck(this, Table);
 
-	      return _possibleConstructorReturn(this, Object.getPrototypeOf(Table).apply(this, arguments));
+	      var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Table).call(this));
+
+	      _this.state = {
+	         order: {
+	            key: 'name',
+	            reverse: false
+	         }
+	      };
+	      return _this;
 	   }
 
 	   _createClass(Table, [{
-	      key: "render",
+	      key: 'changeOrder',
+	      value: function changeOrder(column) {
+	         this.setState({
+	            order: {
+	               key: column.key,
+	               reverse: this.state.order.key === column.key ? !this.state.order.reverse : false
+	            }
+	         });
+	      }
+	   }, {
+	      key: 'render',
 	      value: function render() {
+	         var _this2 = this;
+
 	         var _props = this.props;
 	         var headers = _props.headers;
-	         var data = _props.data;
+	         var items = _props.items;
 	         var children = _props.children;
-	         var sortBy = _props.sortBy;
+	         var order = this.state.order;
 
-	         var items = sortBy ? data.sort(function (a, b) {
-	            return a[sortBy] > b[sortBy] ? 1 : -1;
-	         }) : data;
 	         return _react2.default.createElement(
-	            "table",
-	            { className: "table table-striped table-hover" },
+	            'table',
+	            { className: 'table table-striped table-hover' },
 	            _react2.default.createElement(
-	               "thead",
+	               'thead',
 	               null,
 	               _react2.default.createElement(
-	                  "tr",
+	                  'tr',
 	                  null,
 	                  headers.map(function (h) {
 	                     return _react2.default.createElement(
-	                        "th",
-	                        { key: h },
-	                        h
+	                        'th',
+	                        { key: h.key, style: { cursor: 'pointer' }, onClick: _this2.changeOrder.bind(_this2, h) },
+	                        h.title + ' ',
+	                        h.key === order.key && order.reverse ? _react2.default.createElement(
+	                           'span',
+	                           null,
+	                           '↓'
+	                        ) : h.key === order.key ? _react2.default.createElement(
+	                           'span',
+	                           null,
+	                           '↑'
+	                        ) : ''
 	                     );
 	                  })
 	               )
 	            ),
 	            _react2.default.createElement(
-	               "tbody",
+	               'tbody',
 	               null,
-	               items.map(function (item) {
+	               items.sort(function (a, b) {
+	                  return (order.reverse ? -1 : 1) * (b[order.key] > a[order.key] ? -1 : 1);
+	               }).map(function (item) {
 	                  return children(item);
 	               })
 	            )
@@ -47867,6 +47907,11 @@
 						"id": "courses",
 						"title": "Courses",
 						"type": "json"
+					},
+					{
+						"id": "restaurant",
+						"title": "Restaurant",
+						"type": "relation"
 					}
 				]
 			},
@@ -47888,22 +47933,26 @@
 					{
 						"id": "url",
 						"title": "URL",
-						"type": "text"
+						"type": "text",
+						"format": "url"
 					},
 					{
 						"id": "menuUrl",
 						"title": "Menu URL",
-						"type": "text"
+						"type": "text",
+						"format": "url"
 					},
 					{
 						"id": "latitude",
 						"title": "Latitude",
-						"type": "number"
+						"type": "number",
+						"step": 1e-7
 					},
 					{
 						"id": "longitude",
 						"title": "Longitude",
-						"type": "number"
+						"type": "number",
+						"step": 1e-7
 					},
 					{
 						"id": "address",
@@ -47920,7 +47969,8 @@
 						"id": "area",
 						"title": "Area",
 						"type": "relation",
-						"contentType": "areas"
+						"contentType": "areas",
+						"displayField": "name"
 					}
 				]
 			},

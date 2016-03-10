@@ -4,6 +4,7 @@ const worker = require('../worker');
 const sequelize = require('sequelize');
 const ua = require('universal-analytics');
 const cors = require('cors');
+const config = require('../cms.config.json');
 
 const visitor = ua(process.env.UA_ID);
 const track = (action, label) => {

@@ -11,10 +11,19 @@ class InputField extends React.Component {
       const {field} = this.props;
 
       switch (field.type) {
-         case 'string':
-            return {};
+         case 'text':
+            return {
+               type: field.format || 'text',
+               pattern: field.pattern,
+               minLength: field.min,
+               maxLength: field.max
+            };
          case 'number':
-            return {};
+            return {
+               max: field.max,
+               min: field.min,
+               step: field.step
+            };
          default:
             return {};
       }
@@ -28,12 +37,13 @@ class InputField extends React.Component {
          name: field.id
       };
 
-      if (field.type === 'relation')
+      if (field.type === 'relation') {
          return (
             <Input type="select" {...basicProps}>
 
             </Input>
          );
+      }
 
       return (
          <Input type={field.type} {...basicProps} {...this.getSpecificProps()} />
@@ -66,7 +76,7 @@ class ContentTypeEditor extends React.Component {
    }
    renderItem(item) {
       return (
-         <tr>
+         <tr key={item.id}>
             <td>{item.id}</td>
             {this.props.type.fields.filter(_ => !_.hideInListing).map(f =>
             <td key={f.id}>{item[f.id]}</td>
@@ -81,15 +91,22 @@ class ContentTypeEditor extends React.Component {
    render() {
       const {type} = this.props;
       const {items} = this.state;
+      const tableColumns = [{key: 'id', title: 'ID'}]
+         .concat(
+            type.fields
+            .filter(_ => !_.hideInListing)
+            .map(f => ({key: f.id, title: f.title}))
+         )
+         .concat([{key: 'actions', title: 'Actions'}]);
       return (
          <div>
             <h1>{type.title}</h1>
             <Form ref="form" type={type.id} onCreated={this.update.bind(this)}>
-               {type.fields.map(f => <InputField field={f} /> )}
+               {type.fields.map(f => <InputField key={f.id} field={f} /> )}
             </Form>
             <Table
-               headers={['ID'].concat(type.fields.filter(_ => !_.hideInListing).map(t => t.title))}
-               data={this.state.items}
+               headers={tableColumns}
+               items={this.state.items}
                sortBy="name">
                {this.renderItem.bind(this)}
             </Table>
@@ -105,9 +122,7 @@ export default class AdminInterface extends React.Component {
       this.state = {};
    }
    logOut() {
-      http.post('/admin/logout').then(response => {
-         this.props.setLoggedIn(false);
-      });
+      http.post('/admin/logout').then(_ => this.props.setLoggedIn(false));
    }
    updateMenus() {
       this.setState({updatingRestaurants: true});
@@ -119,7 +134,8 @@ export default class AdminInterface extends React.Component {
          <div>
             <button className="btn btn-warning pull-right" onClick={this.logOut.bind(this)} style={{marginLeft: '1em'}}>Log out</button>
             <button className="btn btn-primary pull-right" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
-            {config.contentTypes.filter(t => !t.hidden).map(t => <ContentTypeEditor type={t} />)}
+
+            {config.contentTypes.filter(t => !t.hidden).map(t => <ContentTypeEditor key={t.id} type={t} />)}
          </div>
       );
    }
