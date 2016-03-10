@@ -1,0 +1,132 @@
+{
+   "contentTypes": [
+      {
+         "id": "menus",
+         "title": "Menus",
+         "hidden": true,
+         "fields": [
+            {
+               "id": "date",
+               "title": "Date",
+               "type": "date"
+            },
+            {
+               "id": "courses",
+               "title": "Courses",
+               "type": "json"
+            }
+         ]
+      },
+      {
+         "id": "restaurants",
+         "title": "Restaurants",
+         "fields": [
+            {
+               "id": "name",
+               "title": "Name",
+               "type": "text"
+            },
+            {
+               "id": "image",
+               "title": "Image",
+               "type": "text",
+               "hideInListing": true
+            },
+            {
+               "id": "url",
+               "title": "URL",
+               "type": "text"
+            },
+            {
+               "id": "menuUrl",
+               "title": "Menu URL",
+               "type": "text"
+            },
+            {
+               "id": "latitude",
+               "title": "Latitude",
+               "type": "number"
+            },
+            {
+               "id": "longitude",
+               "title": "Longitude",
+               "type": "number"
+            },
+            {
+               "id": "address",
+               "title": "Address",
+               "type": "text"
+            },
+            {
+               "id": "openingHours",
+               "title": "Opening Hours",
+               "type": "json",
+               "hideInListing": true
+            },
+            {
+               "id": "area",
+               "title": "Area",
+               "type": "relation",
+               "contentType": "areas"
+            }
+         ]
+      },
+      {
+         "id": "areas",
+         "title": "Areas",
+         "fields": [
+            {
+               "id": "name",
+               "title": "Name",
+               "type": "text"
+            },
+            {
+               "id": "image",
+               "title": "Image",
+               "type": "text",
+               "hideInListing": true
+            },
+            {
+               "id": "locationRadius",
+               "title": "Location Radius",
+               "type": "number"
+            },
+            {
+               "id": "latitude",
+               "title": "Latitude",
+               "type": "number",
+               "step": 0.0000001
+            },
+            {
+               "id": "longitude",
+               "title": "Longitude",
+               "type": "number",
+               "step": 0.0000001
+            }
+         ]
+      },
+      {
+         "id": "favorites",
+         "title": "Favorites",
+         "fields": [
+            {
+               "id": "name",
+               "title": "Name",
+               "required": true,
+               "type": "text"
+            },
+            {
+               "id": "regexp",
+               "title": "Regular Expression",
+               "required": true,
+               "type": "text"
+            },
+            {
+               "id": "icon",
+               "title": "Icon",
+               "type": "text"
+            }
+         ]
+      }
+   ]
+}
