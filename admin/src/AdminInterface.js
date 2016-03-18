@@ -5,6 +5,31 @@ import Form from './Form';
 import {Input} from 'react-bootstrap';
 import moment from 'moment';
 import config from '../../cms.config.json';
+import page from 'page';
+import {connect} from 'react-redux';
+
+class RelationSelect extends React.Component {
+   constructor() {
+      super();
+      this.state = {
+         items: []
+      };
+   }
+   componentDidMount() {
+      http.get('/' + this.props.field.contentType)
+      .then(response => this.setState({items: response.data}));
+   }
+   render() {
+      const {field, basicProps} = this.props;
+      return (
+         <Input type="select" {...basicProps}>
+            {this.state.items.map(_ =>
+            <option key={_.id} value={_.id}>{_[field.displayField]}</option>
+            )}
+         </Input>
+      );
+   }
+}
 
 class InputField extends React.Component {
    getSpecificProps() {
@@ -37,13 +62,8 @@ class InputField extends React.Component {
          name: field.id
       };
 
-      if (field.type === 'relation') {
-         return (
-            <Input type="select" {...basicProps}>
-
-            </Input>
-         );
-      }
+      if (field.type === 'relation')
+         return <RelationSelect basicProps={basicProps} field={field} />
 
       return (
          <Input type={field.type} {...basicProps} {...this.getSpecificProps()} />
@@ -71,7 +91,16 @@ class ContentTypeEditor extends React.Component {
          http.delete('/' + this.props.type.id + '/' + item.id)
          .then(response => this.update());
    }
+   shouldComponentUpdate(props, state) {
+      if (this.props.type)
+         return props.type.id !== this.props.type.id;
+
+      return true;
+   }
    componentDidMount() {
+      this.update();
+   }
+   componentDidUpdate() {
       this.update();
    }
    renderItem(item) {
@@ -99,8 +128,7 @@ class ContentTypeEditor extends React.Component {
          )
          .concat([{key: 'actions', title: 'Actions'}]);
       return (
-         <div>
-            <h1>{type.title}</h1>
+         <div style={{marginTop: '1em'}}>
             <Form ref="form" type={type.id} onCreated={this.update.bind(this)}>
                {type.fields.map(f => <InputField key={f.id} field={f} /> )}
             </Form>
@@ -115,9 +143,19 @@ class ContentTypeEditor extends React.Component {
    }
 }
 
-export default class AdminInterface extends React.Component {
+class AdminInterface extends React.Component {
    constructor() {
       super();
+
+      config.contentTypes.filter(_ => !_.hidden)
+      .forEach(_ => {
+         page('/admin/' + _.id, e => {
+            this.props.dispatch({
+               type: 'SET_CURRENT_PAGE',
+               page: _.id
+            });
+         });
+      });
 
       this.state = {};
    }
@@ -129,14 +167,38 @@ export default class AdminInterface extends React.Component {
       http.post('/restaurants/update')
       .then(_ => this.setState({updatingRestaurants: false}));
    }
+   componentDidMount() {
+      page();
+   }
    render() {
+      const {page} = this.props;
+      const contentType = config.contentTypes.find(_ => _.id === page);
       return (
          <div>
-            <button className="btn btn-warning pull-right" onClick={this.logOut.bind(this)} style={{marginLeft: '1em'}}>Log out</button>
-            <button className="btn btn-primary pull-right" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
+            <div style={{position: 'absolute', top: '1em', right: '1em'}}>
+               <button className="btn btn-primary" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
+               <button className="btn btn-warning" onClick={this.logOut.bind(this)} style={{marginLeft: '1em'}}>Log out</button>
+            </div>
 
-            {config.contentTypes.filter(t => !t.hidden).map(t => <ContentTypeEditor key={t.id} type={t} />)}
+            <ul className="nav nav-tabs" style={{marginTop: '3em'}}>
+               {config.contentTypes.filter(_ => !_.hidden).map(_ =>
+                  <li key={_.id} role="presentation" className={_.id === page ? 'active' : undefined}>
+                     <a href={'/admin/' + _.id}>{_.title}</a>
+                  </li>
+               )}
+            </ul>
+
+            {contentType ?
+            <ContentTypeEditor type={contentType} />
+            : <p>Content type not found.</p>
+            }
          </div>
       );
    }
 }
+
+export default connect(
+   state => ({
+      page: state.currentPage
+   })
+)(AdminInterface);

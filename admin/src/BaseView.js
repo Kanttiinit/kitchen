@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import http from 'axios';
 import LoginForm from './LoginForm';
 import AdminInterface from './AdminInterface';
+import store from './store';
+import {Provider} from 'react-redux';
 
 class BaseView extends React.Component {
    constructor() {
@@ -27,4 +29,8 @@ class BaseView extends React.Component {
    }
 }
 
-ReactDOM.render(<BaseView />, document.querySelector('.container'));
+ReactDOM.render(
+<Provider store={store}>
+   <BaseView />
+</Provider>
+, document.querySelector('.container'));
