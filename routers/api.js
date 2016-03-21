@@ -103,7 +103,7 @@ router
       }
    });
 })
-.get('/favorites', auth, (req, res) => {
+.get('/favorites', (req, res) => {
    models.Favorite.findAll({attributes: ['id', 'name', 'regexp', 'icon']})
    .then(restaurants => res.json(restaurants));
 })
