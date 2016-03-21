@@ -8,12 +8,35 @@ export default class Form extends React.Component {
 
       this.state = {};
    }
+   serialize(options) {
+      options = options || {};
+      options.ignore = options.ignore || [];
+      return [].slice.call(this.refs.form.elements).reduce((obj, element) => {
+         if (element.nodeName !== 'BUTTON' && options.ignore.indexOf(element.name) === -1 && element.value) {
+            obj[element.name] = isNaN(element.value) ? element.value : Number(element.value);
+         }
+         return obj;
+      }, {});
+   }
+   populate(values) {
+      for (var name in values) {
+         var element = this.refs.form.querySelector('[name=' + name + ']');
+         if (element) {
+            var value = values[name];
+            if (value instanceof Object)
+               try {
+                  value = JSON.stringify(value);
+               } catch(e) {}
+            element.value = value;
+         }
+      }
+   }
    save(event) {
       event.preventDefault();
       const type = this.props.type;
       const promise = this.state.editing
-         ? http.put('/' + type + '/' + this.refs.id.refs.input.value, this.refs.form.serialize({ignore: ['id']}))
-         : http.post('/' + type, this.refs.form.serialize({ignore: ['id']}));
+         ? http.put('/' + type + '/' + this.refs.id.refs.input.value, this.serialize({ignore: ['id']}))
+         : http.post('/' + type, this.serialize({ignore: ['id']}));
 
       promise.then(response => {
          this.refs.form.reset();
@@ -23,7 +46,7 @@ export default class Form extends React.Component {
    }
    prepareForEditing(data) {
       this.setState({editing: true, showForm: true});
-      this.refs.form.populate(data);
+      this.populate(data);
    }
    cancelEditing() {
       this.setState({editing: false, showForm: false});
@@ -50,28 +73,3 @@ export default class Form extends React.Component {
       );
    }
 }
-
-HTMLFormElement.prototype.populate = function(values) {
-   for (var name in values) {
-      var element = this.querySelector('[name=' + name + ']');
-      if (element) {
-         var value = values[name];
-         if (value instanceof Object)
-            try {
-               value = JSON.stringify(value);
-            } catch(e) {}
-         element.value = value;
-      }
-   }
-};
-
-HTMLFormElement.prototype.serialize = function(options) {
-   options = options || {};
-   options.ignore = options.ignore || [];
-   return [].slice.call(this.elements).reduce((obj, element) => {
-      if (element.nodeName !== 'BUTTON' && options.ignore.indexOf(element.name) === -1 && element.value) {
-         obj[element.name] = isNaN(element.value) ? element.value : Number(element.value);
-      }
-      return obj;
-   }, {});
-};

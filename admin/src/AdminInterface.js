@@ -76,7 +76,7 @@ class ContentTypeEditor extends React.Component {
       super();
 
       this.state = {
-         items: []
+         items: undefined
       };
    }
    update() {
@@ -92,10 +92,13 @@ class ContentTypeEditor extends React.Component {
          .then(response => this.update());
    }
    shouldComponentUpdate(props, state) {
-      if (this.props.type)
-         return props.type.id !== this.props.type.id;
-
-      return true;
+      return props.type.id !== this.props.type.id
+         || state.items && !this.state.items
+         || state.items.length !== this.state.items.length;
+   }
+   componentWillReceiveProps(props) {
+      if (props.type.id !== this.props.type.id)
+         this.setState({items: undefined});
    }
    componentDidMount() {
       this.update();
@@ -132,12 +135,14 @@ class ContentTypeEditor extends React.Component {
             <Form ref="form" type={type.id} onCreated={this.update.bind(this)}>
                {type.fields.map(f => <InputField key={f.id} field={f} /> )}
             </Form>
+            {items ?
             <Table
                headers={tableColumns}
                items={this.state.items}
                sortBy="name">
                {this.renderItem.bind(this)}
             </Table>
+            : <p>Loading...</p>}
          </div>
       );
    }
@@ -148,13 +153,17 @@ class AdminInterface extends React.Component {
       super();
 
       config.contentTypes.filter(_ => !_.hidden)
-      .forEach(_ => {
-         page('/admin/' + _.id, e => {
+      .forEach((_, i) => {
+         const url = '/admin/' + _.id;
+         page(url, e => {
             this.props.dispatch({
                type: 'SET_CURRENT_PAGE',
                page: _.id
             });
          });
+
+         if (i === 0)
+            page('/admin', url);
       });
 
       this.state = {};
