@@ -4,6 +4,7 @@ const worker = require('../worker');
 const sequelize = require('sequelize');
 const ua = require('universal-analytics');
 const cors = require('cors');
+const TelegramBot = require('node-telegram-bot-api');
 
 const visitor = ua(process.env.UA_ID);
 const track = (action, label) => {
@@ -20,7 +21,14 @@ const auth = (req, res, next) => {
       res.status(403).json({message: 'unauhtorized'});
 };
 
+const bot = new TelegramBot(process.env.TG_BOT_TOKEN);
+
 router
+.post('/send-message', (req, res) => {
+   bot.sendMessage(Number(process.env.TG_GROUP_ID), req.body.message)
+   .then(_ => res.json({message: 'ok'}))
+   .catch(_ => res.status(404).json({message: 'error'}));
+})
 .param('areaId', (req, res, next) => {
    models.Area.findById(req.params.areaId)
    .then(area => {
