@@ -34,6 +34,7 @@ export default class Form extends React.Component {
    save(event) {
       event.preventDefault();
       const type = this.props.type;
+      
       const promise = this.state.editing
          ? http.put('/' + type + '/' + this.refs.id.refs.input.value, this.serialize({ignore: ['id']}))
          : http.post('/' + type, this.serialize({ignore: ['id']}));

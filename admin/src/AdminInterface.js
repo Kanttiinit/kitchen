@@ -113,7 +113,7 @@ class ContentTypeEditor extends React.Component {
             {this.props.type.fields.filter(_ => !_.hideInListing).map(f =>
             <td key={f.id}>{item[f.id]}</td>
             )}
-            <td>
+            <td style={{whiteSpace: 'nowrap'}}>
                <button onClick={this.edit.bind(this, item)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, item)} className="btn btn-xs btn-danger">Delete</button>
             </td>
@@ -135,13 +135,15 @@ class ContentTypeEditor extends React.Component {
             <Form ref="form" type={type.id} onCreated={this.update.bind(this)}>
                {type.fields.map(f => <InputField key={f.id} field={f} /> )}
             </Form>
-            {items ?
+            {items && items.length ?
             <Table
                headers={tableColumns}
                items={this.state.items}
                sortBy="name">
                {this.renderItem.bind(this)}
             </Table>
+            : items && !items.length ?
+            <p>No items.</p>
             : <p>Loading...</p>}
          </div>
       );

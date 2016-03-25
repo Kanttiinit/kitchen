@@ -21144,7 +21144,7 @@
 	            }),
 	            _react2.default.createElement(
 	               'td',
-	               null,
+	               { style: { whiteSpace: 'nowrap' } },
 	               _react2.default.createElement(
 	                  'button',
 	                  { onClick: this.edit.bind(this, item), className: 'btn btn-xs btn-warning' },
@@ -21180,13 +21180,17 @@
 	                  return _react2.default.createElement(InputField, { key: f.id, field: f });
 	               })
 	            ),
-	            items ? _react2.default.createElement(
+	            items && items.length ? _react2.default.createElement(
 	               _Table2.default,
 	               {
 	                  headers: tableColumns,
 	                  items: this.state.items,
 	                  sortBy: 'name' },
 	               this.renderItem.bind(this)
+	            ) : items && !items.length ? _react2.default.createElement(
+	               'p',
+	               null,
+	               'No items.'
 	            ) : _react2.default.createElement(
 	               'p',
 	               null,
@@ -21491,6 +21495,7 @@
 
 	         event.preventDefault();
 	         var type = this.props.type;
+
 	         var promise = this.state.editing ? _axios2.default.put('/' + type + '/' + this.refs.id.refs.input.value, this.serialize({ ignore: ['id'] })) : _axios2.default.post('/' + type, this.serialize({ ignore: ['id'] }));
 
 	         promise.then(function (response) {

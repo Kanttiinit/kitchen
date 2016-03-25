@@ -132,6 +132,7 @@ router
 })
 .post('/restaurants', auth, (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
+   req.body.AreaId = req.body.area;
    models.Restaurant.create(req.body)
    .then(restaurant => {
       if (restaurant.menuUrl)
@@ -149,6 +150,7 @@ router
 })
 .put('/restaurants/:restaurantId', auth, (req, res) => {
    req.body.openingHours = JSON.parse(req.body.openingHours);
+   req.body.AreaId = req.body.area;
    req.restaurant.update(req.body)
    .then(restaurant => {
       if (restaurant.menuUrl)
