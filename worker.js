@@ -20,6 +20,7 @@ function updateMenu(restaurant) {
 
                return models.Menu.create({
                   date: menu.date,
+                  day: menu.day,
                   RestaurantId: restaurant.id,
                   courses: menu.courses
                })

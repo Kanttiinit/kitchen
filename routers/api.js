@@ -78,7 +78,7 @@ router
             {
                required: false,
                model: models.Menu,
-               attributes: ['date', 'courses'],
+               attributes: ['date', 'day', 'courses'],
                where: {
                   date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
                }
