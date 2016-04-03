@@ -14,7 +14,6 @@ app.use(session({
 }));
 
 app.use('/admin', express.static('admin'));
-app.use('/images', express.static('images'));
 
 app.use('/admin', require('./routers/admin'));
 app.use('/', require('./routers/api'));
