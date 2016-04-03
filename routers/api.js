@@ -138,8 +138,8 @@ router
    })
    .then(restaurants => res.json(restaurants));
 })
-.get('/restaurants/:restaurantId/image', (req, res) => {
-   imageGenerator(req.params.restaurantId)
+.get('/restaurants/:restaurantId/image/', (req, res) => {
+   imageGenerator(req.params.restaurantId, req.query.day)
    .then(path => {
       res.sendFile(path);
    });

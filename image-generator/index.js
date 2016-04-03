@@ -7,7 +7,8 @@ const fs = require('fs');
 const imageTemplate = jade.compileFile(__dirname + '/restaurant-image.jade');
 
 function getImage(restaurantId, date) {
-   const filename = __dirname + '/images/' + date + restaurantId + '.jpg';
+   date = moment(date).format('YYYY-MM-DD');
+   const filename = __dirname + '/images/' + date + '_' + restaurantId + '.jpg';
 
    return new Promise((resolve, reject) => {
       fs.readFile(filename, (err, data) => {
@@ -24,13 +25,14 @@ function getImage(restaurantId, date) {
 function generateImage(restaurantId, date, filename) {
    return models.Menu.findOne({
       where: {
-         RestaurantId: restaurantId
+         RestaurantId: restaurantId,
+         day: date
       },
       include: [
          {model: models.Restaurant}
       ]
    })
-   .then(menu => {
+   .then(menu => new Promise((resolve, reject) => {
       webshot(
          imageTemplate({
             courses: menu.courses,
@@ -44,10 +46,12 @@ function generateImage(restaurantId, date, filename) {
          },
          function(err) {
             if (err)
-               throw new Error(err);
+               reject(err);
+            else
+               resolve();
          }
       );
-   });
+   }));
 }
 
 module.exports = getImage;
