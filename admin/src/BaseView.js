@@ -4,33 +4,27 @@ import http from 'axios';
 import LoginForm from './LoginForm';
 import AdminInterface from './AdminInterface';
 import store from './store';
-import {Provider} from 'react-redux';
+import {connect, Provider} from 'redux-nimble';
 
 class BaseView extends React.Component {
-   constructor() {
-      super();
-
-      this.state = {loggedIn: undefined};
-   }
    componentDidMount() {
-      http.get('/admin/login').then(response => this.setLoggedIn(response.data.loggedIn));
-   }
-   setLoggedIn(loggedIn) {
-      this.setState({loggedIn});
+      http.get('/admin/login').then(response => this.props.setLoggedIn(response.data.loggedIn));
    }
    render() {
-      if (this.state.loggedIn === undefined)
+      if (this.props.loggedIn === undefined)
          return null;
 
-      if (this.state.loggedIn)
-         return <AdminInterface setLoggedIn={this.setLoggedIn.bind(this)} />;
+      if (this.props.loggedIn)
+         return <AdminInterface />;
 
-      return <LoginForm setLoggedIn={this.setLoggedIn.bind(this)} />;
+      return <LoginForm />;
    }
 }
 
+const Base = connect(['loggedIn'], ['setLoggedIn'])(BaseView);
+
 ReactDOM.render(
 <Provider store={store}>
-   <BaseView />
+   <Base />
 </Provider>
 , document.querySelector('.container'));

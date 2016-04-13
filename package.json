@@ -29,6 +29,7 @@
     "react-dom": "^0.14.7",
     "react-redux": "^4.4.1",
     "redux": "^3.3.1",
+    "bodyflex/redux-nimble": "*",
     "redux-thunk": "^2.0.1",
     "sequelize": "^3.14.2",
     "style-loader": "^0.13.0",

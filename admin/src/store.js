@@ -1,14 +1,14 @@
-import {createStore} from 'redux';
+import Store from 'redux-nimble';
 
-function reducer(state = {}, action) {
-   switch (action.type) {
-      case 'SET_CURRENT_PAGE':
-         return Object.assign({}, state, {
-            currentPage: action.page
-         });
-      default:
-         return state;
+const reducers = {
+   setCurrentPage(state, page) {
+      return {page};
+   },
+   setLoggedIn(state, loggedIn) {
+      return {loggedIn};
    }
-}
+};
 
-export default createStore(reducer);
+const store = new Store(reducers, {}, {});
+
+export default store;

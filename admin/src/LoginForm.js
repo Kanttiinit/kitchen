@@ -1,7 +1,8 @@
 import React from 'react';
 import http from 'axios';
+import {connect} from 'redux-nimble';
 
-export default class LoginForm extends React.Component {
+class LoginForm extends React.Component {
    submit(event) {
       event.preventDefault();
       http.post('/admin/login', {
@@ -23,3 +24,5 @@ export default class LoginForm extends React.Component {
       );
    }
 }
+
+export default connect([], ['setLoggedIn'])(LoginForm);

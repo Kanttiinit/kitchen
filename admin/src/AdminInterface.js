@@ -6,7 +6,7 @@ import {Input} from 'react-bootstrap';
 import moment from 'moment';
 import config from '../../cms.config.json';
 import page from 'page';
-import {connect} from 'react-redux';
+import {connect} from 'redux-nimble';
 
 class RelationSelect extends React.Component {
    constructor() {
@@ -158,10 +158,7 @@ class AdminInterface extends React.Component {
       .forEach((_, i) => {
          const url = '/admin/' + _.id;
          page(url, e => {
-            this.props.dispatch({
-               type: 'SET_CURRENT_PAGE',
-               page: _.id
-            });
+            this.props.setCurrentPage(_.id);
          });
 
          if (i === 0)
@@ -208,8 +205,4 @@ class AdminInterface extends React.Component {
    }
 }
 
-export default connect(
-   state => ({
-      page: state.currentPage
-   })
-)(AdminInterface);
+export default connect(['page'], ['setCurrentPage', 'setLoggedIn'])(AdminInterface);
