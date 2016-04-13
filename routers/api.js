@@ -5,7 +5,7 @@ const sequelize = require('sequelize');
 const ua = require('universal-analytics');
 const cors = require('cors');
 const TelegramBot = require('node-telegram-bot-api');
-const imageGenerator = require('../image-generator');
+//const imageGenerator = require('../image-generator');
 
 const visitor = ua(process.env.UA_ID);
 const track = (action, label) => {
