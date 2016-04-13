@@ -5,6 +5,7 @@ const sequelize = require('sequelize');
 const ua = require('universal-analytics');
 const cors = require('cors');
 const TelegramBot = require('node-telegram-bot-api');
+const imageGenerator = require('../image-generator');
 
 const visitor = ua(process.env.UA_ID);
 const track = (action, label) => {
@@ -136,6 +137,12 @@ router
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
    })
    .then(restaurants => res.json(restaurants));
+})
+.get('/restaurants/:restaurantId/image/', (req, res) => {
+   imageGenerator(req.params.restaurantId, req.query.day)
+   .then(path => {
+      res.sendFile(path);
+   });
 })
 .post('/restaurants', auth, (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
