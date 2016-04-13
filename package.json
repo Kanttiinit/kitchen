@@ -35,7 +35,9 @@
     "xml2js": "^0.4.16"
   },
   "devDependencies": {},
-  "engine": "node 5.10.1",
+  "engines": {
+     "node": "5.10.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
