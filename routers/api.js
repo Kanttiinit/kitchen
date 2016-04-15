@@ -140,8 +140,8 @@ router
 })
 .get('/restaurants/:restaurantId/image/', (req, res) => {
    imageGenerator(req.params.restaurantId, req.query.day)
-   .then(path => {
-      res.sendFile(path);
+   .then(buffer => {
+      res.header({'Content-Type': 'image/jpeg'}).send(buffer);
    });
 })
 .post('/restaurants', auth, (req, res) => {

@@ -1,35 +1,20 @@
 const models = require('../models');
 const moment = require('moment');
-const fs = require('fs');
 const Canvas = require('canvas');
 
-function getImage(restaurantId, date) {
-   date = moment(date).format('YYYY-MM-DD');
-   const filename = __dirname + '/images/' + date + '_' + restaurantId + '.jpg';
-
-   return new Promise((resolve, reject) => {
-      fs.readFile(filename, (err, data) => {
-         if (err)
-            generateImage(restaurantId, date, filename)
-            .then(_ => resolve(filename))
-            .catch(e => reject(e));
-         else
-            return resolve(filename);
-      });
-   });
-}
-
-function generateImage(restaurantId, date, filename) {
+function generateImage(restaurantId, date) {
+   console.log(restaurantId, date);
    return models.Menu.findOne({
       where: {
          RestaurantId: restaurantId,
-         day: date
+         day: date || moment().format('YYYY-MM-DD')
       },
       include: [
          {model: models.Restaurant}
       ]
    })
-   .then(menu => new Promise((resolve, reject) => {
+   .then(menu => {
+      console.log(menu);
       const margin = 10;
       const spacing = {
          huge: 16,
@@ -77,13 +62,8 @@ function generateImage(restaurantId, date, filename) {
          y += fontSize.course + spacing.small;
       });
 
-      fs.writeFile(filename, canvas.toBuffer(), err => {
-         if (err)
-            reject(err);
-         else
-            resolve(filename);
-      });
-   }));
+      return canvas.toBuffer();
+   });
 }
 
-module.exports = getImage;
+module.exports = generateImage;
