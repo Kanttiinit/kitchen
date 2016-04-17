@@ -16,17 +16,21 @@ const fontSize = {
 };
 
 function generateImage(restaurantId, date) {
-   console.log(restaurantId, date);
-   return models.Menu.findOne({
-      where: {
-         RestaurantId: restaurantId,
-         day: date || moment().format('YYYY-MM-DD')
-      },
+   return models.Restaurant.findOne({
+      where: { id: restaurantId },
       include: [
-         {model: models.Restaurant}
+         {
+            model: models.Menu,
+            required: false,
+            where: { day: date || moment().format('YYYY-MM-DD') }
+         }
       ]
    })
-   .then(menu => {
+   .then(restaurant => {
+      var menu = restaurant.Menus[0];
+      if (!menu)
+         menu = {courses: [{title: 'Ei ruokalistoja.', properties: []}]};
+
       const width = 500;
       const height = margin * 2 + fontSize.title + fontSize.date + spacing.small + (menu.courses.length + 1) * (fontSize.course + spacing.small);
       const canvas = new Canvas(width, height);
@@ -41,12 +45,12 @@ function generateImage(restaurantId, date) {
       ctx.fillRect(0, 0, width, fontSize.title + fontSize.date + spacing.small + margin * 2);
       ctx.font = fontSize.title + 'px Helvetica';
       ctx.fillStyle = '#fff';
-      ctx.fillText(menu.Restaurant.name, margin, y);
+      ctx.fillText(restaurant.name, margin, y);
 
       ctx.font = fontSize.date + 'px Helvetica';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
       y += fontSize.date + spacing.small;
-      ctx.fillText(moment(menu.date).format('ddd D.M.YYYY'), margin, y);
+      ctx.fillText(moment(date).format('ddd D.M.YYYY'), margin, y);
 
       ctx.font = fontSize.course + 'px Helvetica';
       y += fontSize.course + spacing.big + margin;
