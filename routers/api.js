@@ -88,11 +88,12 @@ module.exports = express.Router()
    })
    .then(restaurants => res.json(restaurants));
 })
-.get('/restaurants/:restaurantId/image/', (req, res) => {
+.get('/restaurants/:restaurantId/image/', (req, res, next) => {
    imageGenerator(req.params.restaurantId, req.query.day)
    .then(buffer => {
       res.header({'Content-Type': 'image/jpeg'}).send(buffer);
-   });
+   })
+   .catch(next);
 })
 .post('/restaurants', utils.auth(), (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
@@ -103,10 +104,10 @@ module.exports = express.Router()
       res.json(restaurant);
    });
 })
-.post('/restaurants/update', utils.auth(), (req, res) => {
+.post('/restaurants/update', utils.auth(), (req, res, next) => {
    worker.updateAllRestaurants()
    .then(_ => res.json({message: 'ok'}))
-   .catch(e => console.error(e));
+   .catch(next);
 })
 .delete('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
