@@ -6,21 +6,14 @@ const ua = require('universal-analytics');
 const cors = require('cors');
 const TelegramBot = require('node-telegram-bot-api');
 const imageGenerator = require('../image-generator');
+const utils = require('../utils');
 
 const visitor = ua(process.env.UA_ID);
-const track = (action, label) => {
+function track(action, label) {
    visitor.event('API Call', action, label).send();
 };
 
 const router = express.Router();
-
-const auth = (req, res, next) => {
-   req.loggedIn = req.session.loggedIn;
-   if (req.session.loggedIn)
-      next();
-   else
-      res.status(403).json({message: 'unauhtorized'});
-};
 
 const bot = new TelegramBot(process.env.TG_BOT_TOKEN);
 
@@ -54,14 +47,14 @@ router
    })
    .then(areas => res.json(areas));
 })
-.post('/areas', auth, (req, res) => {
+.post('/areas', utils.auth(), (req, res) => {
    models.Area.create(req.body)
    .then(area => res.json(area));
 })
-.delete('/areas/:areaId', auth, (req, res) => {
+.delete('/areas/:areaId', utils.auth(), (req, res) => {
    req.area.destroy().then(() => res.json({message: 'deleted'}));
 })
-.put('/areas/:areaId', auth, (req, res) => {
+.put('/areas/:areaId', utils.auth(), (req, res) => {
    req.area.update(req.body)
    .then(area => res.json(area));
 })
@@ -108,14 +101,14 @@ router
    models.Favorite.findAll({attributes: ['id', 'name', 'regexp', 'icon']})
    .then(restaurants => res.json(restaurants));
 })
-.post('/favorites', auth, (req, res) => {
+.post('/favorites', utils.auth(), (req, res) => {
    models.Favorite.create(req.body)
    .then(favorite => res.json(favorite));
 })
-.delete('/favorites/:favoriteId', auth, (req, res) => {
+.delete('/favorites/:favoriteId', utils.auth(), (req, res) => {
    req.favorite.destroy().then(() => res.json({message: 'deleted'}));
 })
-.put('/favorites/:favoriteId', auth, (req, res) => {
+.put('/favorites/:favoriteId', utils.auth(), (req, res) => {
    req.favorite.update(req.body)
    .then(favorite => res.json(favorite));
 })
@@ -131,9 +124,12 @@ router
       }
    });
 })
-.get('/restaurants', auth, (req, res) => {
+.get('/restaurants', utils.auth(true), (req, res) => {
+   const include = req.loggedIn ? [{model: models.Area}] : [];
+   const attributes = req.loggedIn ? undefined : ['id', 'name', 'latitude', 'longitude', 'address'];
    models.Restaurant.findAll({
-      include: [{model: models.Area}],
+      include,
+      attributes,
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
    })
    .then(restaurants => res.json(restaurants));
@@ -144,7 +140,7 @@ router
       res.header({'Content-Type': 'image/jpeg'}).send(buffer);
    });
 })
-.post('/restaurants', auth, (req, res) => {
+.post('/restaurants', utils.auth(), (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
    models.Restaurant.create(req.body)
    .then(restaurant => {
@@ -153,15 +149,15 @@ router
       res.json(restaurant);
    });
 })
-.post('/restaurants/update', auth, (req, res) => {
+.post('/restaurants/update', utils.auth(), (req, res) => {
    worker.updateAllRestaurants()
    .then(_ => res.json({message: 'ok'}))
    .catch(e => console.error(e));
 })
-.delete('/restaurants/:restaurantId', auth, (req, res) => {
+.delete('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
 })
-.put('/restaurants/:restaurantId', auth, (req, res) => {
+.put('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.body.openingHours = JSON.parse(req.body.openingHours);
    req.restaurant.update(req.body)
    .then(restaurant => {
