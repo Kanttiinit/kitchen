@@ -2,40 +2,14 @@ const express = require('express');
 const models = require('../models');
 const worker = require('../worker');
 const sequelize = require('sequelize');
-const ua = require('universal-analytics');
 const cors = require('cors');
-const TelegramBot = require('node-telegram-bot-api');
 const imageGenerator = require('../image-generator');
 const utils = require('../utils');
 
-const visitor = ua(process.env.UA_ID);
-function track(action, label) {
-   visitor.event('API Call', action, label).send();
-};
-
-const router = express.Router();
-
-const bot = new TelegramBot(process.env.TG_BOT_TOKEN);
-
-router
-.post('/send-message', (req, res) => {
-   bot.sendMessage(Number(process.env.TG_GROUP_ID), req.body.message)
-   .then(_ => res.json({message: 'ok'}))
-   .catch(_ => res.status(404).json({message: 'error'}));
-})
-.param('areaId', (req, res, next) => {
-   models.Area.findById(req.params.areaId)
-   .then(area => {
-      if (area) {
-         req.area = area;
-         next();
-      } else {
-         res.status(404).json({message: 'no such area'});
-      }
-   });
-})
+module.exports = express.Router()
+.param('areaId', utils.getParamParser('Area', 'areaId'))
 .get('/areas', cors(), (req, res) => {
-   track('/areas');
+   utils.track('/areas');
    models.Area.findAll({
       attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'],
       include: [
@@ -61,7 +35,7 @@ router
 
 .get('/menus/:restaurantIds', cors(), (req, res) => {
    const ids = req.params.restaurantIds.split(',');
-   track('/menus', req.params.restaurantIds);
+   utils.track('/menus', req.params.restaurantIds);
    if (ids.every(n => !isNaN(n))) {
       models.Restaurant.findAll({
          where: {
@@ -86,17 +60,7 @@ router
    }
 })
 
-.param('favoriteId', (req, res, next) => {
-   models.Favorite.findById(req.params.favoriteId)
-   .then(favorite => {
-      if (favorite) {
-         req.favorite = favorite;
-         next();
-      } else {
-         res.status(404).json({message: 'no such favorite'});
-      }
-   });
-})
+.param('favoriteId', utils.getParamParser('Favorite', 'favoriteId'))
 .get('/favorites', (req, res) => {
    models.Favorite.findAll({attributes: ['id', 'name', 'regexp', 'icon']})
    .then(restaurants => res.json(restaurants));
@@ -113,17 +77,7 @@ router
    .then(favorite => res.json(favorite));
 })
 
-.param('restaurantId', (req, res, next) => {
-   models.Restaurant.findById(req.params.restaurantId)
-   .then(restaurant => {
-      if (restaurant) {
-         req.restaurant = restaurant;
-         next();
-      } else {
-         res.status(404).json({message: 'no such restaurant'});
-      }
-   });
-})
+.param('restaurantId', utils.getParamParser('Restaurant', 'restaurantId'))
 .get('/restaurants', utils.auth(true), (req, res) => {
    const include = req.loggedIn ? [{model: models.Area}] : [];
    const attributes = req.loggedIn ? undefined : ['id', 'name', 'latitude', 'longitude', 'address'];
@@ -166,5 +120,3 @@ router
       res.json(restaurant);
    });
 });
-
-module.exports = router;
