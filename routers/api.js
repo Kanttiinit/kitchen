@@ -90,8 +90,8 @@ module.exports = express.Router()
 })
 .get('/restaurants/:restaurantId/image/', (req, res, next) => {
    imageGenerator(req.params.restaurantId, req.query.day)
-   .then(buffer => {
-      res.header({'Content-Type': 'image/jpeg'}).send(buffer);
+   .then(url => {
+      res.redirect(url);
    })
    .catch(next);
 })
