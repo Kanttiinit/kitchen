@@ -5,6 +5,7 @@ const sequelize = require('sequelize');
 const cors = require('cors');
 const imageGenerator = require('../image-generator');
 const utils = require('../utils');
+const haversine = require('haversine');
 
 module.exports = express.Router()
 .param('areaId', utils.getParamParser('Area', 'areaId'))
@@ -86,7 +87,17 @@ module.exports = express.Router()
       attributes,
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
    })
-   .then(restaurants => res.json(restaurants));
+   .then(restaurants => {
+      if (req.query.location) {
+         const coords = req.query.location.split(',').map(n => +n);
+         restaurants = restaurants.map(r => {
+            r.distance = haversine({latitude: coords[0], longitude: coords[1]}, r);
+            return r;
+         })
+         .sort((a, b) => a.distance - b.distance);
+      }
+      res.json(restaurants);
+   });
 })
 .get('/restaurants/:restaurantId/image/', (req, res, next) => {
    imageGenerator(req.params.restaurantId, req.query.day)
