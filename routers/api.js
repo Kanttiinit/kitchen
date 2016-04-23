@@ -3,7 +3,7 @@ const models = require('../models');
 const worker = require('../worker');
 const sequelize = require('sequelize');
 const cors = require('cors');
-//const imageGenerator = require('../image-generator');
+const imageGenerator = require('../image-generator');
 const utils = require('../utils');
 const haversine = require('haversine');
 
