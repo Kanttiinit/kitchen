@@ -17,7 +17,6 @@ app.use('/admin', express.static('admin'));
 
 app.use('/admin', require('./routers/admin'));
 app.use('/', require('./routers/api'));
-//app.use('/', require('./routers/bot'));
 
 app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
