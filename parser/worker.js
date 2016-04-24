@@ -1,6 +1,5 @@
-const models = require('./models');
-const parser = require('./parser');
-const schedule = require('node-schedule');
+const models = require('../models');
+const parser = require('../parser');
 
 function updateMenu(restaurant) {
    return parser(restaurant.menuUrl)
@@ -52,12 +51,7 @@ function updateAllRestaurants() {
 
 if (!module.parent) {
    models.sequelize.sync().then(() => {
-      if (process.argv[2] === 'now')
-         updateAllRestaurants().then(_ => process.exit());
-      else
-         schedule.scheduleJob('0 * * * * *', () => {
-            updateAllRestaurants();
-         });
+      updateAllRestaurants().then(_ => process.exit());
    });
 }
 

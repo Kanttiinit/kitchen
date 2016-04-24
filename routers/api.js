@@ -1,6 +1,6 @@
 const express = require('express');
 const models = require('../models');
-const worker = require('../worker');
+const worker = require('../parser/worker');
 const sequelize = require('sequelize');
 const cors = require('cors');
 //const imageGenerator = require('../image-generator');
