@@ -39,7 +39,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "update-menus": "node parser/worker.js"
   },
   "author": "bodyflex",
   "license": "MIT"
