@@ -1,0 +1,54 @@
+doctype html
+html(lang='en')
+   head
+      meta(charset='UTF-8')
+      meta(name="viewport" content="width=device-width, initial-scale=1")
+      title Kanttiinit Menu Image
+      style.
+         * {
+            margin: 0;
+            padding: 0;
+         }
+         
+         html, body {
+            background: #eee;
+            font-family: sans-serif;
+            font-size: 11pt;
+         }
+         
+         header {
+            background: #139180;
+            color: white;
+            padding: 0.5em;
+         }
+         
+         h1 {
+            font-weight: normal;
+            font-size: 1.5em;
+         }
+         
+         .date {
+            color: rgba(255, 255, 255, 0.75);
+         }
+         
+         ul {
+            padding: 1em;
+         }
+         
+         li {
+            margin: 0.2em 0 0 1em;
+         }
+         
+         .property {
+            margin: 0 0.2em;
+            color: #999;
+         }
+   body
+      header
+         h1= restaurant.name
+         span.date= date
+      ul
+         each course in courses
+            li= course.title
+               each property in course.properties
+                  span.property= property
