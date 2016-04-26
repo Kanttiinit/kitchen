@@ -29,8 +29,7 @@ function renderImage(restaurantId, date) {
       const stream = webshot(html, {
          siteType: 'html',
          streamType: 'jpeg',
-         screenSize: {width: 400},
-         shotSize: {width: 'all', height: 'window'},
+         screenSize: {width: 400, height: 62 + (courses.length + 2) * 28},
          quality: 90
       });
 

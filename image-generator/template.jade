@@ -12,14 +12,14 @@ html(lang='en')
          
          html, body {
             background: #eee;
-            font-family: sans-serif;
+            font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
             font-size: 11pt;
          }
          
          header {
             background: #139180;
             color: white;
-            padding: 0.5em;0
+            padding: 0.5em;
          }
          
          h1 {
@@ -32,16 +32,25 @@ html(lang='en')
          }
          
          ul {
-            padding: 1em;
+            list-style-type: none;
          }
          
          li {
-            margin: 0.2em 0 0 1em;
+            padding: 0.3em;
+         }
+         
+         li:nth-child(odd) {
+            background: #ddd;
          }
          
          .property {
             margin: 0 0.2em;
-            color: #999;
+            padding: 0.1em 0.3em;
+            color: white;
+            background: #555;
+            border-radius: 0.2em;
+            font-size: 0.7em;
+            vertical-align: 0.1em;
          }
    body
       header
