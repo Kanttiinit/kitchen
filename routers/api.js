@@ -99,10 +99,14 @@ module.exports = express.Router()
       res.json(restaurants);
    });
 })
-.get('/restaurants/:restaurantId/image/', (req, res, next) => {
-   imageGenerator(req.params.restaurantId, req.query.day)
-   .then(url => {
-      res.redirect(url);
+.get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res, next) => {
+   const skipCache = req.query['skip-cache'];
+   imageGenerator(skipCache, req.params.restaurantId, req.query.day)
+   .then(data => {
+      if (skipCache)
+         data.pipe(res);
+      else
+         res.redirect(data);
    })
    .catch(next);
 })

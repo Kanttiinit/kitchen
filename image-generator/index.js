@@ -7,44 +7,53 @@ const PassThrough = require('stream').PassThrough;
 
 const template = pug.compileFile(__dirname + '/template.jade');
 
-function generateImage(restaurantId, date) {
-   const day = date || moment().format('YYYY-MM-DD');
-   const filename = restaurantId + '_' + day + '.jpg';
-
-   return aws.getUrl(filename)
-   .catch(err => {
-      return models.Restaurant.findOne({
-         where: { id: restaurantId },
-         include: [
-            {
-               model: models.Menu,
-               required: false,
-               where: { day }
-            }
-         ]
-      })
-      .then(restaurant => {
-         const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
-         const html = template({
-            restaurant,
-            courses,
-            date: moment(day).format('ddd D.M.')
-         });
-
-         const stream = webshot(html, {
-            siteType: 'html',
-            streamType: 'jpeg',
-            screenSize: {width: 400, height: 68 + courses.length * 26},
-            quality: 90
-         });
-         const passthrough = new PassThrough();
-         stream.pipe(passthrough);
-
-         return aws.upload(passthrough, filename);
+function renderImage(restaurantId, date) {
+   return models.Restaurant.findOne({
+      where: { id: restaurantId },
+      include: [
+         {
+            model: models.Menu,
+            required: false,
+            where: { day: moment(date).format('YYYY-MM-DD') }
+         }
+      ]
+   })
+   .then(restaurant => {
+      const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
+      const html = template({
+         restaurant,
+         courses,
+         date: moment(date).format('ddd D.M.')
       });
+
+      const stream = webshot(html, {
+         siteType: 'html',
+         streamType: 'jpeg',
+         screenSize: {width: 400},
+         shotSize: {width: 'all', height: 'window'},
+         quality: 90
+      });
+
+      const passthrough = new PassThrough();
+      stream.pipe(passthrough);
+
+      return passthrough;
    });
 }
 
-generateImage(1);
+function generateImage(skipCache, restaurantId, date) {
+   const day = date || moment().format('YYYY-MM-DD');
+   const filename = restaurantId + '_' + day + '.jpg';
+
+   if (skipCache) {
+      return renderImage(restaurantId, date);
+   } else {
+      return aws.getUrl(filename)
+      .catch(err => {
+         return renderImage(restaurantId, date)
+         .then(image => aws.upload(image, filename));
+      });
+   }
+}
 
 module.exports = generateImage;
