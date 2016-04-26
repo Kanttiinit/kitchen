@@ -24,7 +24,7 @@ function generateImage(restaurantId, date) {
          ]
       })
       .then(restaurant => {
-         const courses = restaurant.Menus[0].courses;
+         const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
          const html = template({
             restaurant,
             courses,

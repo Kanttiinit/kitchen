@@ -19,7 +19,7 @@ html(lang='en')
          header {
             background: #139180;
             color: white;
-            padding: 0.5em;
+            padding: 0.5em;0
          }
          
          h1 {
@@ -48,7 +48,10 @@ html(lang='en')
          h1= restaurant.name
          span.date= date
       ul
-         each course in courses
-            li= course.title
-               each property in course.properties
-                  span.property= property
+         if courses.length
+            each course in courses
+               li= course.title
+                  each property in course.properties
+                     span.property= property
+         else
+            span Ei ruokalistoja saatavilla.
