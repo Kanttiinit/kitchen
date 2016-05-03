@@ -14,6 +14,9 @@ module.exports = function(sequelize, DataTypes) {
 			associate(models) {
 				models.Restaurant.hasMany(models.Menu);
 				models.Restaurant.belongsTo(models.Area);
+			},
+			getPublicAttributes() {
+				return ['id', 'name', 'url', 'image', 'openingHours', 'latitude', 'longitude', 'address'];
 			}
 		}
 	});

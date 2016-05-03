@@ -12,11 +12,11 @@ module.exports = express.Router()
 .get('/areas', cors(), (req, res) => {
    utils.track('/areas');
    models.Area.findAll({
-      attributes: ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'],
+      attributes: models.Area.getPublicAttributes(),
       include: [
          {
             model: models.Restaurant,
-            attributes: ['id', 'name', 'url', 'image', 'openingHours', 'latitude', 'longitude', 'address']
+            attributes: models.Restaurant.getPublicAttributes()
          }
       ]
    })
@@ -27,7 +27,7 @@ module.exports = express.Router()
    .then(area => res.json(area));
 })
 .delete('/areas/:areaId', utils.auth(), (req, res) => {
-   req.area.destroy().then(() => res.json({message: 'deleted'}));
+   req.area.destroy().then(_ => res.json({message: 'deleted'}));
 })
 .put('/areas/:areaId', utils.auth(), (req, res) => {
    req.area.update(req.body)
@@ -42,7 +42,7 @@ module.exports = express.Router()
          where: {
             id: {$in: ids.map(n => +n)}
          },
-         attributes: ['id', 'name', 'image', 'url', 'latitude', 'longitude', 'openingHours', 'address'],
+         attributes: models.Restaurant.getPublicAttributes(),
          include: [
             {
                required: false,
@@ -63,7 +63,7 @@ module.exports = express.Router()
 
 .param('favoriteId', utils.getParamParser('Favorite', 'favoriteId'))
 .get('/favorites', (req, res) => {
-   models.Favorite.findAll({attributes: ['id', 'name', 'regexp', 'icon']})
+   models.Favorite.findAll({attributes: models.Favorite.getPublicAttributes()})
    .then(restaurants => res.json(restaurants));
 })
 .post('/favorites', utils.auth(), (req, res) => {
@@ -71,7 +71,7 @@ module.exports = express.Router()
    .then(favorite => res.json(favorite));
 })
 .delete('/favorites/:favoriteId', utils.auth(), (req, res) => {
-   req.favorite.destroy().then(() => res.json({message: 'deleted'}));
+   req.favorite.destroy().then(_ => res.json({message: 'deleted'}));
 })
 .put('/favorites/:favoriteId', utils.auth(), (req, res) => {
    req.favorite.update(req.body)
@@ -80,11 +80,9 @@ module.exports = express.Router()
 
 .param('restaurantId', utils.getParamParser('Restaurant', 'restaurantId'))
 .get('/restaurants', utils.auth(true), (req, res) => {
-   const include = req.loggedIn ? [{model: models.Area}] : [];
-   const attributes = req.loggedIn ? undefined : ['id', 'name', 'latitude', 'longitude', 'address'];
    models.Restaurant.findAll({
-      include,
-      attributes,
+      include: req.loggedIn ? [{model: models.Area}] : [],
+      attributes: req.loggedIn ? undefined : models.Restaurant.getPublicAttributes(),
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
    })
    .then(restaurants => {
@@ -99,7 +97,7 @@ module.exports = express.Router()
       res.json(restaurants);
    });
 })
-.get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res, next) => {
+.get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
    const skipCache = req.query['skip-cache'];
    imageGenerator(skipCache, req.params.restaurantId, req.query.day)
    .then(data => {
@@ -107,32 +105,22 @@ module.exports = express.Router()
          data.pipe(res);
       else
          res.redirect(data);
-   })
-   .catch(next);
+   });
 })
 .post('/restaurants', utils.auth(), (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
    models.Restaurant.create(req.body)
-   .then(restaurant => {
-      if (restaurant.menuUrl)
-         worker.updateMenu(restaurant);
-      res.json(restaurant);
-   });
+   .then(restaurant => res.json(restaurant));
 })
-.post('/restaurants/update', utils.auth(), (req, res, next) => {
+.post('/restaurants/update', utils.auth(), (req, res) => {
    worker.updateAllRestaurants()
-   .then(_ => res.json({message: 'ok'}))
-   .catch(next);
+   .then(_ => res.json({message: 'ok'}));
 })
 .delete('/restaurants/:restaurantId', utils.auth(), (req, res) => {
-   req.restaurant.destroy().then(() => res.json({message: 'deleted'}));
+   req.restaurant.destroy().then(_ => res.json({message: 'deleted'}));
 })
 .put('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.body.openingHours = JSON.parse(req.body.openingHours);
    req.restaurant.update(req.body)
-   .then(restaurant => {
-      if (restaurant.menuUrl)
-         worker.updateMenu(restaurant);
-      res.json(restaurant);
-   });
+   .then(restaurant => res.json(restaurant));
 });

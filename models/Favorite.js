@@ -5,6 +5,10 @@ module.exports = function(sequelize, DataTypes) {
       regexp: DataTypes.STRING,
       icon: DataTypes.STRING
 	}, {
-		classMethods: {}
+		classMethods: {
+			getPublicAttributes() {
+				return ['id', 'name', 'regexp', 'icon'];
+			}
+		}
 	});
 };
