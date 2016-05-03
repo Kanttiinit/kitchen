@@ -21,6 +21,9 @@ app.use('/', require('./routers/api'));
 app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
 })
+.get('/help', (req, res) => {
+	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend');
+})
 .get('/', (req, res) => {
 	res.json({status: 'up'});
 });
