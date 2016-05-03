@@ -7,12 +7,26 @@ module.exports = function(sequelize, DataTypes) {
 		latitude: DataTypes.DOUBLE,
 		longitude: DataTypes.DOUBLE
 	}, {
+		instanceMethods: {
+			getPublicAttributes() {
+				var output = {
+					id: this.id,
+					name: this.name,
+					image: this.image,
+					latitude: this.latitude,
+					longitude: this.longitude,
+					locationRadius: this.locationRadius
+				};
+
+				if (this.Restaurants)
+					output.Restaurants = this.Restaurants.map(r => r.getPublicAttributes());
+					
+				return output;
+			}
+		},
 		classMethods: {
 			associate(models) {
 				models.Area.hasMany(models.Restaurant);
-			},
-			getPublicAttributes() {
-				return ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'];
 			}
 		}
 	});

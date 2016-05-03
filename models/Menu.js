@@ -5,6 +5,15 @@ module.exports = function(sequelize, DataTypes) {
 		day: {type: DataTypes.STRING, allowNull: false},
 		courses: {type: DataTypes.JSON, allowNull: false}
 	}, {
+		instanceMethods: {
+			getPublicAttributes() {
+				return {
+					date: this.date,
+					day: this.day,
+					courses: this.courses
+				};
+			}
+		},
 		classMethods: {
 			associate(models) {
 				models.Menu.belongsTo(models.Restaurant);

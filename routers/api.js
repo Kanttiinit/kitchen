@@ -12,26 +12,18 @@ module.exports = express.Router()
 .get('/areas', cors(), (req, res) => {
    utils.track('/areas');
    models.Area.findAll({
-      attributes: models.Area.getPublicAttributes(),
-      include: [
-         {
-            model: models.Restaurant,
-            attributes: models.Restaurant.getPublicAttributes()
-         }
-      ]
+      include: [{model: models.Restaurant}]
    })
-   .then(areas => res.json(areas));
+   .then(areas => res.json(areas.map(a => a.getPublicAttributes())));
 })
 .post('/areas', utils.auth(), (req, res) => {
-   models.Area.create(req.body)
-   .then(area => res.json(area));
+   models.Area.create(req.body).then(area => res.json(area));
 })
 .delete('/areas/:areaId', utils.auth(), (req, res) => {
    req.area.destroy().then(_ => res.json({message: 'deleted'}));
 })
 .put('/areas/:areaId', utils.auth(), (req, res) => {
-   req.area.update(req.body)
-   .then(area => res.json(area));
+   req.area.update(req.body).then(area => res.json(area));
 })
 
 .get('/menus/:restaurantIds', cors(), (req, res) => {
@@ -42,20 +34,20 @@ module.exports = express.Router()
          where: {
             id: {$in: ids.map(n => +n)}
          },
-         attributes: models.Restaurant.getPublicAttributes(),
          include: [
             {
                required: false,
                model: models.Menu,
-               attributes: ['date', 'day', 'courses'],
                where: {
-                  date: { $gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now')) }
+                  date: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
                }
             }
          ],
          order: sequelize.col('date')
       })
-      .then(restaurants => res.json(restaurants));
+      .then(restaurants => {
+         res.json(restaurants.map(r => r.getPublicAttributes()));
+      });
    } else {
       res.status(400).json({message: 'invalid list of restaurant ids'});
    }
@@ -79,22 +71,25 @@ module.exports = express.Router()
 })
 
 .param('restaurantId', utils.getParamParser('Restaurant', 'restaurantId'))
-.get('/restaurants', utils.auth(true), (req, res) => {
+.get('/restaurants', cors(), utils.auth(true), (req, res) => {
    models.Restaurant.findAll({
       include: req.loggedIn ? [{model: models.Area}] : [],
-      attributes: req.loggedIn ? undefined : models.Restaurant.getPublicAttributes(),
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
    })
    .then(restaurants => {
       if (req.query.location) {
-         const coords = req.query.location.split(',').map(n => +n);
-         restaurants = restaurants.map(r => {
+         const coords = req.query.location.split(',').map(n => Number(n));
+         restaurants = restaurants
+         .map(r => {
             r.distance = haversine({latitude: coords[0], longitude: coords[1]}, r);
             return r;
          })
          .sort((a, b) => a.distance - b.distance);
       }
-      res.json(restaurants);
+
+      res.json(
+         req.loggedIn ? restaurants : restaurants.map(r => r.getPublicAttributes())
+      );
    });
 })
 .get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
@@ -109,18 +104,15 @@ module.exports = express.Router()
 })
 .post('/restaurants', utils.auth(), (req, res) => {
    req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
-   models.Restaurant.create(req.body)
-   .then(restaurant => res.json(restaurant));
+   models.Restaurant.create(req.body).then(restaurant => res.json(restaurant));
 })
 .post('/restaurants/update', utils.auth(), (req, res) => {
-   worker.updateAllRestaurants()
-   .then(_ => res.json({message: 'ok'}));
+   worker.updateAllRestaurants().then(_ => res.json({message: 'ok'}));
 })
 .delete('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.restaurant.destroy().then(_ => res.json({message: 'deleted'}));
 })
 .put('/restaurants/:restaurantId', utils.auth(), (req, res) => {
    req.body.openingHours = JSON.parse(req.body.openingHours);
-   req.restaurant.update(req.body)
-   .then(restaurant => res.json(restaurant));
+   req.restaurant.update(req.body).then(restaurant => res.json(restaurant));
 });
