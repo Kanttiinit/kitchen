@@ -22,7 +22,7 @@ app.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
 })
 .get('/help', (req, res) => {
-	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend');
+	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/master/README.md');
 })
 .get('/', (req, res) => {
 	res.json({status: 'up'});
