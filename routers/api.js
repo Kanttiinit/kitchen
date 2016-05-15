@@ -2,14 +2,13 @@ const express = require('express');
 const models = require('../models');
 const worker = require('../parser/worker');
 const sequelize = require('sequelize');
-const cors = require('cors');
 const imageGenerator = require('../image-generator');
 const utils = require('../utils');
 const haversine = require('haversine');
 
 module.exports = express.Router()
 .param('areaId', utils.getParamParser('Area', 'areaId'))
-.get('/areas', cors(), (req, res) => {
+.get('/areas', (req, res) => {
    utils.track('/areas');
    models.Area.findAll({
       include: [{model: models.Restaurant}]
@@ -26,7 +25,7 @@ module.exports = express.Router()
    req.area.update(req.body).then(area => res.json(area));
 })
 
-.get('/menus/:restaurantIds', cors(), (req, res) => {
+.get('/menus/:restaurantIds', (req, res) => {
    const ids = req.params.restaurantIds.split(',');
    utils.track('/menus', req.params.restaurantIds);
    if (ids.every(n => !isNaN(n))) {
@@ -71,7 +70,7 @@ module.exports = express.Router()
 })
 
 .param('restaurantId', utils.getParamParser('Restaurant', 'restaurantId'))
-.get('/restaurants', cors(), utils.auth(true), (req, res) => {
+.get('/restaurants', utils.auth(true), (req, res) => {
    models.Restaurant.findAll({
       include: req.loggedIn ? [{model: models.Area}] : [],
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
