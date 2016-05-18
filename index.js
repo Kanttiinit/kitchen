@@ -1,16 +1,26 @@
 const models = require('./models');
 const express = require('express');
+const session = require('express-session');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
 
+app.use(session({
+	secret: process.env.SESSION_SECRET || 'secret',
+	resave: true,
+	saveUninitialized: true
+}));
+
+app.use('/admin', express.static('admin'));
+
+app.use('/admin', require('./routers/admin'));
 app.use('/', require('./routers/api'));
 
-app
+app.get('/admin', (req, res) => {
+	res.sendFile('./admin/index.html');
+})
 .get('/help', (req, res) => {
 	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/master/README.md');
 })
