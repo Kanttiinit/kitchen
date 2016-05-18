@@ -27,7 +27,8 @@ module.exports = function(sequelize, DataTypes) {
 					formattedOpeningHours: this.getPrettyOpeningHours(),
 					latitude: this.latitude,
 					longitude: this.longitude,
-					address: this.address
+					address: this.address,
+					distance: Math.round(this.distance * 1000)
 				};
 
 				if (this.Menus)
