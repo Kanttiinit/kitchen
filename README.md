@@ -2,12 +2,12 @@
 
 ## Environment Variables for Local Deployment
 
-|Key|Description|
-|-|-|
-|DATABASE_URL|URI for the Postgres database|
-|PASSWORD|Hashed password for the admin interface|
-|AWS_ACCESS_KEY_ID|AWS access key id for S3|
-|AWS_SECRET_ACCESS_KEY|AWS access key secret for S3|
+| Key | Description |
+| --- | ----------- |
+| DATABASE_URL | URI for the Postgres database |
+| PASSWORD | Hashed password for the admin interface |
+| AWS_ACCESS_KEY_ID | AWS access key id for S3 |
+| AWS_SECRET_ACCESS_KEY | AWS access key secret for S3 |
 
 ## Object Schemas
 ### Area
