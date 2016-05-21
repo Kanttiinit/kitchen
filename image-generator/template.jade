@@ -85,6 +85,12 @@ html(lang='en')
             font-weight: bold;
             overflow: hidden;
          }
+         
+         .empty {
+            padding: 1em;
+            text-align: center;
+            font-weight: 300;
+         }
    body
       header
          .left
@@ -101,4 +107,4 @@ html(lang='en')
                      each property in course.properties
                         span.property(style="color: " + getColor(property) + ";")= property
          else
-            span Ei ruokalistoja saatavilla.
+            .empty Ei ruokalistoja tälle päivälle.

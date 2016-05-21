@@ -48,7 +48,7 @@ function renderHtml(restaurantId, date, width) {
          getColor,
          width,
          date: moment(date).format('dddd D.M.'),
-         openingHours: restaurant.getPrettyOpeningHours()[moment(date).format('ddd').toLowerCase().substring(0, 2)]
+         openingHours: restaurant.getPrettyOpeningHours()[moment(date).format('dd').toLowerCase()]
       });
    });
 }
