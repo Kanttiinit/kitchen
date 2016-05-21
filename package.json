@@ -37,7 +37,7 @@
   },
   "devDependencies": {},
   "engines": {
-    "node": "5.10.1"
+    "node": "6.2.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
