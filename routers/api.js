@@ -93,13 +93,18 @@ module.exports = express.Router()
    });
 })
 .get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
-   const skipCache = req.query['skip-cache'];
-   imageGenerator(skipCache, req.params.restaurantId, req.query.day)
+   imageGenerator(req.params.restaurantId, req.query.day, req.query.mode)
    .then(data => {
-      if (skipCache)
-         data.pipe(res);
-      else
-         res.redirect(data);
+      switch (req.query.mode) {
+         case 'html':
+            res.send(data);
+            break;
+         case 'skip-cache':
+            data.pipe(res);
+            break;
+         default:
+            res.redirect(data);
+      }
    });
 })
 .post('/restaurants', utils.auth(), (req, res) => {
