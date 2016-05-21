@@ -28,7 +28,9 @@ function getColor(property) {
       return '#999';
 }
 
-function renderHtml(restaurantId, date) {
+function renderHtml(restaurantId, date, width) {
+   if (width)
+      width = Math.min(Math.max(400, width), 1000);
    return models.Restaurant.findOne({
       where: { id: restaurantId },
       include: [
@@ -44,44 +46,51 @@ function renderHtml(restaurantId, date) {
          restaurant,
          courses,
          getColor,
+         width,
          date: moment(date).format('dddd D.M.'),
          openingHours: restaurant.getPrettyOpeningHours()[moment(date).format('ddd').toLowerCase().substring(0, 2)]
       });
    });
 }
 
-function renderImage(restaurantId, date) {
-   return renderHtml(restaurantId, date)
-   .then(html => {
-      const stream = webshot(html, {
-         siteType: 'html',
-         streamType: 'png',
-         screenSize: {width: 400}
-      });
-
-      const passthrough = new PassThrough();
-      stream.pipe(passthrough);
-
-      return passthrough;
+function getImageStream(html) {
+   const stream = webshot(html, {
+      siteType: 'html',
+      streamType: 'png',
+      shotSize: {width: 'all', height: 'all'},
+      windowSize: {width: 'all', height: 'all'},
    });
+
+   const passthrough = new PassThrough();
+   stream.pipe(passthrough);
+
+   return passthrough;
 }
 
-function generateImage(restaurantId, date, mode) {
+function generateImage(options) {
+   const {restaurantId, date, mode, width} = options;
+
    const day = date || moment().format('YYYY-MM-DD');
    const filename = restaurantId + '_' + day + '.png';
 
-   switch (mode) {
-      case 'html':
-         return renderHtml(restaurantId, date);
-      case 'skip-cache':
-         return renderImage(restaurantId, date);
-      default:
+   if (mode !== 'html' && mode !== 'skip-cache')
       return aws.getUrl(filename)
-      .catch(err => {
-         return renderImage(restaurantId, date)
-         .then(image => aws.upload(image, filename));
+      .then(url => {
+         if (!url)
+            return renderHtml(restaurantId, date, width)
+            .then(html => getImageStream(html))
+            .then(imageStream => aws.upload(imageStream, filename));
+
+         return url;
       });
-   }
+
+   return renderHtml(restaurantId, date, width)
+   .then(html => {
+      if (mode === 'html')
+         return html;
+
+      return getImageStream(html);
+   });
 }
 
 module.exports = generateImage;

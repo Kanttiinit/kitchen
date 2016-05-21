@@ -93,8 +93,12 @@ module.exports = express.Router()
    });
 })
 .get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
-   imageGenerator(req.params.restaurantId, req.query.day, req.query.mode)
-   .then(data => {
+   imageGenerator({
+      restaurantId: req.params.restaurantId,
+      date: req.query.day,
+      mode: req.query.mode,
+      width: req.query.width
+   }).then(data => {
       switch (req.query.mode) {
          case 'html':
             res.send(data);

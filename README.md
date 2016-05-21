@@ -13,11 +13,11 @@
 ### Area
 ```js
 {
-   "id": 1,
-   "name": "Area",
-   "latitude": 60.123456,
-   "longitude": 24.123456,
-   "locationRadius": 2,
+   "id": Number,
+   "name": String,
+   "latitude": Number,
+   "longitude": Number,
+   "locationRadius": Number,
    "Restaurants": [Restaurant]
 }
 ```
@@ -25,11 +25,11 @@
 ### Menu
 ```js
 {
-   "day": "2016-12-31",
+   "day": "YYYY-MM-DD",
    "courses": [
       {
-         "title": "Course title",
-         "properties": ["A", "B", "C"]
+         "title": String,
+         "properties": [String]
       }
    ]
 }
@@ -38,21 +38,21 @@
 ### Restaurant
 ```js
 {
-   "id": 1,
-   "name": "Restaurant",
-   "url": "https://restaurant.fi/",
+   "id": Number,
+   "name": String,
+   "url": String,
    "formattedOpeningHours": {
-      "mo": "11:00 - 15:00",
-      "tu": "11:00 - 15:00",
-      "we": "11:00 - 15:00",
-      "th": "11:00 - 15:00",
-      "fr": "11:00 - 15:00",
-      "sa": "closed",
-      "su": "closed"
+      "mo": String,
+      "tu": String,
+      "we": String,
+      "th": String,
+      "fr": String,
+      "sa": String,
+      "su": String
    },
-   "latitude": 60.123456,
-   "longitude": 24.123456,
-   "address": "Streetname 1, 01234 City",
+   "latitude": Number,
+   "longitude": Number,
+   "address": String,
    "Menus": [Menu]
 }
 ```
@@ -63,7 +63,7 @@
 
 Return format: `[Area]`
 
-### `/restaurants?location=60.123456,24.123456`
+### `/restaurants?location=Number,Number`
 Return format: `[Restaurant]`
 
 If the optional `location` query parameter is provided, the restaurants will be sorted by distance from shortest to longest.
@@ -73,7 +73,7 @@ If the optional `location` query parameter is provided, the restaurants will be 
 ### `/menus/:restaurantIds`
 Return format: `[Restaurant]`
 
-Returns restaurants specified with the id's. The id's have to be separated by commas.
+Returns restaurants specified by the supplied id's. The id's have to be separated by commas.
 
-### `/restaurants/:restaurantId/image?day=2016-12-31`
-Returns a JPG image of the menu of a restaurant for a specific day. The `day` defaults to the current day.
+### `/restaurants/:restaurantId/image?day=YYYY-MM-DD&mode=[skip-cache|html]&width=Number`
+If no `mode` is provided, redirects to an image at AWS. If mode is `html` returns an HTML document. If mode is `skip-cache` the image will be generated and displayed without a redirect. The `day` defaults to the current day.
