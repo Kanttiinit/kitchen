@@ -2,13 +2,11 @@ const cors = require('cors');
 const models = require('../models');
 
 module.exports = {
-   auth(bypass) {
-      return function(req, res, next) {
-         if (req.loggedIn || bypass)
-            next();
-         else
-            res.status(403).json({message: 'unauthorized'});
-      }
+   auth(req, res, next) {
+      if (req.loggedIn)
+         next();
+      else
+         res.status(403).json({message: 'unauthorized'});
    },
    createRestApi({router, model, getListQuery = () => undefined, formatResponse}) {
       const modelName = model.name.toLowerCase();
@@ -44,13 +42,13 @@ module.exports = {
             return res.json(response);
          });
       })
-      .post(basePath, this.auth(), (req, res) => {
+      .post(basePath, this.auth, (req, res) => {
          model.create(req.body).then(item => res.json(item));
       })
-      .delete(itemPath, this.auth(), (req, res) => {
+      .delete(itemPath, this.auth, (req, res) => {
          req[modelName].destroy().then(_ => res.json({message: 'deleted'}));
       })
-      .put(itemPath, this.auth(), (req, res) => {
+      .put(itemPath, this.auth, (req, res) => {
          req[modelName].update(req.body).then(item => res.json(item));
       });
    }

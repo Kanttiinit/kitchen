@@ -21,10 +21,7 @@ router.use((req, res, next) => {
    next();
 });
 
-utils.createRestApi({
-   router,
-   model: models.Favorite
-});
+utils.createRestApi({router, model: models.Favorite});
 
 utils.createRestApi({
    router,
@@ -79,7 +76,7 @@ module.exports = router
       res.status(400).json({message: 'invalid list of restaurant ids'});
    }
 })
-.get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
+.get('/restaurants/:restaurantId/image/', (req, res) => {
    imageGenerator({
       restaurantId: req.params.restaurantId,
       date: req.query.day,
@@ -87,17 +84,12 @@ module.exports = router
       width: req.query.width
    }).then(data => {
       switch (req.query.mode) {
-         case 'html':
-            res.send(data);
-            break;
-         case 'skip-cache':
-            data.pipe(res);
-            break;
-         default:
-            res.redirect(data);
+         case 'html': res.send(data); break;
+         case 'skip-cache': data.pipe(res); break;
+         default: res.redirect(data);
       }
    });
 })
-.post('/restaurants/update', utils.auth(), (req, res) => {
+.post('/restaurants/update', utils.auth, (req, res) => {
    worker.updateAllRestaurants().then(_ => res.json({message: 'ok'}));
 });
