@@ -5,7 +5,8 @@ const sequelize = require('sequelize');
 const cors = require('cors');
 const imageGenerator = require('../image-generator');
 const utils = require('../utils');
-const haversine = require('haversine');
+const ua = require('universal-analytics');
+const visitor = ua(process.env.UA_ID);
 
 const router = express.Router();
 
@@ -39,22 +40,15 @@ utils.createRestApi({
    router,
    model: models.Restaurant,
    getListQuery(req) {
-      return {
-         include: req.loggedIn ? [{model: models.Area}] : [],
-         order: [['AreaId', 'ASC'], ['name', 'ASC']]
-      };
-   },
-   formatResponse(items, req) {
       if (req.query.location) {
-         const coords = req.query.location.split(',').map(n => Number(n));
-         return items
-            .map(r => {
-               r.distance = +haversine({latitude: coords[0], longitude: coords[1]}, r).toFixed(3);
-               return r;
-            })
-            .sort((a, b) => a.distance - b.distance);
+         // TODO: maybe wanna sanitize this
+         return 'SELECT *, point(' + req.query.location + ') <@> point(latitude, longitude) as distance from "Restaurants" order by distance;';
+      } else {
+         return {
+            include: req.loggedIn ? [{model: models.Area}] : [],
+            order: [['AreaId', 'ASC'], ['name', 'ASC']]
+         };
       }
-      return items;
    }
 })
 

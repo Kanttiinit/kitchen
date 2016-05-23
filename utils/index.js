@@ -1,7 +1,5 @@
-const ua = require('universal-analytics');
 const cors = require('cors');
 const models = require('../models');
-const visitor = ua(process.env.UA_ID);
 
 module.exports = {
    auth(bypass) {
@@ -33,8 +31,12 @@ module.exports = {
          });
       })
       .get(basePath, cors(), (req, res) => {
-         model.findAll(getListQuery(req))
-         .then(items => {
+         const listQuery = getListQuery(req);
+         const query = typeof listQuery === 'string'
+            ? models.sequelize.query(listQuery, {model})
+            : model.findAll(listQuery);
+
+         query.then(items => {
             let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes());
             if (formatResponse)
                response = formatResponse(response, req);
