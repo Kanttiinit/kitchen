@@ -19,8 +19,8 @@ module.exports = function(sequelize, DataTypes) {
 				};
 
 				if (this.Restaurants)
-					output.Restaurants = this.Restaurants.map(r => r.getPublicAttributes());
-					
+					output.restaurants = this.Restaurants.map(r => r.getPublicAttributes());
+
 				return output;
 			}
 		},

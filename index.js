@@ -13,6 +13,11 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+app.use((req, res, next) => {
+	req.loggedIn = req.session.loggedIn;
+	next();
+});
+
 app.use('/admin', express.static('admin'));
 
 app.use('/admin', require('./routers/admin'));

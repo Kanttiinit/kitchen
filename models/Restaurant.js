@@ -23,8 +23,7 @@ module.exports = function(sequelize, DataTypes) {
 					name: this.name,
 					url: this.url,
 					image: this.image,
-					openingHours: this.openingHours,
-					formattedOpeningHours: this.getPrettyOpeningHours(),
+					openingHours: this.getPrettyOpeningHours(),
 					latitude: this.latitude,
 					longitude: this.longitude,
 					address: this.address,
@@ -32,19 +31,16 @@ module.exports = function(sequelize, DataTypes) {
 				};
 
 				if (this.Menus)
-					output.Menus = this.Menus.map(m => m.getPublicAttributes());
+					output.menus = this.Menus.map(m => m.getPublicAttributes());
 
 				return output;
 			},
 			getPrettyOpeningHours() {
-				return this.openingHours.reduce((hours, curr, i) => {
-					const dayString = moment((i + 1) % 7, 'd').format('dd').toLowerCase();
+				return this.openingHours.map(curr => {
 					if (curr)
-						hours[dayString] = formatHour(curr[0]) + ' - ' + formatHour(curr[1]);
-					else
-						hours[dayString] = 'closed';
-					return hours;
-				}, {});
+						return formatHour(curr[0]) + ' - ' + formatHour(curr[1]);
+					return null;
+				});
 			}
 		},
 		classMethods: {

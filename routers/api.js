@@ -7,25 +7,58 @@ const imageGenerator = require('../image-generator');
 const utils = require('../utils');
 const haversine = require('haversine');
 
-module.exports = express.Router()
-.param('areaId', utils.getParamParser('Area', 'areaId'))
-.get('/areas', cors(), (req, res) => {
-   utils.track('/areas');
-   models.Area.findAll({
-      include: [{model: models.Restaurant}]
-   })
-   .then(areas => res.json(areas.map(a => a.getPublicAttributes())));
-})
-.post('/areas', utils.auth(), (req, res) => {
-   models.Area.create(req.body).then(area => res.json(area));
-})
-.delete('/areas/:areaId', utils.auth(), (req, res) => {
-   req.area.destroy().then(_ => res.json({message: 'deleted'}));
-})
-.put('/areas/:areaId', utils.auth(), (req, res) => {
-   req.area.update(req.body).then(area => res.json(area));
+const router = express.Router();
+
+router.use((req, res, next) => {
+   if (req.method === 'GET') {
+      let fn = console.log;
+      if (!req.loggedIn)
+         fn = (...args) => visitor.event(...args).send();
+
+      fn('API Call', req.originalUrl, req.get('User-Agent'));
+   }
+   next();
+});
+
+utils.createRestApi({
+   router,
+   model: models.Favorite
+});
+
+utils.createRestApi({
+   router,
+   model: models.Area,
+   getListQuery(req) {
+      return {
+         include: [{model: models.Restaurant}]
+      };
+   }
+});
+
+utils.createRestApi({
+   router,
+   model: models.Restaurant,
+   getListQuery(req) {
+      return {
+         include: req.loggedIn ? [{model: models.Area}] : [],
+         order: [['AreaId', 'ASC'], ['name', 'ASC']]
+      };
+   },
+   formatResponse(items, req) {
+      if (req.query.location) {
+         const coords = req.query.location.split(',').map(n => Number(n));
+         return items
+            .map(r => {
+               r.distance = +haversine({latitude: coords[0], longitude: coords[1]}, r).toFixed(3);
+               return r;
+            })
+            .sort((a, b) => a.distance - b.distance);
+      }
+      return items;
+   }
 })
 
+module.exports = router
 .get('/menus/:restaurantIds', cors(), (req, res) => {
    const ids = req.params.restaurantIds.split(',');
    utils.track('/menus', req.params.restaurantIds);
@@ -52,46 +85,6 @@ module.exports = express.Router()
       res.status(400).json({message: 'invalid list of restaurant ids'});
    }
 })
-
-.param('favoriteId', utils.getParamParser('Favorite', 'favoriteId'))
-.get('/favorites', (req, res) => {
-   models.Favorite.findAll({attributes: models.Favorite.getPublicAttributes()})
-   .then(restaurants => res.json(restaurants));
-})
-.post('/favorites', utils.auth(), (req, res) => {
-   models.Favorite.create(req.body)
-   .then(favorite => res.json(favorite));
-})
-.delete('/favorites/:favoriteId', utils.auth(), (req, res) => {
-   req.favorite.destroy().then(_ => res.json({message: 'deleted'}));
-})
-.put('/favorites/:favoriteId', utils.auth(), (req, res) => {
-   req.favorite.update(req.body)
-   .then(favorite => res.json(favorite));
-})
-
-.param('restaurantId', utils.getParamParser('Restaurant', 'restaurantId'))
-.get('/restaurants', cors(), utils.auth(true), (req, res) => {
-   models.Restaurant.findAll({
-      include: req.loggedIn ? [{model: models.Area}] : [],
-      order: [['AreaId', 'ASC'], ['name', 'ASC']]
-   })
-   .then(restaurants => {
-      if (req.query.location) {
-         const coords = req.query.location.split(',').map(n => Number(n));
-         restaurants = restaurants
-         .map(r => {
-            r.distance = haversine({latitude: coords[0], longitude: coords[1]}, r);
-            return r;
-         })
-         .sort((a, b) => a.distance - b.distance);
-      }
-
-      res.json(
-         req.loggedIn ? restaurants : restaurants.map(r => r.getPublicAttributes())
-      );
-   });
-})
 .get('/restaurants/:restaurantId/image/', utils.auth(true), (req, res) => {
    imageGenerator({
       restaurantId: req.params.restaurantId,
@@ -111,17 +104,6 @@ module.exports = express.Router()
       }
    });
 })
-.post('/restaurants', utils.auth(), (req, res) => {
-   req.body.openingHours = req.body.openingHours ? JSON.parse(req.body.openingHours) : [];
-   models.Restaurant.create(req.body).then(restaurant => res.json(restaurant));
-})
 .post('/restaurants/update', utils.auth(), (req, res) => {
    worker.updateAllRestaurants().then(_ => res.json({message: 'ok'}));
-})
-.delete('/restaurants/:restaurantId', utils.auth(), (req, res) => {
-   req.restaurant.destroy().then(_ => res.json({message: 'deleted'}));
-})
-.put('/restaurants/:restaurantId', utils.auth(), (req, res) => {
-   req.body.openingHours = JSON.parse(req.body.openingHours);
-   req.restaurant.update(req.body).then(restaurant => res.json(restaurant));
 });

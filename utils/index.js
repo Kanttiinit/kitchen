@@ -1,32 +1,55 @@
 const ua = require('universal-analytics');
-
+const cors = require('cors');
 const models = require('../models');
 const visitor = ua(process.env.UA_ID);
 
 module.exports = {
    auth(bypass) {
       return function(req, res, next) {
-         req.loggedIn = req.session.loggedIn;
-         if (req.session.loggedIn || bypass)
+         if (req.loggedIn || bypass)
             next();
          else
             res.status(403).json({message: 'unauthorized'});
       }
    },
-   track(action, label) {
-      visitor.event('API Call', action, label).send();
-   },
-   getParamParser(model, param) {
-      return function(req, res, next) {
-         models[model].findById(req.params[param])
+   createRestApi({router, model, getListQuery = () => undefined, formatResponse}) {
+      const modelName = model.name.toLowerCase();
+      const modelPlural = modelName + 's';
+
+      const modelIdString = modelName + 'Id';
+      const basePath = '/' + modelPlural;
+      const itemPath = basePath + '/:' + modelIdString;
+
+      return router
+      .param(modelIdString, (req, res, next) => {
+         model.findById(req.params[modelIdString])
          .then(item => {
             if (item) {
-               req[model.toLowerCase()] = item;
+               req[modelName] = item;
                next();
             } else {
-               res.status(404).json({message: 'no such ' + model});
+               res.status(404).json({message: 'no such ' + modelName});
             }
          });
-      };
+      })
+      .get(basePath, cors(), (req, res) => {
+         model.findAll(getListQuery(req))
+         .then(items => {
+            let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes());
+            if (formatResponse)
+               response = formatResponse(response, req);
+
+            return res.json(response);
+         });
+      })
+      .post(basePath, this.auth(), (req, res) => {
+         model.create(req.body).then(item => res.json(item));
+      })
+      .delete(itemPath, this.auth(), (req, res) => {
+         req[modelName].destroy().then(_ => res.json({message: 'deleted'}));
+      })
+      .put(itemPath, this.auth(), (req, res) => {
+         req[modelName].update(req.body).then(item => res.json(item));
+      });
    }
 };
