@@ -41,7 +41,7 @@ module.exports = {
             query = model.findAll(listQuery);
 
          query.then(items => {
-            let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes());
+            let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes(req.lang));
             if (formatResponse)
                response = formatResponse(response, req);
 

@@ -18,6 +18,15 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.use((req, res, next) => {
+	const acceptedLanguages = ['fi', 'en'];
+	if (acceptedLanguages.indexOf(req.query.lang) > -1)
+		req.lang = req.query.lang;
+	else
+		req.lang = 'fi';
+	next();
+});
+
 app.use('/admin', express.static('admin'));
 
 app.use('/admin', require('./routers/admin'));

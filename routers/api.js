@@ -45,7 +45,7 @@ utils.createRestApi({
          return {
             query: `SELECT *,
                (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
-               FROM "Restaurants" order by distance;`,
+               FROM "Restaurants" ORDER BY distance;`,
             replacements: {latitude, longitude}
          };
       } else {
