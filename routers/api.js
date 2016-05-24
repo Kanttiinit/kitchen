@@ -38,8 +38,13 @@ utils.createRestApi({
    model: models.Restaurant,
    getListQuery(req) {
       if (req.query.location) {
-         // TODO: maybe wanna sanitize this
-         return 'SELECT *, point(' + req.query.location + ') <@> point(latitude, longitude) as distance from "Restaurants" order by distance;';
+         const [latitude, longitude] = req.query.location.split(',');
+         return {
+            query: `SELECT *,
+               (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
+               FROM "Restaurants" order by distance;`,
+            replacements: {latitude, longitude}
+         };
       } else {
          return {
             include: req.loggedIn ? [{model: models.Area}] : [],

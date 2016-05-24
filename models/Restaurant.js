@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
 					latitude: this.latitude,
 					longitude: this.longitude,
 					address: this.address,
-					distance: Math.round(this.distance * 1000)
+					distance: this.dataValues.distance && Math.round(this.dataValues.distance * 1000)
 				};
 
 				if (this.Menus)

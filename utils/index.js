@@ -30,9 +30,15 @@ module.exports = {
       })
       .get(basePath, cors(), (req, res) => {
          const listQuery = getListQuery(req);
-         const query = typeof listQuery === 'string'
-            ? models.sequelize.query(listQuery, {model})
-            : model.findAll(listQuery);
+         let query;
+         if (listQuery.query)
+            query = models.sequelize.query(listQuery.query, {
+               model,
+               mapToModel: true,
+               replacements: listQuery.replacements
+            });
+         else
+            query = model.findAll(listQuery);
 
          query.then(items => {
             let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes());
