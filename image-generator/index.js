@@ -28,28 +28,31 @@ function getColor(property) {
       return '#999';
 }
 
-function renderHtml(restaurantId, date, width) {
-   if (width)
-      width = Math.min(Math.max(400, width), 1000);
+function findMenu(restaurantId, day) {
    return models.Restaurant.findOne({
       where: { id: restaurantId },
       include: [
          {
             model: models.Menu,
             required: false,
-            where: { day: moment(date).format('YYYY-MM-DD') }
+            where: { day }
          }
       ]
-   }).then(restaurant => {
-      const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
-      return template({
-         restaurant,
-         courses,
-         getColor,
-         width,
-         date: moment(date).format('dddd D.M.'),
-         openingHours: restaurant.getPrettyOpeningHours()[moment(date).format('dd').toLowerCase()]
-      });
+   })
+};
+
+function renderHtml(restaurant, day, width) {
+   if (width)
+      width = Math.min(Math.max(400, width), 1000);
+
+   const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
+   return template({
+      restaurant,
+      courses,
+      getColor,
+      width,
+      date: moment(day).format('dddd D.M.'),
+      openingHours: restaurant.getPrettyOpeningHours()[moment(day).format('dd').toLowerCase()]
    });
 }
 
@@ -67,29 +70,40 @@ function getImageStream(html) {
    return passthrough;
 }
 
-function generateImage(options) {
-   const {restaurantId, date, mode, width} = options;
+function generateImage(req, res) {
+   const {restaurantId, ext} = req.params;
+   const {width} = req.query;
 
-   const day = date || moment().format('YYYY-MM-DD');
+   const day = moment(req.query.day).format('YYYY-MM-DD');
    const filename = restaurantId + '_' + day + '.png';
 
-   if (mode !== 'html' && mode !== 'skip-cache')
-      return aws.getUrl(filename)
-      .then(url => {
-         if (!url)
-            return renderHtml(restaurantId, date, width)
-            .then(html => getImageStream(html))
+   return findMenu(restaurantId, day)
+   .then(restaurant => {
+
+      if (!restaurant) {
+         res.status(404).json({message: 'not found'});
+      }
+
+      if (!ext) {
+         res.json(restaurant.getPublicAttributes());
+      } else if (ext === 'png') {
+         return aws.getUrl(filename)
+         .then(url => {
+            if (!url)
+            return getImageStream(renderHtml(restaurant, day, width))
             .then(imageStream => aws.upload(imageStream, filename));
 
-         return url;
-      });
+            return url;
+         })
+         .then(url => res.redirect(url));
+      } else {
+         const html = renderHtml(restaurant, day, width)
 
-   return renderHtml(restaurantId, date, width)
-   .then(html => {
-      if (mode === 'html')
-         return html;
+         if (ext === 'html')
+            return res.send(html);
 
-      return getImageStream(html);
+         return getImageStream(html).pipe(res);
+      }
    });
 }
 

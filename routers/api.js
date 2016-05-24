@@ -81,20 +81,7 @@ module.exports = router
       res.status(400).json({message: 'invalid list of restaurant ids'});
    }
 })
-.get('/restaurants/:restaurantId/image/', (req, res) => {
-   imageGenerator({
-      restaurantId: req.params.restaurantId,
-      date: req.query.day,
-      mode: req.query.mode,
-      width: req.query.width
-   }).then(data => {
-      switch (req.query.mode) {
-         case 'html': res.send(data); break;
-         case 'skip-cache': data.pipe(res); break;
-         default: res.redirect(data);
-      }
-   });
-})
+.get('/restaurants/:restaurantId/menu(.:ext)?', imageGenerator)
 .post('/restaurants/update', utils.auth, (req, res) => {
    worker.updateAllRestaurants().then(_ => res.json({message: 'ok'}));
 });
