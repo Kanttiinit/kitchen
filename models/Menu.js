@@ -8,7 +8,6 @@ module.exports = function(sequelize, DataTypes) {
 		instanceMethods: {
 			getPublicAttributes() {
 				return {
-					date: this.date,
 					day: this.day,
 					courses: this.courses
 				};
