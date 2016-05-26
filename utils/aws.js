@@ -15,7 +15,7 @@ module.exports = {
             Bucket,
             Key: filename,
             Body: buffer,
-            ContentType: 'image/jpeg',
+            ContentType: 'image/png',
             ACL: 'public-read'
          },
          function(err, data) {

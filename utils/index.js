@@ -31,7 +31,7 @@ module.exports = {
       .get(basePath, cors(), (req, res) => {
          const listQuery = getListQuery(req);
          let query;
-         if (listQuery.query)
+         if (listQuery && listQuery.query)
             query = models.sequelize.query(listQuery.query, {
                model,
                mapToModel: true,
