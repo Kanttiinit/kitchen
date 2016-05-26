@@ -1,4 +1,7 @@
 const moment = require('moment');
+const utils = require('./utils');
+
+const public = ['id', 'name', 'url', 'image', 'latitude', 'longitude', 'address'];
 
 function formatHour(hour) {
 	return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
@@ -17,18 +20,11 @@ module.exports = function(sequelize, DataTypes) {
 		openingHours: DataTypes.JSON
 	}, {
 		instanceMethods: {
-			getPublicAttributes() {
-				var output = {
-					id: this.id,
-					name: this.name,
-					url: this.url,
-					image: this.image,
+			getPublicAttributes(lang) {
+				var output = Object.assign({
 					openingHours: this.getPrettyOpeningHours(),
-					latitude: this.latitude,
-					longitude: this.longitude,
-					address: this.address,
 					distance: this.dataValues.distance && Math.round(this.dataValues.distance * 1000)
-				};
+				}, utils.parsePublicParams(this, public, lang));
 
 				if (this.Menus)
 					output.menus = this.Menus.map(m => m.getPublicAttributes());

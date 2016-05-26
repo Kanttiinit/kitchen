@@ -6,7 +6,7 @@ module.exports = function(sequelize, DataTypes) {
 		courses: {type: DataTypes.JSON, allowNull: false}
 	}, {
 		instanceMethods: {
-			getPublicAttributes() {
+			getPublicAttributes(lang) {
 				return {
 					day: this.day,
 					courses: this.courses

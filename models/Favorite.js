@@ -1,3 +1,5 @@
+const utils = require('./utils');
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Favorite', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
@@ -6,13 +8,8 @@ module.exports = function(sequelize, DataTypes) {
       icon: DataTypes.STRING
 	}, {
 		instanceMethods: {
-			getPublicAttributes() {
-				return {
-					id: this.id,
-					name: this.name,
-					regexp: this.regexp,
-					icon: this.icon
-				};
+			getPublicAttributes(lang) {
+				return utils.parsePublicParams(this, ['id', 'name', 'regexp', 'icon'], lang);
 			}
 		}
 	});
