@@ -18,11 +18,10 @@ function updateMenu(restaurant) {
                   return existing.update({courses: menu.courses});
 
                return models.Menu.create({
-                  date: menu.date,
                   day: menu.day,
                   RestaurantId: restaurant.id,
                   courses: menu.courses
-               })
+               });
             })
          )
       );

@@ -8,7 +8,7 @@ module.exports = {
          model.attributes
          .filter(v => v.endsWith('_i18n'))
          .reduce((output, key) => {
-            output['test-' + key.replace('_i18n', '')] = model.getDataValue(key)[lang];
+            output[key.replace('_i18n', '')] = model.getDataValue(key)[lang];
             return output;
          }, {})
       );

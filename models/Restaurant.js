@@ -10,8 +10,8 @@ function formatHour(hour) {
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Restaurant', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
-		name: DataTypes.STRING, // deprecated
-		image: DataTypes.STRING, // deprecated
+		name_i18n: DataTypes.JSON,
+		type: DataTypes.STRING,
 		url: DataTypes.STRING,
 		menuUrl: DataTypes.STRING,
 		latitude: DataTypes.DOUBLE,
@@ -19,6 +19,7 @@ module.exports = function(sequelize, DataTypes) {
 		address: DataTypes.STRING,
 		openingHours: DataTypes.JSON
 	}, {
+		tableName: 'restaurants',
 		instanceMethods: {
 			getPublicAttributes(lang) {
 				var output = Object.assign({
