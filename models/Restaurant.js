@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 				}, utils.parsePublicParams(this, public, lang));
 
 				if (this.Menus)
-					output.menus = this.Menus.map(m => m.getPublicAttributes());
+					output.menus = this.Menus.map(m => m.getPublicAttributes(lang));
 
 				return output;
 			},
@@ -44,9 +44,6 @@ module.exports = function(sequelize, DataTypes) {
 			associate(models) {
 				models.Restaurant.hasMany(models.Menu);
 				models.Restaurant.belongsTo(models.Area);
-			},
-			getPublicAttributes() {
-				return ['id', 'name', 'url', 'image', 'openingHours', 'latitude', 'longitude', 'address'];
 			}
 		}
 	});

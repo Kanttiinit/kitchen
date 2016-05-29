@@ -14,7 +14,7 @@ const visitor = ua(process.env.UA_ID);
 const router = express.Router();
 
 router.use((req, res, next) => {
-   if (req.method === 'GET') {
+   if (req.method === 'GET' && process.env.NODE_ENV === 'production') {
       let fn = console.log;
       if (!req.loggedIn)
          fn = (...args) => visitor.event(...args).send();
@@ -45,7 +45,7 @@ utils.createRestApi({
          return {
             query: `SELECT *,
                (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
-               FROM "Restaurants" ORDER BY distance;`,
+               FROM restaurants ORDER BY distance;`,
             replacements: {latitude, longitude}
          };
       } else {

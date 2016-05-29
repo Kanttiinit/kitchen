@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
 				var output = utils.parsePublicParams(this, public, lang);
 
 				if (this.Restaurants)
-					output.restaurants = this.Restaurants.map(r => r.getPublicAttributes());
+					output.restaurants = this.Restaurants.map(r => r.getPublicAttributes(lang));
 
 				return output;
 			}
