@@ -4,7 +4,7 @@ const jsdom = require('jsdom').jsdom;
 
 module.exports = {
 	pattern: /api.teknolog.fi/,
-	parser(url) {
+	parse(url) {
 		const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
 		return utils.text(url)
 		.then(html => {
@@ -16,7 +16,6 @@ module.exports = {
 				const date = moment(p.textContent.split(/\s/).pop(), 'DD.MM.YYYY');
 				// return courses for the day
 				return {
-					date: date.toDate(),
 					day: date.format('YYYY-MM-DD'),
 					courses: [].slice.call(p.nextElementSibling.querySelectorAll('li')).map(course => {
 						const properties = course.textContent.match(/([A-Z]{1,2}\s?)+$/);

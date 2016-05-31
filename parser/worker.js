@@ -1,26 +1,26 @@
 const models = require('../models');
-const parser = require('../parser');
+const parse = require('../parser');
 
 function updateMenu(restaurant) {
-   return parser(restaurant.menuUrl)
+   return parse(restaurant.menuUrl)
    .then(menus => {
       console.log('\tFound ' + menus.length + ' days of menues.');
       return Promise.all(
          menus.map(menu =>
             models.Menu.findOne({
                where: {
-                  date: menu.date,
+                  day: menu.day,
                   RestaurantId: restaurant.id
                }
             })
             .then(existing => {
                if (existing)
-                  return existing.update({courses: menu.courses});
+                  return existing.update({courses_i18n: menu.courses});
 
                return models.Menu.create({
                   day: menu.day,
                   RestaurantId: restaurant.id,
-                  courses: menu.courses
+                  courses_i18n: menu.courses
                });
             })
          )
@@ -33,7 +33,7 @@ function worker(restaurants, i) {
    const restaurant = restaurants[i];
 
    if (restaurant) {
-      console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name);
+      console.log('Processing ' + (i + 1) + '/' + restaurants.length + ' ' + restaurant.name_i18n.fi);
       return updateMenu(restaurant).then(() => worker(restaurants, i + 1));
    }
 
@@ -49,9 +49,9 @@ function updateAllRestaurants() {
 }
 
 if (!module.parent) {
-   models.sequelize.sync().then(() => {
-      updateAllRestaurants().then(_ => process.exit());
-   });
+   models.sequelize.sync()
+   .then(() => updateAllRestaurants())
+   .then(() => process.exit());
 }
 
 module.exports = {updateMenu, updateAllRestaurants};

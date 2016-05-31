@@ -7,7 +7,6 @@ function parseWithDate(url, date) {
       return json.MenusForDays.map(day => {
          const date = moment(day.Date);
          return {
-            date: date.toDate(),
             day: date.format('YYYY-MM-DD'),
             courses: day.SetMenus
             .map(x => x.Components.map(y => (x.Name ? (x.Name + ': ') : '') + y))

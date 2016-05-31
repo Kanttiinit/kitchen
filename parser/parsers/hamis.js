@@ -22,7 +22,6 @@ module.exports = {
          .map(item => {
             const date = moment(item.title[0].split(' ')[1], 'DD.MM');
             return {
-               date: date.toDate(),
                day: date.format('YYYY-MM-DD'),
                courses: item.description[0].split(' ,<br />\r\n')
                .map(_ => ({title: _, properties: []})),

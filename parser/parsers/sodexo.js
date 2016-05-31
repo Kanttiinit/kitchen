@@ -11,7 +11,6 @@ module.exports = {
 				for (var day in feed.menus) {
 					var timestamp = moment(date).day(day);
 					days.push({
-						date: timestamp.toDate(),
 						day: timestamp.format('YYYY-MM-DD'),
 						courses: feed.menus[day].map(course => {
 							return {
