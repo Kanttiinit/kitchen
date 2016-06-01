@@ -11,11 +11,11 @@ const models = [
    },
    {
       name: 'Restaurants',
-      tableFields: {id: 'ID', name: 'Name'}
+      tableFields: {id: 'ID', AreaId: 'Area', name: 'Name'}
    },
    {
       name: 'Favorites',
-      tableFields: {id: 'ID', name: 'Name', regexp: 'Regular Expression', icon: 'Icon'}
+      tableFields: {id: 'ID', name: 'Name', regexp: 'Regular Expression'}
    }
 ];
 
@@ -62,8 +62,6 @@ class BaseView extends React.Component {
          return (
             <div>
                <br />
-               <button className="btn btn-warning pull-right" onClick={this.logOut.bind(this)} style={{marginLeft: '1em'}}>Log out</button>
-               <button className="btn btn-primary pull-right" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
                <ul className="nav nav-tabs">
                   {models.map(m =>
                   <li key={m.name} className={m === currentModel ? 'active' : ''}>
@@ -71,6 +69,11 @@ class BaseView extends React.Component {
                   </li>
                   )}
                </ul>
+               <div style={{position: 'absolute', top: 0, right: 0, padding: '0.5em'}}>
+                  <button className="btn btn-primary btn-sm" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
+                  &nbsp;
+                  <button className="btn btn-warning btn-sm" onClick={this.logOut.bind(this)}>Log out</button>
+               </div>
                <AdminInterface model={currentModel} items={items} />
             </div>
          );

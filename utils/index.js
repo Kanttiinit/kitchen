@@ -8,6 +8,13 @@ module.exports = {
       else
          res.status(403).json({message: 'unauthorized'});
    },
+   getRawModelProps(model, item) {
+      return Object.keys(model.attributes)
+      .reduce((carry, attr) => {
+         carry[attr] = item[attr];
+         return carry;
+      }, {});
+   },
    createRestApi({router, model, getListQuery = () => undefined, formatResponse}) {
       const modelName = model.name.toLowerCase();
       const modelPlural = modelName + 's';
@@ -30,18 +37,26 @@ module.exports = {
       })
       .get(basePath, cors(), (req, res) => {
          const listQuery = getListQuery(req);
-         let query;
-         if (listQuery && listQuery.query)
-            query = models.sequelize.query(listQuery.query, {
+         const query = listQuery && listQuery.query
+         ? models.sequelize.query(listQuery.query, {
                model,
                mapToModel: true,
                replacements: listQuery.replacements
-            });
-         else
-            query = model.findAll(listQuery);
+            })
+         : model.findAll(listQuery);
 
          query.then(items => {
-            let response = req.loggedIn ? items : items.map(i => i.getPublicAttributes(req.lang));
+
+            let response = items.map(i => {
+               const item = i.getPublicAttributes(req.lang)
+
+               if (req.loggedIn) {
+                  item.raw = this.getRawModelProps(model, i);
+               }
+
+               return item;
+            });
+
             if (formatResponse)
                response = formatResponse(response, req);
 
