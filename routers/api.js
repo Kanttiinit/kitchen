@@ -70,11 +70,11 @@ module.exports = router
                required: false,
                model: models.Menu,
                where: {
-                  date: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
+                  day: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
                }
             }
          ],
-         order: sequelize.col('date')
+         order: sequelize.col('day')
       })
       .then(restaurants => {
          res.json(restaurants.map(r => r.getPublicAttributes()));

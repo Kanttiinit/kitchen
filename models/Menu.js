@@ -1,7 +1,7 @@
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Menu', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
-		day: {type: DataTypes.STRING, allowNull: false},
+		day: {type: DataTypes.DATE, allowNull: false},
 		courses_i18n: {type: DataTypes.JSON, allowNull: false}
 	}, {
 		tableName: 'menus',
