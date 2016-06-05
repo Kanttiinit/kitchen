@@ -107,14 +107,14 @@ module.exports = router
       }
 
       if (!ext) {
-         res.json(restaurant.getPublicAttributes());
+         res.json(restaurant.getPublicAttributes(req.lang));
       } else if (ext === 'png') {
          return aws.getUrl(filename)
          .then(url => {
-            if (!url)
-            return getImageStream(renderHtml(restaurant, day, width))
-            .then(imageStream => aws.upload(imageStream, filename));
-
+            if (!url) {
+               const imageStream = getImageStream(renderHtml(restaurant, day, width));
+               return aws.upload(imageStream, filename);
+            }
             return url;
          })
          .then(url => res.redirect(url));

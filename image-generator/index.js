@@ -5,8 +5,6 @@ const webshot = require('webshot');
 const PassThrough = require('stream').PassThrough;
 const momentFI = require('moment/locale/fi');
 
-moment.locale('fi');
-
 const template = pug.compileFile(__dirname + '/template.jade');
 
 function getColor(property) {
@@ -27,13 +25,15 @@ function getColor(property) {
       return '#999';
 }
 
-function renderHtml(restaurant, day, width) {
+function renderHtml(restaurant, day, width, lang = 'fi') {
+   moment.locale(lang);
+   
    if (width)
       width = Math.min(Math.max(400, width), 1000);
 
    const courses = restaurant.Menus.length ? restaurant.Menus[0].courses || [] : [];
    return template({
-      restaurant,
+      restaurant: restaurant.getPublicAttributes(lang),
       courses,
       getColor,
       width,
