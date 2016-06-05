@@ -1,0 +1,29 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "Area",
+   "description": "An area that contains certain restaurants.",
+   "type": "object",
+   "properties": {
+      "id": {
+         "description:": "A unique indentifier.",
+         "type": "integer"
+      },
+      "name": {
+         "description": "Human-readable name of area.",
+         "type": "string"
+      },
+      "latitude": {
+         "description": "The latitude-coordinate of the center of the area.",
+         "type": "number"
+      },
+      "longitude": {
+         "description": "The longitude-coordinate of the center of the area.",
+         "type": "number"
+      },
+      "locationRadius": {
+         "description": "The radius (in kilometers) that the area covers around the center in a circle.",
+         "type": "integer"
+      },
+      "restaurants": {}
+   }
+}

@@ -1,0 +1,42 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "Restaurant",
+   "description": "A restaurant.",
+   "type": "object",
+   "properties": {
+      "id": {
+         "description:": "A unique indentifier.",
+         "type": "integer"
+      },
+      "name": {
+         "description": "Human-readable name of restaurant.",
+         "type": "string"
+      },
+      "url": {
+         "description": "URL to the restaurant's homepage.",
+         "type": "string"
+      },
+      "address": {
+         "description": "Human-readable address of the restaurant.",
+         "type": "string"
+      },
+      "latitude": {
+         "description": "The latitude-coordinate of the restaurant.",
+         "type": "number"
+      },
+      "longitude": {
+         "description": "The longitude-coordinate of the restaurant.",
+         "type": "number"
+      },
+      "openingHours": {
+         "description": "The opening hours of the restaurant from monday to friday.",
+         "type": "array",
+         "items": {
+            "type": "string"
+         },
+         "minItems": 7,
+         "maxItems": 7
+      },
+      "menus": {}
+   }
+}

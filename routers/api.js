@@ -60,7 +60,6 @@ utils.createRestApi({
 module.exports = router
 .get('/menus/:restaurantIds', cors(), (req, res) => {
    const ids = req.params.restaurantIds.split(',');
-   utils.track('/menus', req.params.restaurantIds);
    if (ids.every(n => !isNaN(n))) {
       models.Restaurant.findAll({
          where: {
