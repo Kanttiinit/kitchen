@@ -3,6 +3,7 @@
    "title": "Area",
    "description": "An area that contains certain restaurants.",
    "type": "object",
+   "required": ["id", "name", "latitude", "longitude", "locationRadius", "restaurants"],
    "properties": {
       "id": {
          "description:": "A unique indentifier.",
@@ -24,6 +25,10 @@
          "description": "The radius (in kilometers) that the area covers around the center in a circle.",
          "type": "integer"
       },
-      "restaurants": {}
+      "restaurants": {
+         "description": "A list of restaurants within this area.",
+         "type": "array",
+         "items": {"$ref": "restaurant.json"}
+      }
    }
 }

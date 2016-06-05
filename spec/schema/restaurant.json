@@ -3,6 +3,7 @@
    "title": "Restaurant",
    "description": "A restaurant.",
    "type": "object",
+   "required": ["id", "name", "url", "address", "latitude", "longitude", "openingHours"],
    "properties": {
       "id": {
          "description:": "A unique indentifier.",
@@ -32,11 +33,17 @@
          "description": "The opening hours of the restaurant from monday to friday.",
          "type": "array",
          "items": {
-            "type": "string"
+            "type": ["string", "null"]
          },
          "minItems": 7,
          "maxItems": 7
       },
-      "menus": {}
+      "menus": {
+         "description": "array",
+         "type": "array",
+         "items": {
+            "$ref": "menu.json"
+         }
+      }
    }
 }

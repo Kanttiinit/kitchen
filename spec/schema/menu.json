@@ -3,6 +3,7 @@
    "title": "Menu",
    "description": "One day-specific menu of a restaurant.",
    "type": "object",
+   "required": ["day", "courses"],
    "properties": {
       "day": {
          "description:": "The date as YYYY-MM-DD.",
@@ -21,6 +22,7 @@
    "definitions": {
       "course": {
          "type": "object",
+         "required": ["title", "properties"],
          "properties": {
             "title": {
                "type": "string"
