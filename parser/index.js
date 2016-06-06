@@ -5,11 +5,15 @@ const fs = require('fs');
 
 const parsers = fs.readdirSync(__dirname + '/parsers').map(_ => require('./parsers/' + _));
 
-function parse(url) {
+function parse(url, lang) {
+	if (!lang) {
+		throw new Error('The second argument (lang) is required!');
+	}
+
 	// find a suitable parser
 	const parser = parsers.find(p => url.match(p.pattern));
 	if (parser)
-		return parser.parse(url);
+		return parser.parse(url, lang);
 
 	return Promise.reject('there is no parser for ' + url);
 };

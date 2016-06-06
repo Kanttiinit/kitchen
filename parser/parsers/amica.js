@@ -26,7 +26,8 @@ function parseWithDate(url, date) {
 
 module.exports = {
    pattern: /www.amica.fi/,
-   parser(url) {
+   parse(url, lang) {
+      url = url.replace('language=fi', 'language=' + lang);
       return Promise.all(
          utils.getWeeks()
          .map(date => parseWithDate(url, date))

@@ -13,9 +13,7 @@
          "description": "An array of all menu items.",
          "type": "array",
          "items": {
-            "type": {
-               "$ref": "#/definitions/course"
-            }
+            "$ref": "#/definitions/course"
          }
       }
    },

@@ -3,7 +3,7 @@ const moment = require('moment');
 
 module.exports = {
 	pattern: /www.sodexo.fi/,
-	parser(url) {
+	parse(url, lang) {
 		var days = [];
 		const parseWithDate = date =>
 			utils.json(utils.formatUrl(url, date))
@@ -14,7 +14,7 @@ module.exports = {
 						day: timestamp.format('YYYY-MM-DD'),
 						courses: feed.menus[day].map(course => {
 							return {
-								title: course.title_fi,
+								title: lang === 'fi' ? course.title_fi : course.title_en,
 								properties: course.properties ? course.properties.split(", ") : []
 							};
 						})

@@ -14,7 +14,7 @@ function parseXml(xml) {
 
 module.exports = {
    pattern: /www\.hys\.net\/ruokalista\.xml/,
-   parser: function(url) {
+   parse: function(url) {
       return utils.text(url)
       .then(xml => parseXml(xml))
       .then(data => {

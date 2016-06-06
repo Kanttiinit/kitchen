@@ -2,11 +2,14 @@ const utils = require('../utils');
 const moment = require('moment');
 const jsdom = require('jsdom').jsdom;
 
+const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
+
+const formatUrl = (url, lang) => url.replace('/fi/', '/' + lang + '/');
+
 module.exports = {
 	pattern: /api.teknolog.fi/,
-	parse(url) {
-		const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
-		return utils.text(url)
+	parse(url, lang) {
+		return utils.text(formatUrl(url, lang))
 		.then(html => {
 			// parse html
 			const document = jsdom(html, {features: {QuerySelector: true}});
