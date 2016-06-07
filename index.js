@@ -2,10 +2,13 @@ const models = require('./models');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use(session({
 	secret: process.env.SESSION_SECRET || 'secret',

@@ -46,7 +46,7 @@
     "node": "6.2.0"
   },
   "scripts": {
-    "test": "mocha spec/index.js",
+    "tests": "mocha test",
     "start": "node index.js",
     "update-menus": "node parser/worker.js"
   },

@@ -1,4 +1,3 @@
-const cors = require('cors');
 const models = require('../models');
 
 module.exports = {
@@ -35,7 +34,7 @@ module.exports = {
             }
          });
       })
-      .get(basePath, cors(), (req, res) => {
+      .get(basePath, (req, res) => {
          const listQuery = getListQuery(req);
          const query = listQuery && listQuery.query
          ? models.sequelize.query(listQuery.query, {
