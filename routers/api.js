@@ -77,7 +77,7 @@ module.exports = router
          order: sequelize.col('day')
       })
       .then(restaurants => {
-         res.json(restaurants.map(r => r.getPublicAttributes()));
+         res.json(restaurants.map(r => r.getPublicAttributes(req.lang)));
       });
    } else {
       res.status(400).json({message: 'invalid list of restaurant ids'});

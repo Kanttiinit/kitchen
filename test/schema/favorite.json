@@ -1,0 +1,25 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "Favorite",
+   "description": "",
+   "type": "object",
+   "required": ["id", "name", "regexp"],
+   "properties": {
+      "id": {
+         "description:": "A unique indentifier.",
+         "type": "integer"
+      },
+      "name": {
+         "description": "Human-readable name of favorite.",
+         "type": "string"
+      },
+      "regexp": {
+         "description": "A regular expression that matches the favorite from a string.",
+         "type": "string"
+      },
+      "icon": {
+         "description": "An icon name representing this favorite.",
+         "type": ["string", "null"]
+      }
+   }
+}
