@@ -14,28 +14,23 @@ app.use(session({
 	secret: process.env.SESSION_SECRET || 'secret',
 	resave: true,
 	saveUninitialized: true
-}));
-
-app.use((req, res, next) => {
+}))
+.use((req, res, next) => {
 	req.loggedIn = req.session.loggedIn;
 	next();
-});
-
-app.use((req, res, next) => {
+})
+.use((req, res, next) => {
 	const acceptedLanguages = ['fi', 'en'];
 	if (acceptedLanguages.indexOf(req.query.lang) > -1)
 		req.lang = req.query.lang;
 	else
 		req.lang = 'fi';
 	next();
-});
-
-app.use('/admin', express.static('admin'));
-
-app.use('/admin', require('./routers/admin'));
-app.use('/', require('./routers/api'));
-
-app.get('/admin', (req, res) => {
+})
+.use('/admin', express.static('admin'))
+.use('/admin', require('./routers/admin'))
+.use('/', require('./routers/api'))
+.get('/admin', (req, res) => {
 	res.sendFile('./admin/index.html');
 })
 .get('/help', (req, res) => {
@@ -43,6 +38,9 @@ app.get('/admin', (req, res) => {
 })
 .get('/', (req, res) => {
 	res.json({status: 'up'});
+})
+.get('*', (req, res) => {
+	res.status(404).json({message: 'enpoint does not exist'});
 });
 
 models.sequelize.sync().then(() => {
