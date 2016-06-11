@@ -1,15 +1,13 @@
 const models = require('../models');
 const parse = require('./index');
-const moment = require('moment');
 const promiseChain = require('../utils/promiseChain');
 
 const langs = ['fi', 'en'];
 
 function createOrUpdateMenu(menu, restaurant) {
-   console.log(menu);
    return models.Menu.findOne({
       where: {
-         day: moment(menu.day).toDate(),
+         day: menu.day,
          RestaurantId: restaurant.id
       }
    })

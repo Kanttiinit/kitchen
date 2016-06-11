@@ -4,7 +4,7 @@ const moment = require('moment');
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Menu', {
 		id: {type: DataTypes.INTEGER, autoIncrement: true, allowNull: false, primaryKey: true},
-		day: {type: DataTypes.DATE, allowNull: false},
+		day: {type: DataTypes.DATEONLY, allowNull: false},
 		courses_i18n: {type: DataTypes.JSON, allowNull: false}
 	}, {
 		tableName: 'menus',
