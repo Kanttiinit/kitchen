@@ -8,8 +8,10 @@ module.exports = {
          model.attributes
          .filter(v => v.endsWith('_i18n'))
          .reduce((output, key) => {
-            output[key.replace('_i18n', '')] = model.getDataValue(key)[lang];
-            return output;
+            const field = model.getDataValue(key);
+            const normalizedKey = key.replace('_i18n', '');
+            const value = lang in field ? field[lang] : field[Object.keys(field)[0]];
+            return Object.assign({}, output, {[normalizedKey]: value});
          }, {})
       );
    }
