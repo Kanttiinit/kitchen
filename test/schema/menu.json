@@ -7,7 +7,8 @@
    "properties": {
       "day": {
          "description:": "The date as YYYY-MM-DD.",
-         "type": "string"
+         "type": "string",
+         "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
       },
       "courses": {
          "description": "An array of all menu items.",
