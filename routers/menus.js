@@ -23,7 +23,15 @@ module.exports = express.Router()
          order: sequelize.col('day')
       })
       .then(restaurants => {
-         res.json(restaurants.map(r => r.getPublicAttributes(req.lang)));
+         const response = restaurants.reduce((carry, restaurant) => {
+            carry[restaurant.id] = restaurant.Menus.reduce((carry, menu) => {
+               const fields = menu.getPublicAttributes(req.lang);
+               carry[fields.day] = fields.courses;
+               return carry;
+            }, {});
+            return carry;
+         }, {});
+         res.json(response);
       });
    } else {
       res.status(400).json({message: 'invalid list of restaurant ids'});
