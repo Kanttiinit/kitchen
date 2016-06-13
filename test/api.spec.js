@@ -4,6 +4,7 @@ const request = require('supertest');
 const areaSchema = require('./schema/area.json');
 const restaurantSchema = require('./schema/restaurant.json');
 const favoriteSchema = require('./schema/favorite.json');
+const menuEndpointSchema = require('./schema/menu-endpoint.json');
 
 chai.use(require('chai-json-schema'));
 chai.tv4.addSchema('restaurant.json', restaurantSchema);
@@ -41,7 +42,7 @@ function validateEndpoint(endpoint, schema) {
 describe('API', function() {
    describe('/menus', function() {
       it('is correctly formed', () =>
-         validateEndpoint('/menus/1,2,3', generateListSchema(restaurantSchema))
+         validateEndpoint('/menus?restaurants=1,2,3', menuEndpointSchema)
       );
    });
 

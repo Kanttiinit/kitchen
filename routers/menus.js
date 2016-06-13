@@ -3,37 +3,43 @@ const sequelize = require('sequelize');
 
 const models = require('../models');
 
+function formatIds(idString) {
+   return idString && idString.split(',').filter(id => !isNaN(id)).map(id => +id);
+}
+
 module.exports = express.Router()
-.get('/menus/:restaurantIds', (req, res) => {
-   const ids = req.params.restaurantIds.split(',');
-   if (ids.every(n => !isNaN(n))) {
-      models.Restaurant.findAll({
-         where: {
-            id: {$in: ids.map(n => +n)}
-         },
-         include: [
-            {
-               required: false,
-               model: models.Menu,
-               where: {
-                  day: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
-               }
+.get('/menus', (req, res) => {
+   const restaurantIds = formatIds(req.query.restaurants);
+   const areaIds = formatIds(req.query.areas);
+
+   let where = {};
+   if (restaurantIds)
+      where['id'] = {$in: restaurantIds};
+   else if (areaIds)
+      where['AreaId'] = {$in: areaIds};
+
+   models.Restaurant.findAll({
+      where,
+      include: [
+         {
+            required: false,
+            model: models.Menu,
+            where: {
+               day: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
             }
-         ],
-         order: sequelize.col('day')
-      })
-      .then(restaurants => {
-         const response = restaurants.reduce((carry, restaurant) => {
-            carry[restaurant.id] = restaurant.Menus.reduce((carry, menu) => {
-               const fields = menu.getPublicAttributes(req.lang);
-               carry[fields.day] = fields.courses;
-               return carry;
-            }, {});
+         }
+      ],
+      order: sequelize.col('day')
+   })
+   .then(restaurants => {
+      const response = restaurants.reduce((carry, restaurant) => {
+         carry[restaurant.id] = restaurant.Menus.reduce((carry, menu) => {
+            const fields = menu.getPublicAttributes(req.lang);
+            carry[fields.day] = fields.courses;
             return carry;
          }, {});
-         res.json(response);
-      });
-   } else {
-      res.status(400).json({message: 'invalid list of restaurant ids'});
-   }
+         return carry;
+      }, {});
+      res.json(response);
+   });
 });
