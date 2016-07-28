@@ -1,7 +1,7 @@
 const moment = require('moment');
 const utils = require('./utils');
 
-const public = ['id', 'name', 'url', 'image', 'latitude', 'longitude', 'address'];
+const public = ['id', 'type', 'name', 'url', 'image', 'latitude', 'longitude', 'address'];
 
 function formatHour(hour) {
 	return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
