@@ -28,10 +28,10 @@ export default class AdminInterface extends React.Component {
          this.setState({mode: undefined});
       });
    }
-   edit(item) {
+   openEditor(item, editing) {
       this.setState({
-         editorContent: JSON.stringify(item.raw, null, '  '),
-         mode: 'editing'
+         editorContent: JSON.stringify(item, null, '  '),
+         mode: editing ? 'editing' : 'creating'
       });
    }
    delete(item) {
@@ -42,12 +42,12 @@ export default class AdminInterface extends React.Component {
    }
    renderItem(item) {
       return (
-         <tr>
-            {Object.keys(this.props.model.tableFields).map(key =>
+         <tr key={item.id}>
+            {this.props.model.tableFields.map(({key}) =>
             <td key={key}>{item[key]}</td>
             )}
             <td>
-               &nbsp;<button onClick={this.edit.bind(this, item)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
+               &nbsp;<button onClick={this.openEditor.bind(this, item.raw, true)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, item)} className="btn btn-xs btn-danger">Delete</button>
             </td>
          </tr>
@@ -61,12 +61,10 @@ export default class AdminInterface extends React.Component {
          return <p>Loading...</p>;
       }
 
-      const headers = Object.keys(model.tableFields).map(key => model.tableFields[key]).concat('');
-
       return (
          <div>
             {!mode &&
-            <button className="btn btn-primary" style={{margin: '1em 0'}} onClick={() => this.setState({mode: 'creating'})}>Create</button>
+            <button className="btn btn-primary" style={{margin: '1em 0'}} onClick={() => this.openEditor(model.defaultFields)}>Create</button>
             }
             {mode &&
             <div className="panel panel-primary" style={{margin: '1em 0'}}>
@@ -88,10 +86,9 @@ export default class AdminInterface extends React.Component {
             }
             <Table
                sortBy="name"
-               headers={headers}
-               data={items}>
-               {this.renderItem.bind(this)}
-            </Table>
+               headers={model.tableFields}
+               renderItem={this.renderItem.bind(this)}
+               data={items} />
          </div>
       );
    }

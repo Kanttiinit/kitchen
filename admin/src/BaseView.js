@@ -3,21 +3,7 @@ import ReactDOM from 'react-dom';
 import http from 'axios';
 import LoginForm from './LoginForm';
 import AdminInterface from './AdminInterface';
-
-const models = [
-   {
-      name: 'Areas',
-      tableFields: {id: 'ID', name: 'Name'}
-   },
-   {
-      name: 'Restaurants',
-      tableFields: {id: 'ID', AreaId: 'Area', name: 'Name'}
-   },
-   {
-      name: 'Favorites',
-      tableFields: {id: 'ID', name: 'Name', regexp: 'Regular Expression'}
-   }
-];
+import models from './models';
 
 class BaseView extends React.Component {
    constructor() {

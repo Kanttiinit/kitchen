@@ -2,11 +2,18 @@ import React from 'react';
 import http from 'axios';
 
 export default class LoginForm extends React.Component {
+   constructor() {
+      super();
+      this.state = {password: ''};
+   }
    submit(event) {
       event.preventDefault();
       http.post('/admin/login', {
          password: this.state.password
       }).then(response => {
+         if (!response.data.loggedIn) {
+            alert('wrong password');
+         }
          this.props.setLoggedIn(response.data.loggedIn);
       });
    }
