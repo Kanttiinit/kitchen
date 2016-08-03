@@ -34,7 +34,7 @@ app
 	res.sendFile('./admin/index.html');
 })
 .get('/help', (req, res) => {
-	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/master/README.md');
+	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md');
 })
 .get('/', (req, res) => {
 	res.json({status: 'up'});
