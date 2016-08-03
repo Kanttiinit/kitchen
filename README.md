@@ -16,7 +16,7 @@
 Returns array of [Area](/test/schema/area.json).
 
 ### `/restaurants?location=:latitude,:longitude`
-Returns array of [Restaurant](/test/schema/restaurant.json).
+Returns array of [Restaurant](/test/schema/restaurant.json) (without `menus` key).
 
 If the optional `location` query parameter is provided, the restaurants will be sorted by distance from shortest to longest.
 
