@@ -1,6 +1,6 @@
 # Kanttiinit Backend
 
-## Environment Variables for Local Deployment
+## Environment Variables for Local Development
 
 | Key | Description |
 | --- | ----------- |
@@ -9,71 +9,30 @@
 | AWS_ACCESS_KEY_ID | AWS access key id for S3 |
 | AWS_SECRET_ACCESS_KEY | AWS access key secret for S3 |
 
-## Object Schemas
-### Area
-```js
-{
-   "id": Number,
-   "name": String,
-   "latitude": Number,
-   "longitude": Number,
-   "locationRadius": Number,
-   "Restaurants": [Restaurant]
-}
-```
-
-### Menu
-```js
-{
-   "day": "YYYY-MM-DD",
-   "courses": [
-      {
-         "title": String,
-         "properties": [String]
-      }
-   ]
-}
-```
-
-### Restaurant
-```js
-{
-   "id": Number,
-   "name": String,
-   "url": String,
-   "formattedOpeningHours": {
-      "mo": String,
-      "tu": String,
-      "we": String,
-      "th": String,
-      "fr": String,
-      "sa": String,
-      "su": String
-   },
-   "latitude": Number,
-   "longitude": Number,
-   "address": String,
-   "Menus": [Menu]
-}
-```
-
 ## Public Endpoints
 
 ### `/areas`
 
-Return format: `[Area]`
+Returns array of [Area](/test/schema/area.json).
 
-### `/restaurants?location=Number,Number`
-Return format: `[Restaurant]`
+### `/restaurants?location=:latitude,:longitude`
+Returns array of [Restaurant](/test/schema/restaurant.json).
 
 If the optional `location` query parameter is provided, the restaurants will be sorted by distance from shortest to longest.
 
-**NOTE:** The `Restaurant`s in the response do not include the `Menus` key, use the endpoint below instead.
+### `/menus/?restaurants=:restaurantIdList`
+Returns [Menu Endpoint](/test/schema/menu-endpoint.json).
 
-### `/menus/:restaurantIds`
-Return format: `[Restaurant]`
+Returns menus specified by the supplied restaurant id's. The id's have to be separated by commas.
 
-Returns restaurants specified by the supplied id's. The id's have to be separated by commas.
+### `/favorites`
+Returns array of [Favorite](/test/schema/favorite.json).
 
-### `/restaurants/:restaurantId/image?day=YYYY-MM-DD&mode=[skip-cache|html]&width=Number`
-If no `mode` is provided, redirects to an image at AWS. If mode is `html` returns an HTML document. If mode is `skip-cache` the image will be generated and displayed without a redirect. The `day` defaults to the current day.
+### `/restaurants/:restaurantId/menu?day=YYYY-MM-DD`
+Returns [Restaurant](/test/schema/restaurant.json).
+
+### `/restaurants/:restaurantId/menu.html?day=YYYY-MM-DD&width=:width`
+Returns menus as a HTML page.
+
+### `/restaurants/:restaurantId/menu.png?day=YYYY-MM-DD&width=:width`
+Redirects to `/menu.html` rendered as a PNG that is hosted on Amazon AWS.

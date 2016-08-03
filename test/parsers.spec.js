@@ -19,11 +19,11 @@ describe('Parser', function() {
 
    describe('parses Unicafe menu', function() {
       it('in Finnish', () =>
-         expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/1', 'fi')
+         expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/4', 'fi')
       );
 
       it('in English', () =>
-         expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/1', 'en')
+         expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/4', 'en')
       );
    });
 
