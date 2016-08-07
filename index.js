@@ -3,10 +3,12 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const compression = require('compression');
 
 const app = express();
 
 app
+.use(compression())
 .use(bodyParser.urlencoded({ extended: false }))
 .use(bodyParser.json())
 .use(cors())
