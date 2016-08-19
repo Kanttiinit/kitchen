@@ -50,7 +50,8 @@
   "scripts": {
     "tests": "mocha test",
     "start": "node index.js",
-    "update-menus": "node parser/worker.js"
+    "update-menus": "node parser/worker.js",
+    "backup": "node utils/dropboxBackup.js"
   },
   "author": "bodyflex",
   "license": "MIT"
