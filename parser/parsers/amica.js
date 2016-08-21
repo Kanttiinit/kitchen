@@ -12,11 +12,11 @@ function parseWithDate(url, date) {
             .map(x => x.Components.map(y => (x.Name ? (x.Name + ': ') : '') + y))
             .reduce((a, x) => a.concat(x), [])
             .map(course => {
-               const regex = /\s\(.+\)$/;
+               const regex = /\s\(.*\)$/;
                const properties = course.match(regex);
                return {
                   title: course.replace(regex, ''),
-                  properties: properties ? properties[0].match(utils.propertyRegex) : []
+                  properties: properties ? properties[0].match(utils.propertyRegex) || [] : []
                };
             })
          };
