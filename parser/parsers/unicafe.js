@@ -14,7 +14,13 @@ module.exports = {
                courses: m.data.map(c =>
                   ({
                      title: lang === 'fi' ? c.name : c.name_en,
-                     properties: c.meta[0]
+                     properties: c.meta[0].map(p => {
+                       const bracketedProp = p.match(/^\[(.+)\]$/);
+                       if (bracketedProp) {
+                         return bracketedProp[1];
+                       }
+                       return p;
+                     })
                   })
                )
             };

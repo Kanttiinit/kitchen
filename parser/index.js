@@ -18,7 +18,10 @@ function parse(url, lang) {
 	return Promise.reject('there is no parser for ' + url);
 };
 
-if (!module.parent)
-	parse(process.argv[2]).then(r => console.log(util.inspect(r, null, null))).catch(err => console.error(err));
+if (!module.parent) {
+	parse(process.argv[2], process.argv[3] || 'fi')
+	.then(r => console.log(util.inspect(r, null, null)))
+	.catch(err => console.error(err));
+}
 
 module.exports = parse;
