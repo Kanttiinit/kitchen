@@ -20,7 +20,6 @@ export default [
       name: 'Restaurants',
       tableFields: [
          {key: 'id', name: 'ID'},
-         {key: 'AreaId', name: 'Area'},
          {key: 'name', name: 'Name'}
       ],
       defaultFields: {

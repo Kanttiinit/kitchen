@@ -57,7 +57,7 @@ module.exports = {
       const itemPath = basePath + '/:' + modelName;
 
       return express.Router()
-      .param(modelName, getParamParser(modelName))
+      .param(modelName, getParamParser(model, modelName))
       .get(basePath, (req, res) => {
          const listQuery = getListQuery && getListQuery(req);
 

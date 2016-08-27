@@ -30,7 +30,7 @@ class BaseView extends React.Component {
       http.post('/restaurants/update')
       .then(_ => this.setState({updatingRestaurants: false}));
    }
-   changeModel(model) {
+   changeModel(model = this.state.currentModel) {
       http.get('/' + model.name.toLowerCase())
       .then(response => {
          this.setState({
@@ -60,7 +60,7 @@ class BaseView extends React.Component {
                   &nbsp;
                   <button className="btn btn-warning btn-sm" onClick={this.logOut.bind(this)}>Log out</button>
                </div>
-               <AdminInterface model={currentModel} items={items} />
+               <AdminInterface onUpdate={() => this.changeModel()} model={currentModel} items={items} />
             </div>
          );
       }

@@ -10,7 +10,7 @@ import 'brace/theme/github';
 export default class AdminInterface extends React.Component {
    constructor() {
       super();
-      this.state = {items: []};
+      this.state = {};
    }
    getBasePath() {
       return '/' + this.props.model.name.toLowerCase();
@@ -20,12 +20,15 @@ export default class AdminInterface extends React.Component {
 
       let promise;
       if (this.state.mode === 'editing')
-         promise = http.put(this.getBasePath() + '/' + item.id, item)
+         promise = http.put(this.getBasePath() + '/' + item.id, item);
       else
          promise = http.post(this.getBasePath(), item);
 
       promise.then(r => {
          this.setState({mode: undefined});
+      }).then(() => {
+        this.props.onUpdate();
+        alert('Item saved!')
       });
    }
    openEditor(item, editing) {
@@ -37,7 +40,10 @@ export default class AdminInterface extends React.Component {
    delete(item) {
       if (confirm('Are you sure?')) {
          http.delete(this.getBasePath() + '/' + item.id)
-         .then(response => this.update());
+         .then(response => {
+           this.props.onUpdate();
+           alert('Item deleted!');
+         });
       }
    }
    renderItem(item) {
