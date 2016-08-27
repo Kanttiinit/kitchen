@@ -17,7 +17,6 @@
     "node-fetch": "^1.3.3",
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
-    "pm2": "^1.1.3",
     "pug": "^2.0.0-alpha6",
     "sequelize": "^3.14.2",
     "universal-analytics": "^0.3.10",
@@ -50,7 +49,7 @@
   },
   "scripts": {
     "test": "mocha test",
-    "start": "./node_modules/.bin/pm2 start index.js",
+    "start": "node index.js",
     "update-menus": "node parser/worker.js",
     "backup": "node utils/dropboxBackup.js"
   },
