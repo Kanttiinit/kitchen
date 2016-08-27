@@ -32,7 +32,7 @@ const getParamParser = (model, modelName) => (req, res, next) => {
    });
 };
 
-const generateResponse = (items, lang, loggedIn) =>
+const generateResponse = (model, items, lang, loggedIn) =>
   items.map(i => {
      const item = i.getPublicAttributes(lang);
 
@@ -62,7 +62,7 @@ module.exports = {
          const listQuery = getListQuery && getListQuery(req);
 
          getSequelizeQuery(listQuery, model).then(items =>
-           res.json(generateResponse(items, req.lang, req.loggedIn))
+           res.json(generateResponse(model, items, req.lang, req.loggedIn))
          );
       })
       .post(basePath, this.auth, (req, res) =>

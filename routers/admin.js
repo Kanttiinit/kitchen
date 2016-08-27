@@ -3,6 +3,10 @@ const crypto = require('crypto');
 const bufferEq = require('buffer-equal-constant-time');
 
 module.exports = express.Router()
+.use(express.static('admin'))
+.get('/admin', (req, res) => {
+	res.sendFile('../admin/index.html');
+})
 .get('/login', (req, res) => {
 	res.json({loggedIn: req.session.loggedIn || false});
 })

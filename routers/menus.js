@@ -1,5 +1,5 @@
 const express = require('express');
-const sequelize = require('sequelize'
+const sequelize = require('sequelize');
 const models = require('../models');
 
 function formatIds(idString) {

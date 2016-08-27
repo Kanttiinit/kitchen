@@ -18,7 +18,7 @@ module.exports = {
             ContentType: 'image/png',
             ACL: 'public-read'
          },
-         function(err, data) {
+         (err, data) => {
             if (err)
                reject(err);
             else
