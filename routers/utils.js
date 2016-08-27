@@ -1,4 +1,47 @@
 const models = require('../models');
+const express = require('express');
+
+const getSequelizeQuery = (listQuery, model) => {
+  if (listQuery && listQuery.query) {
+    return models.sequelize.query(listQuery.query, {
+      model,
+      mapToModel: true,
+      replacements: listQuery.replacements
+    });
+  } else {
+    return model.findAll(listQuery);
+  }
+};
+
+const getRawModelProps = (model, item) =>
+   Object.keys(model.attributes)
+   .reduce((carry, attr) => {
+      carry[attr] = item[attr];
+      return carry;
+   }, {});
+
+const getParamParser = (model, modelName) => (req, res, next) => {
+   model.findById(req.params[modelName])
+   .then(item => {
+      if (item) {
+         req[modelName] = item;
+         next();
+      } else {
+         res.status(404).json({message: 'no such ' + modelName});
+      }
+   });
+};
+
+const generateResponse = (items, lang, loggedIn) =>
+  items.map(i => {
+     const item = i.getPublicAttributes(lang);
+
+     if (loggedIn) {
+        item.raw = getRawModelProps(model, i);
+     }
+
+     return item;
+  })
 
 module.exports = {
    auth(req, res, next) {
@@ -7,69 +50,29 @@ module.exports = {
       else
          res.status(403).json({message: 'unauthorized'});
    },
-   getRawModelProps(model, item) {
-      return Object.keys(model.attributes)
-      .reduce((carry, attr) => {
-         carry[attr] = item[attr];
-         return carry;
-      }, {});
-   },
-   createRestApi({router, model, getListQuery = () => undefined, formatResponse}) {
+   createModelRouter({model, getListQuery, formatResponse}) {
       const modelName = model.name.toLowerCase();
-      const modelPlural = modelName + 's';
 
-      const modelIdString = modelName + 'Id';
-      const basePath = '/' + modelPlural;
-      const itemPath = basePath + '/:' + modelIdString;
+      const basePath = '/' + modelName + 's';
+      const itemPath = basePath + '/:' + modelName;
 
-      return router
-      .param(modelIdString, (req, res, next) => {
-         model.findById(req.params[modelIdString])
-         .then(item => {
-            if (item) {
-               req[modelName] = item;
-               next();
-            } else {
-               res.status(404).json({message: 'no such ' + modelName});
-            }
-         });
-      })
+      return express.Router()
+      .param(modelName, getParamParser(modelName))
       .get(basePath, (req, res) => {
-         const listQuery = getListQuery(req);
-         const query = listQuery && listQuery.query
-         ? models.sequelize.query(listQuery.query, {
-               model,
-               mapToModel: true,
-               replacements: listQuery.replacements
-            })
-         : model.findAll(listQuery);
+         const listQuery = getListQuery && getListQuery(req);
 
-         query.then(items => {
-
-            let response = items.map(i => {
-               const item = i.getPublicAttributes(req.lang)
-
-               if (req.loggedIn) {
-                  item.raw = this.getRawModelProps(model, i);
-               }
-
-               return item;
-            });
-
-            if (formatResponse)
-               response = formatResponse(response, req);
-
-            return res.json(response);
-         });
+         getSequelizeQuery(listQuery, model).then(items =>
+           res.json(generateResponse(items, req.lang, req.loggedIn))
+         );
       })
-      .post(basePath, this.auth, (req, res) => {
-         model.create(req.body).then(item => res.json(item));
-      })
-      .delete(itemPath, this.auth, (req, res) => {
-         req[modelName].destroy().then(_ => res.json({message: 'deleted'}));
-      })
-      .put(itemPath, this.auth, (req, res) => {
-         req[modelName].update(req.body).then(item => res.json(item));
-      });
+      .post(basePath, this.auth, (req, res) =>
+         model.create(req.body).then(item => res.json(item))
+      )
+      .delete(itemPath, this.auth, (req, res) =>
+         req[modelName].destroy().then(() => res.json({message: 'deleted'}))
+      )
+      .put(itemPath, this.auth, (req, res) =>
+         req[modelName].update(req.body).then(item => res.json(item))
+      );
    }
 };

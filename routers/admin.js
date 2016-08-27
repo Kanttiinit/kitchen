@@ -11,15 +11,15 @@ module.exports = express.Router()
 })
 .post('/login', (req, res) => {
 	var passwordHash = new Buffer(crypto.createHash('sha256').update(req.body.password).digest('base64'));
-	var savedHash = new Buffer(process.env.PASSWORD);
+	var savedHash = new Buffer(String(process.env.PASSWORD));
 	if ( bufferEq(passwordHash, savedHash) ) {
 		req.session.loggedIn = true;
 		res.json({loggedIn: true});
-	}
-	else
+	} else {
 		res.json({loggedIn: false});
+	}
 })
 .post('/logout', (req, res) => {
 	req.session.loggedIn = false;
-   res.json({loggedIn: false});
+	res.json({loggedIn: false});
 });
