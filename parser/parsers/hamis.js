@@ -23,7 +23,8 @@ module.exports = {
             const date = moment(item.title[0].split(' ')[1], 'DD.MM');
             return {
                day: date.format('YYYY-MM-DD'),
-               courses: item.description[0].split(' ,<br />\r\n')
+               courses: item.description[0].split(/\s*,\s*\<br\s\/\>\r\n/)
+               .filter(c => c.trim().length)
                .map(_ => ({title: _, properties: []})),
             };
          });
