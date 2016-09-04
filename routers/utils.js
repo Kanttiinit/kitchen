@@ -45,7 +45,7 @@ const generateResponse = (model, items, lang, loggedIn) =>
 
 module.exports = {
    auth(req, res, next) {
-      if (req.loggedIn)
+      if (req.user && req.user.admin)
          next();
       else
          res.status(403).json({message: 'unauthorized'});

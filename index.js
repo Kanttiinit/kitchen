@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
 const package = require('./package.json');
+const passport = require('passport');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 
@@ -15,19 +17,17 @@ if (!sessionSecret) {
 }
 
 app
-.use(compression())
-.use(bodyParser.urlencoded({extended: false}))
 .use(bodyParser.json())
+.use(bodyParser.urlencoded({extended: false}))
+.use(compression())
 .use(cors())
 .use(session({
 	secret: sessionSecret,
-	resave: true,
-	saveUninitialized: true
+	store: new SequelizeStore({db: models.sequelize}),
+	proxy: true
 }))
-.use((req, res, next) => {
-	req.loggedIn = req.session.loggedIn;
-	next();
-})
+.use(passport.initialize())
+.use(passport.session())
 .use((req, res, next) => {
 	if (['fi', 'en'].includes(req.query.lang))
 		req.lang = req.query.lang;
@@ -36,10 +36,10 @@ app
 	next();
 })
 .use('/admin', require('./routers/admin'))
+.use('/auth', require('./routers/auth'))
 .use('/', require('./routers/api'))
-.get('/help', (req, res) => {
-	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md');
-})
+.get('/help', (req, res) =>
+	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md'))
 .get('/', (req, res) => res.json({version: package.version}))
 .get('*', (req, res) => res.status(404).json({message: 'endpoint does not exist'}));
 
