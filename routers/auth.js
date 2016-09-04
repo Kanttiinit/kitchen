@@ -19,7 +19,7 @@ function strategyCallback(accessToken, someOtherToken, profile, done) {
   const displayName = profile.displayName;
   const photo = profile.photos.length ? profile.photos[0].value : undefined;
   models.User.upsert({email, displayName, photo})
-  .then(() => models.User.find({email}))
+  .then(() => models.User.findOne({where: {email}}))
   .then(user => done(null, user))
   .catch(error => done(error));
 }
