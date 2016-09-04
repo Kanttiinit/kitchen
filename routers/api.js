@@ -13,11 +13,7 @@ router.use(utils.createModelRouter({model: models.Favorite}));
 router.use(
   utils.createModelRouter({
     model: models.Area,
-    getListQuery(req) {
-      return {
-        include: [{model: models.Restaurant}]
-      };
-    }
+    getListQuery: () => ({include: [{model: models.Restaurant}]})
   })
 );
 
