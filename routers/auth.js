@@ -50,12 +50,12 @@ const userRouter = express.Router()
   res.json({success: true});
 })
 .get('/', (req, res) => res.json(_.pick(req.user, ['displayName', 'email', 'preferences', 'photo'])))
-.put('/preferences', (req, res) => {
-  req.user.update({
-    preferences: Object.assign({}, req.user.preferences, req.body)
-  })
-  .then(user => res.json(user.preferences));
-});
+// .put('/preferences', (req, res) => {
+//   req.user.update({
+//     preferences: Object.assign({}, req.user.preferences, req.body)
+//   })
+//   .then(user => res.json(user.preferences));
+// });
 
 module.exports = express.Router()
 .use('/me', userRouter)
