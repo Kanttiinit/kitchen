@@ -2,29 +2,8 @@ const express = require('express');
 const models = require('../models');
 const worker = require('../parser/worker');
 const utils = require('./utils');
-const ua = require('universal-analytics');
-
-const visitor = ua(process.env.UA_ID);
 
 const router = express.Router();
-
-router.use((req, res, next) => {
-  if (req.method === 'GET' && process.env.NODE_ENV !== 'production') {
-    const fn = req.loggedIn ? console.log : (...args) => visitor.pageview(...args).send();
-
-    fn({
-      dh: 'https://kitchen.kanttiinit.fi/',
-      dp: req.originalUrl,
-      dt: 'API Hit',
-      ua: req.get('User-Agent')
-    }, function(err) {
-      if (err) {
-        console.error(err);
-      }
-    });
-  }
-  next();
-});
 
 router.use(require('./menus'));
 router.use(require('./restaurantMenu'));

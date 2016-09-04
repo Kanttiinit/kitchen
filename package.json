@@ -22,7 +22,6 @@
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.0-alpha6",
     "sequelize": "^3.14.2",
-    "universal-analytics": "^0.3.10",
     "webshot": "^0.18.0",
     "xml2js": "^0.4.16"
   },
