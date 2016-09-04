@@ -57,16 +57,22 @@ const userRouter = express.Router()
 //   .then(user => res.json(user.preferences));
 // });
 
-const redirects = {
-  successRedirect: process.env.AUTH_REDIRECT_SUCCESS,
-  failureRedirect: process.env.AUTH_FAILURE_REDIRECT
+const collectRedirect = (req, res, next) => {
+  req.session.redirect = req.query.redirect;
+  next();
+};
+
+const redirect = provider => (req, res, next) => {
+  const redirect = req.session.redirect || '/auth/me';
+  delete req.session.redirect;
+  passport.authenticate(provider, {successRedirect: redirect, failureRedirect: redirect + '#auth-failure'})(req, res, next);
 };
 
 module.exports = express.Router()
 .use('/me', userRouter)
 
-.get('/facebook', passport.authenticate('facebook', {scope: ['email']}))
-.get('/facebook/callback', passport.authenticate('facebook', redirects))
+.get('/facebook', collectRedirect, passport.authenticate('facebook', {scope: ['email']}))
+.get('/facebook/callback', redirect('facebook'))
 
-.get('/google', passport.authenticate('google', { scope: 'email' }))
-.get('/google/callback', passport.authenticate('google', redirects));
+.get('/google', collectRedirect, passport.authenticate('google', { scope: 'email' }))
+.get('/google/callback', redirect('google'));
