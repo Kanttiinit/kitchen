@@ -1,6 +1,7 @@
 const passport = require('passport');
 const express = require('express');
-const {Strategy} = require('passport-facebook');
+const FacebookStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const models = require('../models');
 const _ = require('lodash');
 
@@ -13,22 +14,28 @@ passport.deserializeUser((email, done) => {
   .catch(error => done(error));
 });
 
-passport.use(new Strategy(
-  {
-    clientID: process.env.FACEBOOK_APP_ID,
-    clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: process.env.FACEBOOK_CALLBACK_URL,
-    profileFields: ['id', 'emails', 'displayName']
-  },
-  (accessToken, refreshToken, profile, done) => {
-    const email = profile.emails[0].value;
-    const displayName = profile.displayName;
-    models.User.upsert({email, displayName})
-    .then(() => models.User.find({email}))
-    .then(user => done(null, user))
-    .catch(error => done(error));
-  }
-));
+function strategyCallback(accessToken, someOtherToken, profile, done) {
+  const email = profile.emails[0].value;
+  const displayName = profile.displayName;
+  const photo = profile.photos.length ? profile.photos[0].value : undefined;
+  models.User.upsert({email, displayName, photo})
+  .then(() => models.User.find({email}))
+  .then(user => done(null, user))
+  .catch(error => done(error));
+}
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: process.env.HOST + '/auth/facebook/callback',
+  profileFields: ['id', 'emails', 'displayName', 'picture']
+}, strategyCallback));
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CONSUMER_KEY,
+  clientSecret: process.env.GOOGLE_CONSUMER_SECRET,
+  callbackURL: process.env.HOST + '/auth/google/callback'
+}, strategyCallback));
 
 const userRouter = express.Router()
 .use((req, res, next) => {
@@ -42,7 +49,7 @@ const userRouter = express.Router()
   req.logout();
   res.json({success: true});
 })
-.get('/', (req, res) => res.json(_.pick(req.user, ['displayName', 'email', 'preferences'])))
+.get('/', (req, res) => res.json(_.pick(req.user, ['displayName', 'email', 'preferences', 'photo'])))
 .put('/preferences', (req, res) => {
   req.user.update({
     preferences: Object.assign({}, req.user.preferences, req.body)
@@ -52,5 +59,9 @@ const userRouter = express.Router()
 
 module.exports = express.Router()
 .use('/me', userRouter)
+
 .get('/facebook', passport.authenticate('facebook', {scope: ['email']}))
-.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/auth/me', failureRedirect: '/login' }));
+.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/auth/me', failureRedirect: '/login' }))
+
+.get('/google', passport.authenticate('google', { scope: 'email' }))
+.get('/google/callback', passport.authenticate('google', { successRedirect: '/auth/me', failureRedirect: '/login' }));
