@@ -57,11 +57,16 @@ const userRouter = express.Router()
 //   .then(user => res.json(user.preferences));
 // });
 
+const redirects = {
+  successRedirect: process.env.AUTH_REDIRECT_SUCCESS,
+  failureRedirect: process.env.AUTH_FAILURE_REDIRECT
+};
+
 module.exports = express.Router()
 .use('/me', userRouter)
 
 .get('/facebook', passport.authenticate('facebook', {scope: ['email']}))
-.get('/facebook/callback', passport.authenticate('facebook', { successRedirect: '/auth/me', failureRedirect: '/login' }))
+.get('/facebook/callback', passport.authenticate('facebook', redirects))
 
 .get('/google', passport.authenticate('google', { scope: 'email' }))
-.get('/google/callback', passport.authenticate('google', { successRedirect: '/auth/me', failureRedirect: '/login' }));
+.get('/google/callback', passport.authenticate('google', redirects));
