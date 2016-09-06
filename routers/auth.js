@@ -1,78 +1,53 @@
-const passport = require('passport');
 const express = require('express');
-const FacebookStrategy = require('passport-facebook').Strategy;
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const models = require('../models');
 const _ = require('lodash');
+const fetch = require('node-fetch');
 
-passport.serializeUser((user, done) => {
-  done(null, user.email);
-});
-passport.deserializeUser((email, done) => {
-  models.User.findOne({where: {email}})
-  .then(user => done(null, user))
-  .catch(error => done(error));
-});
+const getUser = fields => models.User.upsert(fields)
+  .then(() => models.User.findOne({where: {email: fields.email}}));
 
-function strategyCallback(accessToken, someOtherToken, profile, done) {
-  const email = profile.emails[0].value;
-  const displayName = profile.displayName;
-  const photo = profile.photos.length ? profile.photos[0].value : undefined;
-  models.User.upsert({email, displayName, photo})
-  .then(() => models.User.findOne({where: {email}}))
-  .then(user => done(null, user))
-  .catch(error => done(error));
-}
-
-passport.use(new FacebookStrategy({
-  clientID: process.env.FACEBOOK_APP_ID,
-  clientSecret: process.env.FACEBOOK_APP_SECRET,
-  callbackURL: process.env.HOST + '/auth/facebook/callback',
-  profileFields: ['id', 'emails', 'displayName', 'picture']
-}, strategyCallback));
-
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CONSUMER_KEY,
-  clientSecret: process.env.GOOGLE_CONSUMER_SECRET,
-  callbackURL: process.env.HOST + '/auth/google/callback'
-}, strategyCallback));
-
-const userRouter = express.Router()
-.use((req, res, next) => {
-  if (req.user) {
+const getUserByFacebook = (req, res, next) =>
+  fetch(`https://graph.facebook.com/v2.7/me?access_token=${req.params.token}&fields=id,name,email,picture`)
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) {
+      next(true);
+    } else {
+      return getUser({
+        email: data.email,
+        displayName: data.name,
+        photo: data.picture.data.url
+      });
+    }
+  })
+  .then(user => {
+    req.user = user;
     next();
-  } else {
-    res.status(401).json({message: 'Please log in first.'});
-  }
-})
-.get('/logout', (req, res) => {
-  req.logout();
-  res.json({success: true});
-})
-.get('/', (req, res) => res.json(_.pick(req.user, ['displayName', 'email', 'preferences', 'photo'])))
-// .put('/preferences', (req, res) => {
-//   req.user.update({
-//     preferences: Object.assign({}, req.user.preferences, req.body)
-//   })
-//   .then(user => res.json(user.preferences));
-// });
+  });
 
-const collectRedirect = (req, res, next) => {
-  req.session.redirect = req.query.redirect;
-  next();
-};
+const getUserByGoogle = (req, res, next) =>
+  fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${req.params.token}`)
+  .then(r => r.json())
+  .then(data => {
+    if (data.error) {
+      next(true);
+    } else {
+      return getUser({
+        email: data.email,
+        displayName: data.name,
+        photo: data.picture
+      });
+    }
+  })
+  .then(user => {
+    req.user = user;
+    next();
+  });
 
-const redirect = provider => (req, res, next) => {
-  const redirect = req.session.redirect || '/auth/me';
-  delete req.session.redirect;
-  passport.authenticate(provider, {successRedirect: redirect, failureRedirect: redirect + '#auth-failure'})(req, res, next);
-};
+const sendPublicUser = (req, res) =>
+  res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo']));
 
 module.exports = express.Router()
-.use('/me', userRouter)
-
-.get('/facebook', collectRedirect, passport.authenticate('facebook', {scope: ['email']}))
-.get('/facebook/callback', redirect('facebook'))
-
-.get('/google', collectRedirect, passport.authenticate('google', { scope: 'email' }))
-.get('/google/callback', redirect('google'));
+.get('/facebook/:token', getUserByFacebook, sendPublicUser)
+.get('/google/:token', getUserByGoogle, sendPublicUser)
+.use((err, req, res, next) => res.status(401).json({message: 'Unauthorized.'}));

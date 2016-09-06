@@ -5,8 +5,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
 const package = require('./package.json');
-const passport = require('passport');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 
@@ -21,13 +19,6 @@ app
 .use(bodyParser.urlencoded({extended: false}))
 .use(compression())
 .use(cors())
-.use(session({
-	secret: sessionSecret,
-	store: new SequelizeStore({db: models.sequelize}),
-	proxy: true
-}))
-.use(passport.initialize())
-.use(passport.session())
 .use((req, res, next) => {
 	if (['fi', 'en'].includes(req.query.lang))
 		req.lang = req.query.lang;
