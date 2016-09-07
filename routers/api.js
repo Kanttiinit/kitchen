@@ -1,24 +1,19 @@
 const express = require('express');
 const models = require('../models');
-const worker = require('../parser/worker');
-const utils = require('./utils');
+const createModelRouter = require('../utils/createModelRouter');
 
-const router = express.Router();
-
-router.use(require('./menus'));
-router.use(require('./restaurantMenu'));
-
-router.use(utils.createModelRouter({model: models.Favorite}));
-
-router.use(
-  utils.createModelRouter({
+module.exports = express.Router()
+.use(require('./menus'))
+.use(require('./restaurantMenu'))
+.use(createModelRouter({model: models.Favorite}))
+.use(
+  createModelRouter({
     model: models.Area,
     getListQuery: () => ({include: [{model: models.Restaurant}]})
   })
-);
-
-router.use(
-  utils.createModelRouter({
+)
+.use(
+  createModelRouter({
     model: models.Restaurant,
     getListQuery(req) {
       if (req.query.location) {
@@ -37,9 +32,4 @@ router.use(
       }
     }
   })
-);
-
-module.exports = router
-.post('/restaurants/update', utils.auth, (req, res) =>
-  worker.updateAllRestaurants().then(_ => res.json({message: 'ok'}))
 );

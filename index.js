@@ -27,7 +27,7 @@ app
 	next();
 })
 .use('/admin', require('./routers/admin'))
-.use('/auth', require('./routers/auth'))
+.use('/me', require('./routers/me'))
 .use('/', require('./routers/api'))
 .get('/help', (req, res) =>
 	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md'))

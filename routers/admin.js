@@ -1,6 +1,17 @@
 const express = require('express');
-const utils = require('./utils');
+const worker = require('../parser/worker');
+const parseUser = require('../utils/parseUser');
 
 module.exports = express.Router()
-.use(utils.auth)
-.use(express.static('admin'));
+.use(parseUser)
+.use((req, res, next) => {
+  if (req.user && req.user.admin) {
+    next();
+  } else {
+    next(true);
+  }
+})
+.use(express.static('admin'))
+.post('/restaurants/update', (req, res) =>
+  worker.updateAllRestaurants().then(() => res.json({message: 'ok'}))
+);
