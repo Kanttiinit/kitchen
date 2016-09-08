@@ -32,10 +32,12 @@ const getUserByGoogle = token =>
 
 module.exports = (req, res, next) => {
   let userPromise;
-  if (req.query.facebookToken) {
-    userPromise = getUserByFacebook(req.query.facebookToken);
-  } else if (req.query.googleToken) {
-    userPromise = getUserByGoogle(req.query.googleToken);
+  const facebookToken = req.query.facebookToken || req.get('X-FacebookToken');
+  const googleToken = req.query.googleToken || req.get('X-GoogleToken');
+  if (facebookToken) {
+    userPromise = getUserByFacebook(facebookToken);
+  } else if (googleToken) {
+    userPromise = getUserByGoogle(googleToken);
   }
 
   if (userPromise) {

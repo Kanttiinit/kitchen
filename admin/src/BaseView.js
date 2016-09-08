@@ -4,6 +4,8 @@ import http from 'axios';
 import AdminInterface from './AdminInterface';
 import models from './models';
 
+http.defaults.headers.common['X-FacebookToken'] = '';
+
 class BaseView extends React.Component {
     constructor() {
       super();
@@ -11,11 +13,11 @@ class BaseView extends React.Component {
     }
    updateMenus() {
       this.setState({updatingRestaurants: true});
-      http.post('/restaurants/update')
-      .then(_ => this.setState({updatingRestaurants: false}));
+      http.post('/admin/update-restaurants')
+      .then(() => this.setState({updatingRestaurants: false}));
    }
    changeModel(model = this.state.currentModel) {
-      http.get('/' + model.name.toLowerCase())
+      http.get('/admin/' + model.name.toLowerCase())
       .then(response => {
          this.setState({
             currentModel: model,

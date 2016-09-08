@@ -3,7 +3,7 @@ export default [
       name: 'Areas',
       tableFields: [
          {key: 'id', name: 'ID'},
-         {key: 'name', name: 'Name'}
+         {key: 'name_i18n.fi', name: 'Name'}
       ],
       defaultFields: {
         name_i18n: {
@@ -20,7 +20,8 @@ export default [
       name: 'Restaurants',
       tableFields: [
          {key: 'id', name: 'ID'},
-         {key: 'name', name: 'Name'}
+         {key: 'AreaId', name: 'Area ID'},
+         {key: 'name_i18n.fi', name: 'Name'}
       ],
       defaultFields: {
         name_i18n: {
@@ -41,7 +42,7 @@ export default [
       name: 'Favorites',
       tableFields: [
          {key: 'id', name: 'ID'},
-         {key: 'name', name: 'Name'},
+         {key: 'name_i18n.fi', name: 'Name'},
          {key: 'regexp', name: 'Regular Expression'}
       ],
       defaultFields: {

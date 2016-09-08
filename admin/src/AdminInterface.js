@@ -3,6 +3,7 @@ import http from 'axios';
 import Table from './Table';
 import moment from 'moment';
 import Ace from 'react-ace';
+import _ from 'lodash';
 
 import 'brace/mode/json';
 import 'brace/theme/github';
@@ -13,7 +14,7 @@ export default class AdminInterface extends React.Component {
       this.state = {};
    }
    getBasePath() {
-      return '/' + this.props.model.name.toLowerCase();
+      return '/admin/' + this.props.model.name.toLowerCase();
    }
    save() {
       const item = JSON.parse(this.state.editorContent);
@@ -50,10 +51,10 @@ export default class AdminInterface extends React.Component {
       return (
          <tr key={item.id}>
             {this.props.model.tableFields.map(({key}) =>
-            <td key={key}>{item[key]}</td>
+            <td key={key}>{_.get(item, key)}</td>
             )}
             <td>
-               &nbsp;<button onClick={this.openEditor.bind(this, item.raw, true)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
+               &nbsp;<button onClick={this.openEditor.bind(this, item, true)} className="btn btn-xs btn-warning">Edit</button>&nbsp;
                <button onClick={this.delete.bind(this, item)} className="btn btn-xs btn-danger">Delete</button>
             </td>
          </tr>

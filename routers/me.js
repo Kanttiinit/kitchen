@@ -6,7 +6,7 @@ module.exports = express.Router()
 .use(parseUser)
 .use((req, res, next) => {
   if (!req.user) {
-    next(true);
+    next({code: 401, message: 'Unauthorized.'});
   } else {
     next();
   }
@@ -20,5 +20,4 @@ module.exports = express.Router()
     preferences: Object.assign({}, req.user.preferences, preferences)
   })
   .then(user => res.json(user.preferences));
-})
-.use((err, req, res, next) => res.status(401).json({message: 'Unauthorized.'}));
+});

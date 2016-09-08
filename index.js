@@ -19,20 +19,14 @@ app
 .use(bodyParser.urlencoded({extended: false}))
 .use(compression())
 .use(cors())
-.use((req, res, next) => {
-	if (['fi', 'en'].includes(req.query.lang))
-		req.lang = req.query.lang;
-	else
-		req.lang = 'fi';
-	next();
-})
 .use('/admin', require('./routers/admin'))
 .use('/me', require('./routers/me'))
 .use('/', require('./routers/api'))
 .get('/help', (req, res) =>
 	res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md'))
 .get('/', (req, res) => res.json({version: package.version}))
-.get('*', (req, res) => res.status(404).json({message: 'endpoint does not exist'}));
+.get('*', (req, res, next) => next({code: 404, message: 'Endpoint doesn\'t exist.'}))
+.use((err, req, res, next) => res.status(err.code).json(err));
 
 models.sequelize.sync().then(() => {
 	const server = app.listen(process.env.PORT || 3000, function () {
