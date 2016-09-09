@@ -18,14 +18,18 @@ const getUserByFacebook = token =>
   });
 
 const getUserByGoogle = token =>
-  fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=${token}`)
+  fetch('https://www.googleapis.com/plus/v1/people/me?fields=displayName,emails,image', {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  })
   .then(r => r.json())
   .then(data => {
-    if (!data.error_description) {
+    if (!data.error) {
       return getUserModel({
-        email: data.email,
-        displayName: data.name,
-        photo: data.picture
+        email: data.emails[0].value,
+        displayName: data.displayName,
+        photo: data.image.url
       });
     }
   });
