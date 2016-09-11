@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <title>Kanttiinit Admin</title>
-   <link rel="stylesheet" href="https://bootswatch.com/flatly/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kanttiinit Admin</title>
+  <link rel="stylesheet" href="https://bootswatch.com/flatly/bootstrap.min.css">
 </head>
 <body>
-   <div class="container"></div>
-   <script src="/admin/build/everything.js"></script>
+  <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId: '1841481822746867',
+      xfbml: true,
+      version: 'v2.7'
+    });
+    FB.login(response => {
+      window.setToken(response.authResponse.accessToken);
+    });
+  };
+
+  (function(d, s, id){
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+  </script>
+  <div class="container"></div>
+  <script src="/admin/build/everything.js"></script>
 </body>
 </html>
