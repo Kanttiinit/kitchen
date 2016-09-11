@@ -25,7 +25,6 @@ const getUserByGoogle = token =>
   })
   .then(r => r.json())
   .then(data => {
-    console.log(data)
     if (!data.error) {
       return getUserModel({
         email: data.emails[0].value,
