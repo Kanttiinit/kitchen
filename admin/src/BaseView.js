@@ -8,11 +8,14 @@ class BaseView extends React.Component {
   constructor() {
     super();
     this.state = {};
-    window.setToken = token => {
-      http.defaults.headers.common['X-FacebookToken'] = token;
-      this.setState({token});
+    const tokenMatch = location.href.match(/token\=([^&%#]+)/);
+    if (tokenMatch) {
+      const token = tokenMatch[1];
+      this.state.token = token;
+      console.log(token);
+      http.defaults.headers.common['Authorization'] = token;
       this.changeModel(models[0]);
-    };
+    }
   }
   updateMenus() {
     this.setState({updatingRestaurants: true});
@@ -32,7 +35,11 @@ class BaseView extends React.Component {
   render() {
     const {currentModel, items, token} = this.state;
     if (!token)
-      return null;
+      return (
+        <form>
+          <br /><input placeholder="Enter token" className="form-control" name="token" />
+        </form>
+      );
     return (
       <div>
         <br />
@@ -45,8 +52,6 @@ class BaseView extends React.Component {
         </ul>
         <div style={{position: 'absolute', top: 0, right: 0, padding: '0.5em'}}>
           <button className="btn btn-primary btn-sm" disabled={this.state.updatingRestaurants} onClick={this.updateMenus.bind(this)}>{this.state.updatingRestaurants ? 'Updating...' : 'Update menus'}</button>
-          &nbsp;
-          <button className="btn btn-warning btn-sm">Log out</button>
         </div>
         <AdminInterface onUpdate={() => this.changeModel()} model={currentModel} items={items} />
       </div>

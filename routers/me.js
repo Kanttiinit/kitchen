@@ -1,16 +1,16 @@
 const express = require('express');
 const _ = require('lodash');
 const parseUser = require('../utils/parseUser');
+const jwt = require('jsonwebtoken');
+const authenticate = require('../utils/authenticate');
+
+const jwtSecret = process.env.JWT_SECRET || 'secret';
 
 module.exports = express.Router()
-.use(parseUser)
-.use((req, res, next) => {
-  if (!req.user) {
-    next({code: 401, message: 'Unauthorized.'});
-  } else {
-    next();
-  }
+.get('/login', parseUser, (req, res) => {
+  res.json({token: jwt.sign(req.user.email, jwtSecret)});
 })
+.use(authenticate)
 .get('/', (req, res) => {
   res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo']));
 })

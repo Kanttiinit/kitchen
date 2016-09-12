@@ -36,8 +36,8 @@ const getUserByGoogle = token =>
 
 module.exports = (req, res, next) => {
   let userPromise;
-  const facebookToken = req.query.facebookToken || req.get('X-FacebookToken');
-  const googleToken = req.query.googleToken || req.get('X-GoogleToken');
+  const facebookToken = req.query.facebookToken;
+  const googleToken = req.query.googleToken;
   if (facebookToken) {
     userPromise = getUserByFacebook(facebookToken);
   } else if (googleToken) {

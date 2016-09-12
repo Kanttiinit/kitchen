@@ -1,14 +1,14 @@
 const express = require('express');
 const worker = require('../parser/worker');
-const parseUser = require('../utils/parseUser');
 const models = require('../models');
 const createModelRouter = require('../utils/createModelRouter');
+const authenticate = require('../utils/authenticate');
 
 module.exports = express.Router()
 .use(express.static('admin'))
-.use(parseUser)
+.use(authenticate)
 .use((req, res, next) => {
-  if (req.user && req.user.admin) {
+  if (req.user.admin) {
     next();
   } else {
     next({code: 401, message: 'Unauthorized.'});
