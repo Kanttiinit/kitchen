@@ -12,7 +12,7 @@ module.exports = express.Router()
 })
 .use(authenticate)
 .get('/', (req, res) => {
-  res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo']));
+  res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
 })
 .put('/preferences', (req, res) => {
   const preferences = _.pick(req.body, ['useLocation', 'lang', 'selectedArea', 'filtersExpanded']);
