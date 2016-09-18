@@ -1,7 +1,7 @@
 const parse = require('../parser');
 const chai = require('chai');
 
-const menuSchema = require('./schema/menu.json');
+const menuSchema = require('../schema/menu.json');
 
 chai.use(require('chai-json-schema'));
 

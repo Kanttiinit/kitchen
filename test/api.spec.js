@@ -1,10 +1,10 @@
 const chai = require('chai');
 const request = require('supertest');
 
-const areaSchema = require('./schema/area.json');
-const restaurantSchema = require('./schema/restaurant.json');
-const favoriteSchema = require('./schema/favorite.json');
-const menuEndpointSchema = require('./schema/menu-endpoint.json');
+const areaSchema = require('../schema/area.json');
+const restaurantSchema = require('../schema/restaurant.json');
+const favoriteSchema = require('../schema/favorite.json');
+const menuEndpointSchema = require('../schema/menu-endpoint.json');
 
 chai.use(require('chai-json-schema'));
 chai.tv4.addSchema('restaurant.json', restaurantSchema);

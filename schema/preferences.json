@@ -1,0 +1,20 @@
+{
+   "$schema": "http://json-schema.org/draft-04/schema#",
+   "title": "User Preferences",
+   "type": "object",
+   "additionalProperties": "false",
+   "properties": {
+      "useLocation": {
+         "type": "boolean"
+      },
+      "lang": {
+        "enum": ["fi", "en"]
+      },
+      "selectedArea": {
+         "type": "integer"
+      },
+      "filtersExpanded": {
+        "type": "boolean"
+      }
+   }
+}
