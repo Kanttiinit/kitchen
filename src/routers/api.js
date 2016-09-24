@@ -1,6 +1,5 @@
 import express from 'express';
 import models from '../models';
-import createModelRouter from '../utils/createModelRouter';
 
 const getPublics = (items, lang) => items.map(item => item.getPublicAttributes(lang));
 
@@ -9,11 +8,11 @@ import restaurantMenuRouter from './restaurantMenu';
 
 export default express.Router()
 .use((req, res, next) => {
-	if (['fi', 'en'].includes(req.query.lang))
-		req.lang = req.query.lang;
-	else
-		req.lang = 'fi';
-	next();
+  if (['fi', 'en'].includes(req.query.lang))
+    req.lang = req.query.lang;
+  else
+    req.lang = 'fi';
+  next();
 })
 .use(menuRouter)
 .use(restaurantMenuRouter)

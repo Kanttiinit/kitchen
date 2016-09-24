@@ -31,9 +31,11 @@
   },
   "devDependencies": {
     "axios": "^0.9.1",
+    "babel-eslint": "^6.1.2",
     "chai": "^3.5.0",
     "chai-json-schema": "^1.2.0",
     "css-loader": "^0.23.1",
+    "eslint": "^3.6.0",
     "file-loader": "^0.8.5",
     "lodash": "^4.14.0",
     "react": "^0.14.7",

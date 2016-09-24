@@ -27,8 +27,8 @@ export const upload = (buffer, filename) =>
   });
 
 export const getUrl = filename =>
-  new Promise((resolve, reject) => {
-    s3.headObject({Bucket, Key: filename}, function(err, data) {
+  new Promise(resolve => {
+    s3.headObject({Bucket, Key: filename}, err => {
       if (err) {
         resolve(undefined);
       } else {

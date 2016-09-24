@@ -7,14 +7,14 @@ const db = {};
 const sequelize = new Sequelize(process.env.DATABASE_URL, {logging: process.env.SEQUELIZE_LOGGING ? console.log : false});
 
 fs
-  .readdirSync(__dirname)
-  .filter(file =>
-    (file.indexOf('.') !== 0) && file !== 'utils.js' && file !== basename && file.slice(-3) === '.js'
-  )
-  .forEach(file => {
-    const model = sequelize.import(path.join(__dirname, file));
-    db[model.name] = model;
-  });
+.readdirSync(__dirname)
+.filter(file =>
+  (file.indexOf('.') !== 0) && file !== 'utils.js' && file !== basename && file.slice(-3) === '.js'
+)
+.forEach(file => {
+  const model = sequelize.import(path.join(__dirname, file));
+  db[model.name] = model;
+});
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {

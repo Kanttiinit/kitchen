@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import models from '../models';
 
-const jwtSecret = process.env.JWT_SECRET || 'secret';
+const jwtSecret = process.env.JWT_SECRET || 'secret';
 
 export default (req, res, next) => {
   const token = req.query.token || req.get('Authorization');

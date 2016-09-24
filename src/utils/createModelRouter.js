@@ -1,5 +1,4 @@
 import express from 'express';
-import _ from 'lodash';
 
 export default model => {
   const modelName = model.name.toLowerCase();
@@ -9,15 +8,15 @@ export default model => {
 
   return express.Router()
   .param(modelName, (req, res, next) => {
-     model.findById(req.params[modelName])
-     .then(item => {
-        if (item) {
-           req[modelName] = item;
-           next();
-        } else {
-           res.status(404).json({message: 'no such ' + modelName});
-        }
-     });
+    model.findById(req.params[modelName])
+    .then(item => {
+      if (item) {
+        req[modelName] = item;
+        next();
+      } else {
+        res.status(404).json({message: 'no such ' + modelName});
+      }
+    });
   })
   .get(basePath, (req, res) =>
     model.findAll().then(items => res.json(items))

@@ -6,7 +6,7 @@ import authenticate from '../utils/authenticate';
 import {validate} from 'jsonschema';
 import schema from '../../schema/preferences.json';
 
-const jwtSecret = process.env.JWT_SECRET || 'secret';
+const jwtSecret = process.env.JWT_SECRET || 'secret';
 
 export default express.Router()
 .get('/login', parseUser, (req, res) => {
