@@ -8,7 +8,7 @@ const menuEndpointSchema = require('../schema/menu-endpoint.json');
 
 chai.use(require('chai-json-schema'));
 chai.tv4.addSchema('restaurant.json', restaurantSchema);
-chai.tv4.addSchema('menu.json', require('./schema/menu.json'));
+chai.tv4.addSchema('menu.json', require('../schema/menu.json'));
 
 const expect = chai.expect;
 

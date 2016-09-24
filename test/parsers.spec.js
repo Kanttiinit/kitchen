@@ -1,4 +1,4 @@
-const parse = require('../parser');
+const parse = require('../dist/parser').default;
 const chai = require('chai');
 
 const menuSchema = require('../schema/menu.json');
