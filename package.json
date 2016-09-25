@@ -42,9 +42,9 @@
   "scripts": {
     "test": "mocha test",
     "serve": "node dist/index.js",
-    "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2",
+    "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2 --copy-files",
     "postinstall": "npm run build",
-    "build": "babel src -d dist --presets es2015,stage-2",
+    "build": "babel src -d dist --presets es2015,stage-2 --copy-files",
     "update-menus": "node parser/worker.js",
     "backup": "node utils/dropboxBackup.js"
   },
