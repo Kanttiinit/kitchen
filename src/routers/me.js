@@ -26,7 +26,7 @@ export default express.Router()
       req.user.update({
         preferences: Object.assign({}, req.user.preferences, preferences)
       })
-      .then(user => res.json(user.preferences));
+      .then(() => res.json({message: 'Preferences saved.'}));
     }
   } catch(e) {
     next({code: 400, message: 'unknown preference'});
