@@ -17,6 +17,7 @@
     "dotenv": "^2.0.0",
     "dropbox": "^2.1.0",
     "express": "^4.13.3",
+    "lodash": "^4.14.0",
     "jsdom": "^7.2.0",
     "jsonschema": "^1.1.0",
     "jsonwebtoken": "^7.1.9",
@@ -30,22 +31,10 @@
     "xml2js": "^0.4.16"
   },
   "devDependencies": {
-    "axios": "^0.9.1",
     "babel-eslint": "^6.1.2",
     "chai": "^3.5.0",
     "chai-json-schema": "^1.2.0",
-    "css-loader": "^0.23.1",
-    "eslint": "^3.6.0",
-    "file-loader": "^0.8.5",
-    "lodash": "^4.14.0",
-    "react": "^0.14.7",
-    "react-ace": "^3.4.1",
-    "react-bootstrap": "^0.28.3",
-    "react-dom": "^0.14.7",
-    "style-loader": "^0.13.0",
-    "supertest": "^1.2.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.14"
+    "eslint": "^3.6.0"
   },
   "engines": {
     "node": "6.2.0"

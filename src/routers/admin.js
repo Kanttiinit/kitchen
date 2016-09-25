@@ -5,7 +5,6 @@ import createModelRouter from '../utils/createModelRouter';
 import authenticate from '../utils/authenticate';
 
 export default express.Router()
-.use(express.static('admin'))
 .use(authenticate)
 .use((req, res, next) => {
   if (req.user.admin) {
