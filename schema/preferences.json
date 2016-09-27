@@ -13,8 +13,13 @@
       "selectedArea": {
          "type": "integer"
       },
-      "filtersExpanded": {
-        "type": "boolean"
+      "starredRestaurants": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "maxItems": 50,
+        "uniqueItems": true
       }
    }
 }
