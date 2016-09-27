@@ -45,8 +45,8 @@
     "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2 --copy-files",
     "postinstall": "npm run build",
     "build": "babel src -d dist --presets es2015,stage-2 --copy-files",
-    "update-menus": "node parser/worker.js",
-    "backup": "node utils/dropboxBackup.js"
+    "update-menus": "node dist/parser/worker.js",
+    "backup": "node dist/utils/dropboxBackup.js"
   },
   "author": "bodyflex",
   "license": "MIT"
