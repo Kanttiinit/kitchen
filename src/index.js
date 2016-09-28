@@ -2,7 +2,6 @@ import models from './models';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import compression from 'compression';
 import {version} from '../package.json';
 
 const app = express();
@@ -20,7 +19,6 @@ import meRouter from './routers/me';
 app
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
-.use(compression())
 .use(cors())
 .use('/admin', adminRouter)
 .use('/me', meRouter)
