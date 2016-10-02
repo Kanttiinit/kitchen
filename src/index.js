@@ -22,7 +22,7 @@ import meRouter from './routers/me';
 app
 .use(cors({
   credentials: true,
-  origin: 'http://localhost:8080',
+  origin: process.env.ORIGINS.split(','),
   unset: 'destroy'
 }))
 .use(session({
