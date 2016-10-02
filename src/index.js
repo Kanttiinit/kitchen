@@ -3,6 +3,8 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import {version} from '../package.json';
+import session from 'express-session';
+import {Store} from 'connect-session-sequelize';
 
 const app = express();
 
@@ -17,9 +19,17 @@ import apiRouter from './routers/api';
 import meRouter from './routers/me';
 
 app
+.use(cors({
+  credentials: true
+}))
+.use(session({
+  secret: process.env.SESSION_SECRET,
+  saveUnitialized: false,
+  resave: false,
+  store: new Store({db: models.sequelize})
+}))
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
-.use(cors())
 .use('/admin', adminRouter)
 .use('/me', meRouter)
 .use('/', apiRouter)

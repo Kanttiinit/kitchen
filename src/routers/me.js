@@ -1,18 +1,18 @@
 import express from 'express';
 import _ from 'lodash';
 import parseUser from '../utils/parseUser';
-import jwt from 'jsonwebtoken';
-import authenticate from '../utils/authenticate';
 import {validate} from 'jsonschema';
 import schema from '../../schema/preferences.json';
 
-const jwtSecret = process.env.JWT_SECRET || 'secret';
-
 export default express.Router()
-.get('/login', parseUser, (req, res) => {
-  res.json({token: jwt.sign(req.user.email, jwtSecret)});
+.get('/login', parseUser)
+.use((req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    next({code: 401, message: 'Unauthorized.'});
+  }
 })
-.use(authenticate)
 .get('/', (req, res) => {
   res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
 })
@@ -29,6 +29,6 @@ export default express.Router()
       .then(() => res.json({message: 'Preferences saved.'}));
     }
   } catch(e) {
-    next({code: 400, message: 'unknown preference'});
+    next({code: 400, message: 'Unknown preference.'});
   }
 });

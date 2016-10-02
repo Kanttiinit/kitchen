@@ -46,10 +46,12 @@ export default (req, res, next) => {
 
   if (userPromise) {
     userPromise.then(user => {
-      req.user = user;
-      next();
-    }).catch(e => console.log(e));
+      req.session.user = user;
+      res.json({message: 'Success.'});
+    }).catch(() => {
+      next({code: 400, message: 'Authorization error.'});
+    });
   } else {
-    next();
+    next({code: 400, message: 'No token.'});
   }
 };
