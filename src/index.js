@@ -4,10 +4,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import {version} from '../package.json';
 import session from 'express-session';
-import {Store} from 'connect-session-sequelize';
+import SequelizeSession from 'connect-session-sequelize';
 
 const app = express();
 
+const SessionStore = SequelizeSession(session.Store);
 const sessionSecret = process.env.SESSION_SECRET;
 
 if (!sessionSecret) {
@@ -20,13 +21,15 @@ import meRouter from './routers/me';
 
 app
 .use(cors({
-  credentials: true
+  credentials: true,
+  origin: 'http://localhost:8080',
+  unset: 'destroy'
 }))
 .use(session({
   secret: process.env.SESSION_SECRET,
-  saveUnitialized: false,
+  saveUninitialized: false,
   resave: false,
-  store: new Store({db: models.sequelize})
+  store: new SessionStore({db: models.sequelize})
 }))
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
@@ -37,7 +40,7 @@ app
   res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md'))
 .get('/', (req, res) => res.json({version}))
 .get('*', (req, res, next) => next({code: 404, message: 'Endpoint doesn\'t exist.'}))
-.use((err, req, res) => res.status(err.code).json(err));
+.use((err, req, res, next) => res.status(err.code).json(err));
 
 models.sequelize.sync().then(() => {
   const server = app.listen(process.env.PORT || 3000, function () {

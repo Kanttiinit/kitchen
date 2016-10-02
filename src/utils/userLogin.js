@@ -36,22 +36,21 @@ const getUserByGoogle = token =>
 
 export default (req, res, next) => {
   let userPromise;
-  const facebookToken = req.query.facebookToken;
-  const googleToken = req.query.googleToken;
-  if (facebookToken) {
-    userPromise = getUserByFacebook(facebookToken);
-  } else if (googleToken) {
-    userPromise = getUserByGoogle(googleToken);
+  const {provider, token} = req.body;
+  if (provider === 'facebook') {
+    userPromise = getUserByFacebook(token);
+  } else if (provider === 'google') {
+    userPromise = getUserByGoogle(token);
   }
 
   if (userPromise) {
     userPromise.then(user => {
-      req.session.user = user;
+      req.session.user = user.email;
       res.json({message: 'Success.'});
     }).catch(() => {
       next({code: 400, message: 'Authorization error.'});
     });
   } else {
-    next({code: 400, message: 'No token.'});
+    next({code: 400, message: 'Unknown provider.'});
   }
 };
