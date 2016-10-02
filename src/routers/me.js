@@ -1,23 +1,13 @@
 import express from 'express';
-import models from '../models';
 import _ from 'lodash';
 import userLogin from '../utils/userLogin';
 import {validate} from 'jsonschema';
 import schema from '../../schema/preferences.json';
+import auth from '../utils/auth';
 
 export default express.Router()
 .post('/login', userLogin)
-.use((req, res, next) => {
-  if (req.session.user) {
-    models.User.findOne({where: {email: req.session.user}})
-    .then(user => {
-      req.user = user;
-      next();
-    });
-  } else {
-    next({code: 401, message: 'Unauthorized.'});
-  }
-})
+.use(auth)
 .get('/logout', (req, res) => {
   delete req.session.user;
   res.json({message: 'Logged out.'});

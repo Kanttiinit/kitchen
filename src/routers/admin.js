@@ -2,10 +2,12 @@ import express from 'express';
 import worker from '../parser/worker';
 import models from '../models';
 import createModelRouter from '../utils/createModelRouter';
+import auth from '../utils/auth';
 
 export default express.Router()
+.use(auth)
 .use((req, res, next) => {
-  if (req.session.user && req.session.user.admin) {
+  if (req.user.admin) {
     next();
   } else {
     next({code: 401, message: 'Unauthorized.'});
