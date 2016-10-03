@@ -1,10 +1,9 @@
+import _ from 'lodash';
+
 export default {
   parsePublicParams: (model, params, lang) => {
     return Object.assign(
-      params.reduce((o, p) => {
-        o[p] = model.getDataValue(p);
-        return o;
-      }, {}),
+      _.pick(model.dataValues, params),
       model.attributes
       .filter(v => v.endsWith('_i18n'))
       .reduce((output, key) => {

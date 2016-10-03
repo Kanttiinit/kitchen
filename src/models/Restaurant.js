@@ -38,12 +38,6 @@ export default (sequelize, DataTypes) => {
           return null;
         });
       }
-    },
-    classMethods: {
-      associate(models) {
-        models.Restaurant.hasMany(models.Menu);
-        models.Restaurant.belongsTo(models.Area);
-      }
     }
   });
 };

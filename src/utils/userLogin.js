@@ -1,7 +1,8 @@
 import fetch from 'node-fetch';
 import models from '../models';
 
-const getUserModel = fields => models.User.upsert(fields)
+const getUserModel = fields =>
+  models.User.upsert(fields)
   .then(() => models.User.findOne({where: {email: fields.email}}));
 
 const getUserByFacebook = token =>
@@ -15,6 +16,7 @@ const getUserByFacebook = token =>
         photo: data.picture.data.url
       });
     }
+    return Promise.reject(data.error);
   });
 
 const getUserByGoogle = token =>
@@ -32,6 +34,7 @@ const getUserByGoogle = token =>
         photo: data.image.url
       });
     }
+    return Promise.reject(data.error);
   });
 
 export default (req, res, next) => {

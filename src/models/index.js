@@ -1,28 +1,21 @@
-import fs from 'fs';
-import path from 'path';
 import Sequelize from 'sequelize';
-const basename  = path.basename(module.filename);
-const db = {};
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {logging: process.env.SEQUELIZE_LOGGING ? console.log : false});
 
-fs
-.readdirSync(__dirname)
-.filter(file =>
-  (file.indexOf('.') !== 0) && file !== 'utils.js' && file !== basename && file.slice(-3) === '.js'
-)
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  logging: process.env.SEQUELIZE_LOGGING ? console.log : false
+});
+
+const models = {sequelize};
+
+['Area', 'Favorite', 'Menu', 'Restaurant', 'User']
 .forEach(file => {
-  const model = sequelize.import(path.join(__dirname, file));
-  db[model.name] = model;
+  const model = sequelize.import(__dirname + '/' + file);
+  models[model.name] = model;
 });
 
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
-  }
-});
+models.Area.hasMany(models.Restaurant);
+models.Menu.belongsTo(models.Restaurant);
+models.Restaurant.hasMany(models.Menu);
+models.Restaurant.belongsTo(models.Area);
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-export default db;
+export default models;

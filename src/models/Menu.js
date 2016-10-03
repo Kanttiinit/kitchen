@@ -14,11 +14,6 @@ export default (sequelize, DataTypes) => {
         publicParams.day = moment(publicParams.day).format('YYYY-MM-DD');
         return publicParams;
       }
-    },
-    classMethods: {
-      associate(models) {
-        models.Menu.belongsTo(models.Restaurant);
-      }
     }
   });
 };
