@@ -17,7 +17,9 @@ module.exports = {
     "console": true,
     "__dirname": true,
     "module": true,
-    "require": true
+    "require": true,
+    "describe": true,
+    "it": true
   },
   "rules": {
     "no-console": 0,
