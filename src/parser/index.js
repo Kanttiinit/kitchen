@@ -1,7 +1,5 @@
 import util from 'util';
-import fs from 'fs';
-
-const parsers = fs.readdirSync(__dirname + '/parsers').map(p => require('./parsers/' + p).default);
+import parsers from './parsers';
 
 export default function parse(url, lang) {
   if (!lang) {
@@ -10,8 +8,10 @@ export default function parse(url, lang) {
 
   // find a suitable parser
   const parser = parsers.find(p => url.match(p.pattern));
-  if (parser)
+
+  if (parser) {
     return parser.parse(url, lang);
+  }
 
   return Promise.reject('there is no parser for ' + url);
 }
