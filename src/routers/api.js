@@ -23,7 +23,10 @@ export default express.Router()
   );
 })
 .get('/areas', (req, res) => {
-  models.Area.findAll({include: [{model: models.Restaurant}]})
+  models.Area.findAll({
+    where: {hidden: false},
+    include: [{model: models.Restaurant}]
+  })
   .then(areas =>
     res.json(getPublics(areas, req.lang))
   );
@@ -35,7 +38,7 @@ export default express.Router()
     queryPromise = models.sequelize.query({
       query: `SELECT *,
       (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
-      FROM restaurants ORDER BY distance;`,
+      FROM restaurants WHERE hidden = false ORDER BY distance;`,
       replacements: {latitude, longitude}
     }, {
       model: models.Restaurant,
@@ -44,6 +47,7 @@ export default express.Router()
     });
   } else {
     queryPromise = models.Restaurant.findAll({
+      where: {hidden: false},
       order: [['AreaId', 'ASC'], ['name', 'ASC']]
     });
   }

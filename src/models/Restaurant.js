@@ -16,7 +16,8 @@ export default (sequelize, DataTypes) => {
     latitude: DataTypes.DOUBLE,
     longitude: DataTypes.DOUBLE,
     address: DataTypes.STRING,
-    openingHours: DataTypes.JSON
+    openingHours: DataTypes.JSON,
+    hidden: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false}
   }, {
     tableName: 'restaurants',
     instanceMethods: {

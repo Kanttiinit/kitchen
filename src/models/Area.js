@@ -9,7 +9,8 @@ export default (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     locationRadius: DataTypes.INTEGER,
     latitude: DataTypes.DOUBLE,
-    longitude: DataTypes.DOUBLE
+    longitude: DataTypes.DOUBLE,
+    hidden: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false}
   }, {
     tableName: 'areas',
     instanceMethods: {
