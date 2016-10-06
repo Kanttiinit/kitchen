@@ -20,6 +20,14 @@
         },
         "maxItems": 50,
         "uniqueItems": true
+      },
+      "favorites": {
+        "type": "array",
+        "items": {
+          "type": "integer"
+        },
+        "maxItems": 50,
+        "uniqueItems": true
       }
    }
 }
