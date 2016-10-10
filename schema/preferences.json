@@ -28,6 +28,9 @@
         },
         "maxItems": 50,
         "uniqueItems": true
+      },
+      "order": {
+        "enum": ["ORDER_AUTOMATIC", "ORDER_ALPHABET", "ORDER_DISTANCE"]
       }
    }
 }
