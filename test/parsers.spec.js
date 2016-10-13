@@ -11,7 +11,7 @@ function expectCorrectFormat(url, lang) {
   return parse(url, lang)
   .then(menus => {
     expect(menus[0]).to.be.jsonSchema(menuSchema);
-    //console.log(menus[0].courses[0].title);
+    console.log(menus[0].courses[0].title);
   });
 }
 
