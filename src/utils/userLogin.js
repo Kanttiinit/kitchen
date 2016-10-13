@@ -10,14 +10,15 @@ const getUserByFacebook = async token => {
   const data = await fetch(`https://graph.facebook.com/v2.7/me?access_token=${token}&fields=id,name,email,picture`)
   .then(r => r.json());
 
-  if (!data.error) {
-    return getUserModel({
-      email: data.email,
-      displayName: data.name,
-      photo: data.picture.data.url
-    });
+  if (data.error) {
+    throw new Error(data.error);
   }
-  throw new Error(data.error);
+  
+  return getUserModel({
+    email: data.email,
+    displayName: data.name,
+    photo: data.picture.data.url
+  });
 };
 
 const getUserByGoogle = async token => {
@@ -26,14 +27,15 @@ const getUserByGoogle = async token => {
   })
   .then(r => r.json());
 
-  if (!data.error) {
-    return getUserModel({
-      email: data.emails[0].value,
-      displayName: data.displayName,
-      photo: data.image.url
-    });
+  if (data.error) {
+    throw new Error(data.error);
   }
-  throw new Error(data.error);
+
+  return getUserModel({
+    email: data.emails[0].value,
+    displayName: data.displayName,
+    photo: data.image.url
+  });
 };
 
 const getUser = (provider, token) => {

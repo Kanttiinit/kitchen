@@ -1,16 +1,15 @@
 import * as utils from '../utils';
 import moment from 'moment';
 import _ from 'lodash';
-const jsdom = require('jsdom').jsdom;
+const {jsdom} = require('jsdom');
 
 const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
-
-const formatUrl = (url, lang) => url.replace('/fi/', '/' + lang + '/');
 
 export default {
   pattern: /api.teknolog.fi/,
   async parse(url, lang) {
-    const html = await utils.text(formatUrl(url, lang));
+    const formattedUrl = url.replace('/fi/', '/' + lang + '/');
+    const html = await utils.text(formattedUrl);
     // parse html
     const document = jsdom(html, {features: {QuerySelector: true}});
 
