@@ -16,42 +16,37 @@ export default express.Router()
 })
 .use(menuRouter)
 .use(restaurantMenuRouter)
-.get('/favorites', (req, res) => {
-  models.Favorite.findAll()
-  .then(favorites =>
-    res.json(getPublics(favorites, req.lang))
-  );
+.get('/favorites', async (req, res) => {
+  const favorites = await models.Favorite.findAll();
+  res.json(getPublics(favorites, req.lang));
 })
-.get('/areas', (req, res) => {
-  models.Area.findAll({
+.get('/areas', async (req, res) => {
+  const areas = await models.Area.findAll({
     where: {hidden: false},
     include: [{model: models.Restaurant}]
-  })
-  .then(areas =>
-    res.json(getPublics(areas, req.lang))
-  );
+  });
+  res.json(getPublics(areas, req.lang));
 })
-.get('/restaurants', (req, res) => {
+.get('/restaurants', async (req, res) => {
   let queryPromise;
   if (req.query.location) {
     const [latitude, longitude] = req.query.location.split(',');
     queryPromise = models.sequelize.query({
-      query: `SELECT *,
+      query: `
+      SELECT *,
       (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
-      FROM restaurants WHERE hidden = false ORDER BY distance;`,
-      replacements: {latitude, longitude}
+      FROM restaurants
+      WHERE hidden = false
+      ORDER BY distance;
+      `
     }, {
       model: models.Restaurant,
       mapToModel: true,
       replacements: {latitude, longitude}
     });
   } else {
-    queryPromise = models.Restaurant.findAll({
-      where: {hidden: false},
-      order: [['AreaId', 'ASC'], ['name', 'ASC']]
-    });
+    queryPromise = models.Restaurant.findAll({where: {hidden: false}});
   }
-  queryPromise.then(restaurants =>
-    res.json(getPublics(restaurants, req.lang))
-  );
+  const restaurants = await queryPromise;
+  res.json(getPublics(restaurants, req.lang));
 });

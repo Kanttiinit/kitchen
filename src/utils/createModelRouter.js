@@ -7,16 +7,14 @@ export default model => {
   const itemPath = basePath + '/:' + modelName;
 
   return express.Router()
-  .param(modelName, (req, res, next) => {
-    model.findById(req.params[modelName])
-    .then(item => {
-      if (item) {
-        req[modelName] = item;
-        next();
-      } else {
-        res.status(404).json({message: 'no such ' + modelName});
-      }
-    });
+  .param(modelName, async (req, res, next) => {
+    const item = await model.findById(req.params[modelName]);
+    if (item) {
+      req[modelName] = item;
+      next();
+    } else {
+      res.status(404).json({message: 'no such ' + modelName});
+    }
   })
   .get(basePath, (req, res) =>
     model.findAll().then(items => res.json(items))

@@ -15,17 +15,17 @@ export default express.Router()
 .get('/', (req, res) => {
   res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
 })
-.put('/preferences', (req, res, next) => {
+.put('/preferences', async (req, res, next) => {
   try {
     const preferences = req.body;
     const validationResult = validate(preferences, schema);
     if (validationResult.errors.length) {
       next({code: 400, message: validationResult.errors[0].stack});
     } else {
-      req.user.update({
+      await req.user.update({
         preferences: Object.assign({}, req.user.preferences, preferences)
-      })
-      .then(() => res.json({message: 'Preferences saved.'}));
+      });
+      res.json({message: 'Preferences saved.'});
     }
   } catch(e) {
     next({code: 400, message: 'Unknown preference.'});

@@ -7,7 +7,7 @@ function formatIds(idString) {
 }
 
 export default express.Router()
-.get('/menus', (req, res) => {
+.get('/menus', async (req, res) => {
   const restaurantIds = formatIds(req.query.restaurants);
   const areaIds = formatIds(req.query.areas);
 
@@ -18,7 +18,7 @@ export default express.Router()
     where['AreaId'] = {$in: areaIds};
   }
 
-  models.Restaurant.findAll({
+  const restaurants = await models.Restaurant.findAll({
     where,
     include: [
       {
@@ -30,16 +30,15 @@ export default express.Router()
       }
     ],
     order: sequelize.col('day')
-  })
-  .then(restaurants => {
-    const response = restaurants.reduce((carry, restaurant) => {
-      carry[restaurant.id] = restaurant.Menus.reduce((carry, menu) => {
-        const fields = menu.getPublicAttributes(req.lang);
-        carry[fields.day] = fields.courses;
-        return carry;
-      }, {});
+  });
+
+  const response = restaurants.reduce((carry, restaurant) => {
+    carry[restaurant.id] = restaurant.Menus.reduce((carry, menu) => {
+      const fields = menu.getPublicAttributes(req.lang);
+      carry[fields.day] = fields.courses;
       return carry;
     }, {});
-    res.json(response);
-  });
+    return carry;
+  }, {});
+  res.json(response);
 });

@@ -1,59 +1,58 @@
 import fetch from 'node-fetch';
 import models from '../models';
 
-const getUserModel = fields =>
-  models.User.upsert(fields)
-  .then(() => models.User.findOne({where: {email: fields.email}}));
+const getUserModel = async fields => {
+  await models.User.upsert(fields);
+  return models.User.findOne({where: {email: fields.email}});
+};
 
-const getUserByFacebook = token =>
-  fetch(`https://graph.facebook.com/v2.7/me?access_token=${token}&fields=id,name,email,picture`)
-  .then(r => r.json())
-  .then(data => {
-    if (!data.error) {
-      return getUserModel({
-        email: data.email,
-        displayName: data.name,
-        photo: data.picture.data.url
-      });
-    }
-    return Promise.reject(data.error);
-  });
+const getUserByFacebook = async token => {
+  const data = await fetch(`https://graph.facebook.com/v2.7/me?access_token=${token}&fields=id,name,email,picture`)
+  .then(r => r.json());
 
-const getUserByGoogle = token =>
-  fetch('https://www.googleapis.com/plus/v1/people/me?fields=displayName,emails,image', {
-    headers: {
-      Authorization: 'Bearer ' + token
-    }
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (!data.error) {
-      return getUserModel({
-        email: data.emails[0].value,
-        displayName: data.displayName,
-        photo: data.image.url
-      });
-    }
-    return Promise.reject(data.error);
-  });
-
-export default (req, res, next) => {
-  let userPromise;
-  const {provider, token} = req.body;
-  if (provider === 'facebook') {
-    userPromise = getUserByFacebook(token);
-  } else if (provider === 'google') {
-    userPromise = getUserByGoogle(token);
-  }
-
-  if (userPromise) {
-    userPromise.then(user => {
-      req.session.user = user.email;
-      res.json({message: 'Success.'});
-    }).catch(() => {
-      next({code: 400, message: 'Authorization error.'});
+  if (!data.error) {
+    return getUserModel({
+      email: data.email,
+      displayName: data.name,
+      photo: data.picture.data.url
     });
-  } else {
-    next({code: 400, message: 'Unknown provider.'});
+  }
+  throw new Error(data.error);
+};
+
+const getUserByGoogle = async token => {
+  const data = await fetch('https://www.googleapis.com/plus/v1/people/me?fields=displayName,emails,image', {
+    headers: { Authorization: 'Bearer ' + token }
+  })
+  .then(r => r.json());
+
+  if (!data.error) {
+    return getUserModel({
+      email: data.emails[0].value,
+      displayName: data.displayName,
+      photo: data.image.url
+    });
+  }
+  throw new Error(data.error);
+};
+
+const getUser = (provider, token) => {
+  if (provider === 'facebook') {
+    return getUserByFacebook(token);
+  } else if (provider === 'google') {
+    return getUserByGoogle(token);
+  }
+  throw new Error('Unknown provider.');
+};
+
+export default async (req, res, next) => {
+  const {provider, token} = req.body;
+
+  try {
+    const user = await getUser(provider, token);
+    req.session.user = user.email;
+    res.json({message: 'Success.'});
+  } catch (e) {
+    next({code: 400, message: e.message || 'Authorization error.'});
   }
 };
