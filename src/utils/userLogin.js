@@ -13,7 +13,7 @@ const getUserByFacebook = async token => {
   if (data.error) {
     throw new Error(data.error);
   }
-  
+
   return getUserModel({
     email: data.email,
     displayName: data.name,
@@ -44,7 +44,7 @@ const getUser = (provider, token) => {
   } else if (provider === 'google') {
     return getUserByGoogle(token);
   }
-  throw new Error('Unknown provider.');
+  throw {code: 400, message: 'Unknown provider.'};
 };
 
 export default async (req, res, next) => {
@@ -55,6 +55,10 @@ export default async (req, res, next) => {
     req.session.user = user.email;
     res.json({message: 'Success.'});
   } catch (e) {
-    next({code: 400, message: e.message || 'Authorization error.'});
+    if (!e.code) {
+      next({code: 403, message: 'Authorization error.'}); 
+    } else {
+      next(e);
+    }
   }
 };

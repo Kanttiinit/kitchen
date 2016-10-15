@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize';
 
-
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: process.env.SEQUELIZE_LOGGING ? console.log : false
 });
@@ -9,7 +8,7 @@ const models = {sequelize};
 
 ['Area', 'Favorite', 'Menu', 'Restaurant', 'User']
 .forEach(file => {
-  const model = sequelize.import(__dirname + '/' + file);
+  const model = sequelize.import(__dirname + '/' + file + '.js');
   models[model.name] = model;
 });
 
