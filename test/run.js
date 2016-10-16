@@ -8,13 +8,14 @@ if (!process.env.FB_TOKEN) {
   process.exit(1);
 }
 
-function createArea(id) {
+function createArea(id, fields) {
   return models.Area.create({
     id,
     name_i18n: {fi: `Alue ${id}`, en: `Area ${id}`},
     locationRadius: _.random(1, 2, true),
     latitude: 60.123,
-    longitude: 24.123
+    longitude: 24.123,
+    ...fields
   });
 }
 
@@ -46,7 +47,7 @@ function setUpModels() {
     Promise.all([
       createArea(1),
       createArea(2),
-      createArea(3)
+      createArea(3, {hidden: true})
     ])
   )
   .then(() =>
@@ -76,7 +77,8 @@ function spawnServer() {
 
 function runTests(serverProcess) {
   const mocha = new Mocha();
-  mocha.addFile(__dirname + '/api.spec.js');
+  mocha.addFile(__dirname + '/api/endpoints.spec.js');
+  mocha.addFile(__dirname + '/api/user.spec.js');
   mocha.run(err => {
     serverProcess.kill();
     process.exit(err);
