@@ -17,51 +17,25 @@ function expectCorrectFormat(url, lang) {
 
 describe('Parser', function() {
 
-  describe('parses Unicafe menu', function() {
-    it('in Finnish', () =>
-      expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/4', 'fi')
-    );
+  const urls = [
+    'http://messi.hyyravintolat.fi/publicapi/restaurant/4',
+    'http://api.teknolog.fi/taffa/fi/html/week/',
+    'http://www.sodexo.fi/ruokalistat/output/weekly_json/142/%year%/%month%/%day%/fi',
+    'http://www.amica.fi/modules/json/json/Index?costNumber=3579&language=fi&firstDay=%year%-%month%-%day%',
+    'http://www.hys.net/ruokalista.xml'
+  ];
 
-    it('in English', () =>
-      expectCorrectFormat('http://messi.hyyravintolat.fi/publicapi/restaurant/4', 'en')
-    );
-  });
+  it('parses menus in Finnish', () =>
+    Promise.all(
+      urls.map(url => expectCorrectFormat(url, 'fi'))
+    )
+  );
 
-  describe('parses Täffä menu', function() {
-    it('in Finnish', () =>
-      expectCorrectFormat('http://api.teknolog.fi/taffa/fi/html/week/', 'fi')
-    );
-
-    it('in English', () =>
-      expectCorrectFormat('http://api.teknolog.fi/taffa/fi/html/week/', 'en')
-    );
-  });
-
-  describe('parses Sodexo menu', function() {
-    it('in Finnish', () =>
-      expectCorrectFormat('http://www.sodexo.fi/ruokalistat/output/weekly_json/142/%year%/%month%/%day%/fi', 'fi')
-    );
-
-    it('in English', () =>
-      expectCorrectFormat('http://www.sodexo.fi/ruokalistat/output/weekly_json/142/%year%/%month%/%day%/fi', 'en')
-    );
-  });
-
-  describe('parses Amica menu', function() {
-    it('in Finnish', () =>
-      expectCorrectFormat('http://www.amica.fi/modules/json/json/Index?costNumber=3579&language=fi&firstDay=%year%-%month%-%day%', 'fi')
-    );
-
-    it('in English', () =>
-      expectCorrectFormat('http://www.amica.fi/modules/json/json/Index?costNumber=3579&language=fi&firstDay=%year%-%month%-%day%', 'en')
-    );
-  });
-
-  describe('parses Hämis menu', function() {
-    it('in Finnish', () =>
-      expectCorrectFormat('http://www.hys.net/ruokalista.xml', 'fi')
-    );
-  });
+  it('parses menus in English', () =>
+    Promise.all(
+      urls.map(url => expectCorrectFormat(url, 'en'))
+    )
+  );
 
   it('throws error when not provided with language', function() {
     try {

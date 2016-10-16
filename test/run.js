@@ -79,6 +79,7 @@ function runTests(serverProcess) {
   const mocha = new Mocha();
   mocha.addFile(__dirname + '/api/endpoints.spec.js');
   mocha.addFile(__dirname + '/api/user.spec.js');
+  mocha.addFile(__dirname + '/parsers.spec.js');
   mocha.run(err => {
     serverProcess.kill();
     process.exit(err);
