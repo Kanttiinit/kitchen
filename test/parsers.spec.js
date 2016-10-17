@@ -22,7 +22,8 @@ describe('Parser', function() {
     'http://api.teknolog.fi/taffa/fi/html/week/',
     'http://www.sodexo.fi/ruokalistat/output/weekly_json/142/%year%/%month%/%day%/fi',
     'http://www.amica.fi/modules/json/json/Index?costNumber=3579&language=fi&firstDay=%year%-%month%-%day%',
-    'http://www.hys.net/ruokalista.xml'
+    'http://www.hys.net/ruokalista.xml',
+    'http://www.mau-kas.fi/ravintola.html?listtype=lunch&showall=true'
   ];
 
   it('parses menus in Finnish', () =>
