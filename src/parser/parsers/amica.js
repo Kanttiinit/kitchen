@@ -5,7 +5,7 @@ import _ from 'lodash';
 function parseWithDate(url, date) {
   return utils.json(utils.formatUrl(url, date))
   .then(json => {
-    return json.MenusForDays ? json.MenusForDays.map(day => {
+    return (json.MenusForDays ? json.MenusForDays.map(day => {
       const date = moment(day.Date);
       return {
         day: date.format('YYYY-MM-DD'),
@@ -21,7 +21,7 @@ function parseWithDate(url, date) {
           };
         })
       };
-    }).filter(day => day.courses.length) : [];
+    }) : []).filter(day => day.courses.length);
   });
 }
 
