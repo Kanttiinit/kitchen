@@ -1,4 +1,5 @@
 import utils from './utils';
+import getMap from '../utils/getMap';
 
 const publicAttrs = ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'];
 
@@ -10,7 +11,8 @@ export default (sequelize, DataTypes) => {
     locationRadius: DataTypes.INTEGER,
     latitude: DataTypes.DOUBLE,
     longitude: DataTypes.DOUBLE,
-    hidden: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false}
+    hidden: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
+    mapImageUrl: DataTypes.STRING
   }, {
     tableName: 'areas',
     instanceMethods: {
@@ -21,7 +23,14 @@ export default (sequelize, DataTypes) => {
           output.restaurants = this.Restaurants.map(r => r.getPublicAttributes(lang));
 
         return output;
+      },
+      async fetchMapImageUrl() {
+        this.mapImageUrl = await getMap({latitude: this.latitude, longitude: this.longitude, radius: this.locationRadius});
       }
+    },
+    hooks: {
+      beforeUpdate: area => area.fetchMapImageUrl(),
+      beforeCreate: area => area.fetchMapImageUrl()
     }
   });
 };

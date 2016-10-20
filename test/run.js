@@ -3,16 +3,11 @@ import _ from 'lodash';
 import {spawn} from 'child_process';
 import Mocha from 'mocha';
 
-if (!process.env.FB_TOKEN) {
-  console.log('Please define a Facebook access token in the environment under FB_TOKEN.\nYou can get on here https://developers.facebook.com/tools/explorer/');
-  process.exit(1);
-}
-
 function createArea(id, fields) {
   return models.Area.create({
     id,
     name_i18n: {fi: `Alue ${id}`, en: `Area ${id}`},
-    locationRadius: _.random(1, 2, true),
+    locationRadius: 2,
     latitude: 60.123,
     longitude: 24.123,
     ...fields
@@ -78,8 +73,11 @@ function spawnServer() {
 function runTests(serverProcess) {
   const mocha = new Mocha();
   mocha.addFile(__dirname + '/api/endpoints.spec.js');
-  mocha.addFile(__dirname + '/api/user.spec.js');
+  if (process.env.FB_TOKEN) {
+    mocha.addFile(__dirname + '/api/user.spec.js');
+  }
   mocha.addFile(__dirname + '/parsers.spec.js');
+  mocha.addFile(__dirname + '/models.spec.js');
   mocha.run(err => {
     serverProcess.kill();
     process.exit(err);
