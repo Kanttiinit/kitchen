@@ -1,5 +1,4 @@
 import models from '../src/models';
-import _ from 'lodash';
 import {spawn} from 'child_process';
 import Mocha from 'mocha';
 

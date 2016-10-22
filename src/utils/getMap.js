@@ -18,7 +18,7 @@ const calculateZoom = radius => {
 
 const getMap = async ({latitude, longitude, radius}) => {
   const zoom = calculateZoom(radius) - 1;
-  const filename = crypto.createHash('sha1').update(`maps${latitude}${longitude}${zoom}`).digest('hex') + '.png';
+  const filename = crypto.createHash('sha1').update(`areaimage${latitude}${longitude}${zoom}`).digest('hex') + '.png';
   const url = await aws.getUrl(filename);
   if (url) {
     return url;

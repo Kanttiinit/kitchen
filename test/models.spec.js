@@ -13,7 +13,6 @@ describe('Models', () => {
       const oldImageUrl = area.mapImageUrl;
       const updatedArea = await area.update({locationRadius: 5});
       expect(oldImageUrl).not.to.equal(updatedArea.mapImageUrl);
-      console.log(oldImageUrl, updatedArea.mapImageUrl);
     });
   });
 });

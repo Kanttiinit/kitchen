@@ -1,7 +1,7 @@
 import utils from './utils';
 import getMap from '../utils/getMap';
 
-const publicAttrs = ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius'];
+const publicAttrs = ['id', 'name', 'image', 'latitude', 'longitude', 'locationRadius', 'mapImageUrl'];
 
 export default (sequelize, DataTypes) => {
   return sequelize.define('Area', {
@@ -17,7 +17,7 @@ export default (sequelize, DataTypes) => {
     tableName: 'areas',
     instanceMethods: {
       getPublicAttributes(lang) {
-        var output = utils.parsePublicParams(this, publicAttrs, lang);
+        const output = utils.parsePublicParams(this, publicAttrs, lang);
 
         if (this.Restaurants)
           output.restaurants = this.Restaurants.map(r => r.getPublicAttributes(lang));

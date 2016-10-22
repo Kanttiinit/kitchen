@@ -29,6 +29,10 @@
          "description": "A list of restaurants within this area.",
          "type": "array",
          "items": {"$ref": "restaurant.json"}
+      },
+      "mapImageUrl": {
+        "description": "Image URL for map of area.",
+        "type": "string"
       }
    }
 }
