@@ -16,6 +16,14 @@ export default express.Router()
 .use(createModelRouter(models.Area))
 .use(createModelRouter(models.Restaurant))
 .use(createModelRouter(models.Favorite))
+.get('/update-area-maps', async (req, res) => {
+  const areas = await models.Area.findAll();
+  await Promise.all(areas.map(async area => {
+    await area.fetchMapImageUrl();
+    return area.save();
+  }));
+  res.json({message: 'Success.'});
+})
 .post('/update-restaurants', (req, res) =>
   worker.updateAllRestaurants().then(() => res.json({message: 'ok'}))
 );

@@ -18,12 +18,13 @@ const calculateZoom = radius => {
 
 const getMap = async ({latitude, longitude, radius}) => {
   const zoom = calculateZoom(radius) - 1;
-  const filename = crypto.createHash('sha1').update(`areaimage${latitude}${longitude}${zoom}`).digest('hex') + '.png';
+  const styles = ['element:labels|visibility:off', 'feature:road|color:black'].join('&style=');
+  const requestUrl = `https://maps.googleapis.com/maps/api/staticmap?format=png&size=${mapSize}x${mapSize}&zoom=${zoom}&center=${latitude},${longitude}&key=${apiKey}&style=${styles}`;
+  const filename = crypto.createHash('sha1').update(requestUrl).digest('hex') + '.png';
   const url = await aws.getUrl(filename);
   if (url) {
     return url;
   }
-  const requestUrl = `https://maps.googleapis.com/maps/api/staticmap?format=png&size=${mapSize}x${mapSize}&zoom=${zoom}&center=${latitude},${longitude}&key=${apiKey}`;
   const response = await fetch(requestUrl);
   return aws.upload(response.body, filename);
 };
