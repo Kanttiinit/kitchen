@@ -21,6 +21,10 @@ See the table below and make sure that all required environment variables are av
 ### Testing menu parsers
 To test a menu parser on a certain URL, run `babel-node src/parser 'http://restaurant.com/menu.json'`. `babel-node` is available if you have installed `babel-cli` globally.
 
+### ESLint
+
+This code base uses ESLint for linting JavaScript in order to keep the style uniform. ESLint has integrations for all major IDE's and we highly recommend installing it. We won't accept contributions that don't pass the linter rules!
+
 ## Testing
 
 The test suite is still very incomplete and running it is cumbersome. All help is appreciated.
