@@ -1,13 +1,29 @@
 # Kanttiinit Backend
+Kitchen is the backend powering Kanttiinit. It's built with express and uses a Postgres database.
 
-## Environment Variables for Local Development
+## Local Development
+Run `yarn install` (or `npm install`) to install dependencies.
 
-| Key | Description |
-| --- | ----------- |
-| DATABASE_URL | URI for the Postgres database |
-| PASSWORD | Hashed password for the admin interface |
-| AWS_ACCESS_KEY_ID | AWS access key id for S3 |
-| AWS_SECRET_ACCESS_KEY | AWS access key secret for S3 |
+See the table below and make sure that all required environment variables are available. Then run `npm start` to start the development server.
+
+### Environment variables
+| Key | Description | Required |
+| --- | ----------- | -------- |
+| AWS_ACCESS_KEY_ID | AWS access key id for S3. | If you want to use the endpoint that generates restaurant images. |
+| AWS_SECRET_ACCESS_KEY | AWS access key secret for S3. | As above. |
+| DATABASE_URL | URI for the Postgres database. | Yes. |
+| GOOGLE_STATIC_MAPS_API_KEY | Google API key. | If you want to create or modify areas. |
+| ORIGINS | Comma-separated list of origins that are allowed to do CORS requests. | If you want to make requests to the server from another domain. |
+| PORT | Port which the server will start listening. | No (defaults to 3000). |
+| SEQUELIZE_LOGGING | If set, outputs SQL queries executed by Sequelize. | No (defaults to false). |
+| SESSION_SECRET | Secret for hashing session ids (can be anything in development). | Yes. |
+
+### Testing menu parsers
+To test a menu parser on a certain URL, run `babel-node src/parser 'http://restaurant.com/menu.json'`. `babel-node` is available if you have installed `babel-cli` globally.
+
+## Testing
+
+The test suite is still very incomplete and running it is cumbersome. All help is appreciated.
 
 ## Public Endpoints
 
