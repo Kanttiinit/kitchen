@@ -6,7 +6,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 const models = {sequelize};
 
-['Area', 'Favorite', 'Menu', 'Restaurant', 'User']
+['Area', 'Favorite', 'Location', 'Menu', 'Restaurant', 'User']
 .forEach(file => {
   const model = sequelize.import(__dirname + '/' + file + '.js');
   models[model.name] = model;

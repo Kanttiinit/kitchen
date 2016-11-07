@@ -16,6 +16,15 @@ export default express.Router()
 })
 .use(menuRouter)
 .use(restaurantMenuRouter)
+.post('/location', async (req, res, next) => {
+  const {latitude, longitude, userHash} = req.body;
+  if (latitude && longitude && userHash) {
+    await models.Location.create({latitude, longitude, userHash});
+    res.json({message: 'Success.'});
+  } else {
+    next({code: 400, message: 'Missing field.'});
+  }
+})
 .get('/favorites', async (req, res) => {
   const favorites = await models.Favorite.findAll();
   res.json(getPublics(favorites, req.lang));
