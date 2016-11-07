@@ -38,7 +38,7 @@ app
 .use('/me', meRouter)
 .use('/', apiRouter)
 .get('/help', (req, res) =>
-  res.redirect('https://github.com/Kanttiinit/kanttiinit-backend/blob/api-v2/README.md'))
+  res.redirect('https://github.com/Kanttiinit/kitchen/blob/master/README.md'))
 .get('/', (req, res) => res.json({version}))
 .get('*', (req, res, next) => next({code: 404, message: 'Endpoint doesn\'t exist.'}))
 .use((err, req, res, next) => res.status(err.code).json(err));
