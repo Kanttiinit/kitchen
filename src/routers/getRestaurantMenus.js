@@ -1,12 +1,10 @@
-import express from 'express';
 import moment from 'moment';
 
 import models from '../models';
 import * as aws from '../utils/aws';
 import {getImageStream, renderHtml} from '../image-generator';
 
-export default express.Router()
-.get('/restaurants/:restaurantId/menu(.:ext)?', async (req, res, next) => {
+export default async (req, res, next) => {
   const {restaurantId, ext} = req.params;
   const {width} = req.query;
 
@@ -43,4 +41,4 @@ export default express.Router()
 
     return getImageStream(html).pipe(res);
   }
-});
+};

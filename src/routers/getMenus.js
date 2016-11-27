@@ -1,4 +1,3 @@
-import express from 'express';
 import sequelize from 'sequelize';
 import models from '../models';
 
@@ -6,8 +5,7 @@ function formatIds(idString) {
   return idString && idString.split(',').filter(id => !isNaN(id)).map(id => +id);
 }
 
-export default express.Router()
-.get('/menus', async (req, res) => {
+export default async (req, res) => {
   const restaurantIds = formatIds(req.query.restaurants);
   const areaIds = formatIds(req.query.areas);
 
@@ -41,4 +39,4 @@ export default express.Router()
     return carry;
   }, {});
   res.json(response);
-});
+};

@@ -4,26 +4,31 @@ import models from '../models';
 import createModelRouter from '../utils/createModelRouter';
 import auth from '../utils/auth';
 
-export default express.Router()
-.use(auth)
-.use((req, res, next) => {
+export const verifyAdmin = (req, res, next) => {
   if (req.user.admin) {
     next();
   } else {
     next({code: 401, message: 'Unauthorized.'});
   }
-})
-.use(createModelRouter(models.Area))
-.use(createModelRouter(models.Restaurant))
-.use(createModelRouter(models.Favorite))
-.get('/update-area-maps', async (req, res) => {
+};
+
+export const updateAreaMaps = async (req, res) => {
   const areas = await models.Area.findAll();
   await Promise.all(areas.map(async area => {
     await area.fetchMapImageUrl();
     return area.save();
   }));
   res.json({message: 'Success.'});
-})
-.post('/update-restaurants', (req, res) =>
-  worker.updateAllRestaurants().then(() => res.json({message: 'ok'}))
-);
+};
+
+export const updateRestaurants = (req, res) =>
+  worker.updateAllRestaurants().then(() => res.json({message: 'ok'}));
+
+export default express.Router()
+.use(auth)
+.use(verifyAdmin)
+.use(createModelRouter(models.Area))
+.use(createModelRouter(models.Restaurant))
+.use(createModelRouter(models.Favorite))
+.get('/update-area-maps', updateAreaMaps)
+.post('/update-restaurants', updateRestaurants);

@@ -5,17 +5,16 @@ import {validate} from 'jsonschema';
 import schema from '../../schema/preferences.json';
 import auth from '../utils/auth';
 
-export default express.Router()
-.post('/login', userLogin)
-.use(auth)
-.get('/logout', (req, res) => {
+export const logOut = (req, res) => {
   delete req.session.user;
   res.json({message: 'Logged out.'});
-})
-.get('/', (req, res) => {
+};
+
+export const getUser = (req, res) => {
   res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
-})
-.put('/preferences', async (req, res, next) => {
+};
+
+export const savePreferences = async (req, res, next) => {
   try {
     const preferences = req.body;
     const validationResult = validate(preferences, schema);
@@ -30,4 +29,11 @@ export default express.Router()
   } catch(e) {
     next({code: 400, message: 'Unknown preference.'});
   }
-});
+};
+
+export default express.Router()
+.post('/login', userLogin)
+.use(auth)
+.get('/', getUser)
+.get('/logout', logOut)
+.put('/preferences', savePreferences);

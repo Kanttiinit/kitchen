@@ -1,50 +1,46 @@
 import 'babel-polyfill';
-import models from './models';
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import {version} from '../package.json';
 import session from 'express-session';
 import SequelizeSession from 'connect-session-sequelize';
+
+import models from './models';
+import routers from './routers/';
 
 const app = express();
 
 const SessionStore = SequelizeSession(session.Store);
 const sessionSecret = process.env.SESSION_SECRET;
+const origins = process.env.ORIGINS;
 
 if (!sessionSecret) {
-  throw new Error('SESSION_SECRET is required');
+  throw new Error('SESSION_SECRET is required.');
 }
 
-import adminRouter from './routers/admin';
-import apiRouter from './routers/api';
-import meRouter from './routers/me';
+if (!origins) {
+  throw new Error('ORIGINS is required.');
+}
 
 app
 .use(cors({
   credentials: true,
-  origin: process.env.ORIGINS.split(','),
+  origin: origins.split(','),
   unset: 'destroy'
 }))
 .use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: sessionSecret,
   saveUninitialized: false,
   resave: false,
   store: new SessionStore({db: models.sequelize})
 }))
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
-.use('/admin', adminRouter)
-.use('/me', meRouter)
-.use('/', apiRouter)
-.get('/help', (req, res) =>
-  res.redirect('https://github.com/Kanttiinit/kitchen/blob/master/README.md'))
-.get('/', (req, res) => res.json({version}))
-.get('*', (req, res, next) => next({code: 404, message: 'Endpoint doesn\'t exist.'}))
+.use(routers)
 .use((err, req, res, next) => res.status(err.code).json(err));
 
 models.sequelize.sync().then(() => {
-  const server = app.listen(process.env.PORT || 3000, function () {
+  const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Listening at http://%s:%s', server.address().address, server.address().port);
   });
 });
