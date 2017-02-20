@@ -14,16 +14,6 @@ export const parseLanguage = (req, res, next) => {
   next();
 };
 
-export const saveLocation = async (req, res, next) => {
-  const {latitude, longitude, userHash} = req.body;
-  if (latitude && longitude && userHash) {
-    await models.Location.create({latitude, longitude, userHash});
-    res.json({message: 'Success.'});
-  } else {
-    next({code: 400, message: 'Missing field.'});
-  }
-};
-
 export const getFavorites = async (req, res) => {
   const favorites = await models.Favorite.findAll();
   res.json(getPublics(favorites, req.lang));
@@ -67,5 +57,4 @@ export default express.Router()
 .get('/restaurants/:restaurantId/menu(.:ext)?', getRestaurantMenus)
 .get('/favorites', getFavorites)
 .get('/areas', getAreas)
-.get('/restaurants', getRestaurants)
-.post('/location', saveLocation);
+.get('/restaurants', getRestaurants);
