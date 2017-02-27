@@ -37,7 +37,13 @@ app
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
 .use(routers)
-.use((err, req, res, next) => res.status(err.code).json(err));
+.use((err, req, res, next) => {
+  if (err.code) {
+    res.status(err.code).json(err);
+  } else {
+    res.status(500).json({code: 500, message: 'Server error.'});
+  }
+});
 
 models.sequelize.sync().then(() => {
   const server = app.listen(process.env.PORT || 3000, () => {

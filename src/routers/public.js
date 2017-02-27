@@ -1,5 +1,6 @@
 import express from 'express';
 import models from '../models';
+import sort from 'lodash/sortBy'
 
 const getPublics = (items, lang) => items.map(item => item.getPublicAttributes(lang));
 
@@ -24,31 +25,56 @@ export const getAreas = async (req, res) => {
     where: {hidden: false},
     include: [{model: models.Restaurant}]
   });
-  res.json(getPublics(areas, req.lang));
+  const data = getPublics(areas, req.lang);
+  if (req.query.idsOnly) {
+    const ids = data.map(area => ({
+      ...area,
+      restaurants: sort(area.restaurants.map(r => r.id))
+    }));
+    res.json(ids);
+  } else {
+    res.json(data);
+  }
 };
 
-export const getRestaurants = async (req, res) => {
-  let queryPromise;
-  if (req.query.location) {
-    const [latitude, longitude] = req.query.location.split(',');
-    queryPromise = models.sequelize.query({
-      query: `
-      SELECT *,
-      (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
-      FROM restaurants
-      WHERE hidden = false
-      ORDER BY distance;
-      `
-    }, {
-      model: models.Restaurant,
-      mapToModel: true,
-      replacements: {latitude, longitude}
-    });
-  } else {
-    queryPromise = models.Restaurant.findAll({where: {hidden: false}});
+export const getRestaurants = async (req, res, next) => {
+  try {
+    let queryPromise;
+    if (req.query.location) {
+      const [latitude, longitude] = req.query.location.split(',');
+      const {distance = 2000} = req.query;
+      if (isNaN(latitude) || isNaN(longitude) || isNaN(distance)) {
+        next({code: 400, message: 'Bad request.'});
+      } else {
+        queryPromise = models.sequelize.query({
+          query: `
+          SELECT *
+          FROM (
+            SELECT *,
+            (point(:longitude, :latitude) <@> point(longitude, latitude)) * 1.61 as distance
+            FROM restaurants
+          ) as restaurants
+          WHERE hidden = false AND distance < :distance
+          ORDER BY distance;
+          `
+        }, {
+          model: models.Restaurant,
+          mapToModel: true,
+          replacements: {latitude, longitude, distance: distance / 1000}
+        });
+      }
+    } else {
+      const where = {hidden: false};
+      if (req.query.ids) {
+        where.id = {$in: req.query.ids.split(',').filter(id => !isNaN(id)).map(id => Number(id))};
+      }
+      queryPromise = models.Restaurant.findAll({where});
+    }
+    const restaurants = await queryPromise;
+    res.json(getPublics(restaurants, req.lang));
+  } catch(e) {
+    next(e);
   }
-  const restaurants = await queryPromise;
-  res.json(getPublics(restaurants, req.lang));
 };
 
 export default express.Router()
