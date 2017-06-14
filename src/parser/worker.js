@@ -1,6 +1,5 @@
 import models from '../models';
 import parse from './index';
-import promiseChain from '../utils/promiseChain';
 
 const langs = ['fi', 'en'];
 
@@ -49,12 +48,14 @@ export async function updateRestaurantMenus(restaurant) {
 export async function updateAllRestaurants() {
   const restaurants = await models.Restaurant.findAll();
   console.log('Start processing ' + restaurants.length + ' restaurants.\n');
-  return promiseChain(
-    restaurants.map(restaurant => () => {
+  for (const restaurant of restaurants) {
+    try {
       console.log(`Processing ${restaurant.name_i18n.fi}:`);
-      return updateRestaurantMenus(restaurant);
-    })
-  );
+      await updateRestaurantMenus(restaurant);
+    } catch (e) {
+      console.log(`Failed processing ${restaurant.name_i18n.fi}.`, e);
+    }
+  }
 }
 
 if (!module.parent) {
