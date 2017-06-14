@@ -1,5 +1,5 @@
 import utils from './utils';
-import moment from 'moment';
+import * as moment from 'moment';
 
 export default (sequelize, DataTypes) => {
   return sequelize.define('Menu', {

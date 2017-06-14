@@ -4,18 +4,12 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@types/node": "^7.0.31",
     "aws-sdk": "^2.6.8",
-    "babel-cli": "^6.16.0",
-    "babel-core": "^6.7.0",
-    "babel-loader": "^6.2.4",
-    "babel-polyfill": "^6.16.0",
-    "babel-preset-es2015": "^6.14.0",
-    "babel-preset-react": "^6.5.0",
-    "babel-preset-stage-2": "^6.13.0",
     "body-parser": "^1.14.1",
     "connect-session-sequelize": "^3.1.0",
     "cors": "^2.7.1",
-    "dropbox": "^2.1.0",
+    "dropbox": "^2.5.4",
     "express": "^4.13.3",
     "express-session": "^1.14.1",
     "jsdom": "^9.6.0",
@@ -26,7 +20,9 @@
     "pg": "^6.1.0",
     "pg-hstore": "^2.3.2",
     "pug": "^2.0.0-alpha6",
-    "sequelize": "^3.24.3",
+    "sequelize": "^4.1.0",
+    "sequelize-decorators": "^1.0.1",
+    "typescript": "^2.3.4",
     "webshot": "^0.18.0",
     "xml2js": "^0.4.16"
   },
@@ -36,20 +32,19 @@
     "chai-json-schema": "^1.2.0",
     "eslint": "^3.6.0",
     "mocha": "^3.1.2",
-    "supertest": "^2.0.0",
-    "webpack": "^1.13.2"
+    "supertest": "^2.0.0"
   },
   "engines": {
-    "node": "6.2.0"
+    "node": "8.1.1",
+    "nvm": "5.0.3"
   },
   "scripts": {
     "test": "mocha test",
-    "serve": "node dist/index.js",
-    "start": "nodemon src/index.js --exec babel-node --presets es2015,stage-2 --copy-files",
-    "postinstall": "npm run build",
-    "build": "babel src -d dist --presets es2015,stage-2 --copy-files",
-    "update-menus": "node -r babel-polyfill dist/parser/worker.js",
-    "backup": "node -r babel-polyfill dist/utils/dropboxBackup.js"
+    "start": "node dist/index.js",
+    "install": "npm run build",
+    "build": "tsc",
+    "update-menus": "node dist/parser/worker.js",
+    "backup": "node dist/utils/dropboxBackup.js"
   },
   "author": "bodyflex",
   "license": "MIT"

@@ -1,6 +1,6 @@
-import Dropbox from 'dropbox';
+import * as Dropbox from 'dropbox';
 import {spawn} from 'child_process';
-import moment from 'moment';
+import * as moment from 'moment';
 
 const dropbox = new Dropbox({accessToken: process.env.DROPBOX_TOKEN});
 

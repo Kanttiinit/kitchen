@@ -1,4 +1,4 @@
-import AWS from 'aws-sdk';
+import * as AWS from 'aws-sdk';
 
 const Bucket = 'kanttiinit';
 const region = 'eu-central-1';
@@ -8,7 +8,7 @@ function getBaseUrl(key) {
   return 'https://s3.' + region + '.amazonaws.com/' + Bucket + '/' + key;
 }
 
-export const upload = (buffer, filename) =>
+export const upload = (buffer, filename): Promise<string> =>
   new Promise((resolve, reject) => {
     s3.upload({
       Bucket,
@@ -26,7 +26,7 @@ export const upload = (buffer, filename) =>
     });
   });
 
-export const getUrl = filename =>
+export const getUrl = (filename): Promise<string> =>
   new Promise(resolve => {
     s3.headObject({Bucket, Key: filename}, err => {
       if (err) {
