@@ -1,6 +1,6 @@
-import express from 'express';
+import * as express from 'express';
 import * as worker from '../parser/worker';
-import models from '../models';
+import * as models from '../models';
 import createModelRouter from '../utils/createModelRouter';
 import auth from '../utils/auth';
 

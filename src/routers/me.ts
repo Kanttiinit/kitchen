@@ -1,5 +1,5 @@
-import express from 'express';
-import _ from 'lodash';
+import * as express from 'express';
+import {pick} from 'lodash';
 import userLogin from '../utils/userLogin';
 import {validate} from 'jsonschema';
 import auth from '../utils/auth';
@@ -11,7 +11,7 @@ export const logOut = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-  res.json(_.pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
+  res.json(pick(req.user, ['email', 'displayName', 'preferences', 'photo', 'admin']));
 };
 
 export const savePreferences = async (req, res, next) => {

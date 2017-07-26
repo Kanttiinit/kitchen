@@ -1,4 +1,4 @@
-import models from '../models';
+import * as models from '../models';
 import parse from './index';
 
 const langs = ['fi', 'en'];

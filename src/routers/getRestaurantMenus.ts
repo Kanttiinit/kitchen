@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-import models from '../models';
+import * as models from '../models';
 import * as aws from '../utils/aws';
 import {getImageStream, renderHtml} from '../image-generator';
 

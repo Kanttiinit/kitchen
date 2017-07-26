@@ -1,11 +1,10 @@
-import 'babel-polyfill';
-import express from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
-import session from 'express-session';
-import SequelizeSession from 'connect-session-sequelize';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
+import * as session from 'express-session';
+import * as SequelizeSession from 'connect-session-sequelize';
 
-import models from './models';
+import {sequelize} from './models';
 import routers from './routers/';
 
 const app = express();
@@ -32,7 +31,7 @@ app
   secret: sessionSecret,
   saveUninitialized: false,
   resave: false,
-  store: new SessionStore({db: models.sequelize})
+  store: new SessionStore({db: sequelize})
 }))
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
@@ -45,7 +44,7 @@ app
   }
 });
 
-models.sequelize.sync().then(() => {
+sequelize.sync().then(() => {
   const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Listening at http://%s:%s', server.address().address, server.address().port);
   });

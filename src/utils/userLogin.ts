@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import models from '../models';
+import * as models from '../models';
 
 const getUserModel = async fields => {
   await models.User.upsert(fields);

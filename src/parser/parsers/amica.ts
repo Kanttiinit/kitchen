@@ -1,6 +1,6 @@
 import * as utils from '../utils';
 import * as moment from 'moment';
-import _ from 'lodash';
+import {flatten} from 'lodash';
 
 import {Parser} from '../index';
 
@@ -32,7 +32,7 @@ const parser: Parser = {
     const menusPerWeek = await Promise.all(
       utils.getWeeks().map(date => parseWithDate(url, date))
     );
-    return _.flatten(menusPerWeek);
+    return flatten(menusPerWeek);
   }
 };
 

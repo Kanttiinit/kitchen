@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 
 import adminRouter from './admin';
 import publicRouter from './public';

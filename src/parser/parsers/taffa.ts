@@ -1,7 +1,6 @@
 import * as utils from '../utils';
 import * as moment from 'moment';
-import _ from 'lodash';
-const {jsdom} = require('jsdom');
+import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
 
@@ -13,15 +12,15 @@ const parser: Parser = {
     const formattedUrl = url.replace('/fi/', '/' + lang + '/');
     const html = await utils.text(formattedUrl);
     // parse html
-    const document = jsdom(html, {features: {QuerySelector: true}});
+    const {document} = new JSDOM(html, {features: {QuerySelector: true}}).window;
 
     // iterate through all <p> elements
-    return _.map(document.querySelectorAll('p'), p => {
+    return Array.from(document.querySelectorAll('p')).map(p => {
       const date = moment(p.textContent.split(/\s/).pop(), 'DD.MM.YYYY');
       // return courses for the day
       return {
         day: date.format('YYYY-MM-DD'),
-        courses: _.map(p.nextElementSibling.querySelectorAll('li'), course => {
+        courses: Array.from(p.nextElementSibling.querySelectorAll('li')).map(course => {
           const properties = course.textContent.match(/([A-Z]{1,2}\s?)+$/);
           // return course
           return {

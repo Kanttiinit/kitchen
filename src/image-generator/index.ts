@@ -1,10 +1,10 @@
 import * as moment from 'moment';
-import pug from 'pug';
+import * as pug from 'pug';
 import webshot from 'webshot';
 import {PassThrough} from 'stream';
 import 'moment/locale/fi';
 
-const template = pug.compileFile(__dirname + '/template.jade');
+const template = pug.compileFile(__dirname + '/../../assets/template.jade');
 
 function getColor(property) {
   const colors = {

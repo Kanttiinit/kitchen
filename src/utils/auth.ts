@@ -1,4 +1,4 @@
-import models from '../models';
+import * as models from '../models';
 
 export default async (req, res, next) => {
   if (req.session.user) {

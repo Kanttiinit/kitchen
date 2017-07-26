@@ -1,4 +1,4 @@
-import express from 'express';
+import * as express from 'express';
 
 export default model => {
   const modelName = model.name.toLowerCase();

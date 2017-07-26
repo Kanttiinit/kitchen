@@ -1,8 +1,8 @@
-import _ from 'lodash';
+import {pick} from 'lodash';
 
 export default {
   parsePublicParams: (model, params, lang) => {
-    const basicAttrs = _.pick(model.dataValues, params);
+    const basicAttrs = pick(model.dataValues, params);
     const langAttrs = model.attributes
     .filter(v => v.endsWith('_i18n'))
     .reduce((output, key) => {

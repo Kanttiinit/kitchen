@@ -1,6 +1,6 @@
-import express from 'express';
-import models from '../models';
-import sort from 'lodash/sortBy'
+import * as express from 'express';
+import * as models from '../models';
+import {sortBy} from 'lodash'
 
 const getPublics = (items, lang) => items.map(item => item.getPublicAttributes(lang));
 
@@ -8,7 +8,7 @@ import getMenus from './getMenus';
 import getRestaurantMenus from './getRestaurantMenus';
 
 export const parseLanguage = (req, res, next) => {
-  if (['fi', 'en'].includes(req.query.lang))
+  if (['fi', 'en'].indexOf(req.query.lang) > -1)
     req.lang = req.query.lang;
   else
     req.lang = 'fi';
@@ -29,7 +29,7 @@ export const getAreas = async (req, res) => {
   if (req.query.idsOnly) {
     const ids = data.map(area => ({
       ...area,
-      restaurants: sort(area.restaurants.map(r => r.id))
+      restaurants: sortBy(area.restaurants.map(r => r.id))
     }));
     res.json(ids);
   } else {
@@ -46,8 +46,7 @@ export const getRestaurants = async (req, res, next) => {
       if (isNaN(latitude) || isNaN(longitude) || isNaN(distance)) {
         next({code: 400, message: 'Bad request.'});
       } else {
-        queryPromise = models.sequelize.query({
-          query: `
+        queryPromise = models.sequelize.query(`
           SELECT *
           FROM (
             SELECT *,
@@ -56,8 +55,7 @@ export const getRestaurants = async (req, res, next) => {
           ) as restaurants
           WHERE hidden = false AND distance < :distance
           ORDER BY distance;
-          `
-        }, {
+        `, {
           model: models.Restaurant,
           mapToModel: true,
           replacements: {latitude, longitude, distance: distance / 1000}

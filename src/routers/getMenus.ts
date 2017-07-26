@@ -1,5 +1,5 @@
-import sequelize from 'sequelize';
-import models from '../models';
+import * as Sequelize from 'sequelize';
+import * as models from '../models';
 
 function formatIds(idString) {
   return idString && idString.split(',').filter(id => !isNaN(id)).map(id => +id);
@@ -23,11 +23,11 @@ export default async (req, res) => {
         required: false,
         model: models.Menu,
         where: {
-          day: {$gte: sequelize.fn('date_trunc', 'day', sequelize.fn('now'))}
+          day: {$gte: Sequelize.fn('date_trunc', 'day', Sequelize.fn('now'))}
         }
       }
     ],
-    order: sequelize.col('day')
+    order: Sequelize.col('day')
   });
 
   const response = restaurants.reduce((carry, restaurant) => {
