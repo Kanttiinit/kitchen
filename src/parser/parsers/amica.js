@@ -26,7 +26,7 @@ function parseWithDate(url, date) {
 }
 
 export default {
-  pattern: /www.amica.fi/,
+  pattern: /www.amica.fi|www.fazerfoodco.fi/,
   async parse(url, lang) {
     url = url.replace('language=fi', 'language=' + lang);
     const menusPerWeek = await Promise.all(
