@@ -28,10 +28,14 @@ function parseWithDate(url, date) {
 export default {
   pattern: /www.amica.fi|www.fazerfoodco.fi/,
   async parse(url, lang) {
-    url = url.replace('language=fi', 'language=' + lang);
-    const menusPerWeek = await Promise.all(
-      utils.getWeeks().map(date => parseWithDate(url, date))
-    );
-    return _.flatten(menusPerWeek);
+    if (url.match('amica')) {
+      url = url.replace('language=fi', 'language=' + lang);
+      const menusPerWeek = await Promise.all(
+        utils.getWeeks().map(date => parseWithDate(url, date))
+      );
+      return _.flatten(menusPerWeek);
+    } else {
+      return parseWithDate(url, moment());
+    }
   }
 };
