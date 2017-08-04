@@ -1,4 +1,4 @@
-import * as Dropbox from 'dropbox';
+const Dropbox = require('dropbox');
 import * as moment from 'moment';
 import * as models from '../models';
 
@@ -9,8 +9,10 @@ models.sequelize.sync().then(async () => {
   const restaurants = await models.Restaurant.findAll({raw: true});
   const favorites = await models.Favorite.findAll({raw: true});
   const path = '/' + moment().format('DD-MM-YYYY_HH-mm-ss');
-  dropbox.filesUpload({
+  await dropbox.filesUpload({
     path,
     contents: JSON.stringify({areas, restaurants, favorites})
   });
+  models.sequelize.close();
+  process.exit();
 });
