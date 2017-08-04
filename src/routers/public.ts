@@ -62,7 +62,7 @@ export const getRestaurants = async (req, res, next) => {
         });
       }
     } else {
-      const where = {id: undefined, hidden: false};
+      const where: {id?: any, hidden: boolean} = {hidden: false};
       if (req.query.ids) {
         where.id = {$in: req.query.ids.split(',').filter(id => !isNaN(id)).map(id => Number(id))};
       }
