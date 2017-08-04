@@ -7,7 +7,7 @@ import {Parser} from '../index';
 async function parseWithDate(url, date) {
   const json = await utils.json(utils.formatUrl(url, date));
   return (json.MenusForDays ? json.MenusForDays.map(day => {
-    const date = moment(day.Date);
+    const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
     return {
       day: date.format('YYYY-MM-DD'),
       courses: day.SetMenus
@@ -26,13 +26,17 @@ async function parseWithDate(url, date) {
 }
 
 const parser: Parser = {
-  pattern: /www.amica.fi/,
+  pattern: /www.amica.fi|www.fazerfoodco.fi/,
   async parse(url, lang) {
-    url = url.replace('language=fi', 'language=' + lang);
-    const menusPerWeek = await Promise.all(
-      utils.getWeeks().map(date => parseWithDate(url, date))
-    );
-    return flatten(menusPerWeek);
+    if (url.match('amica')) {
+      url = url.replace('language=fi', 'language=' + lang);
+      const menusPerWeek = await Promise.all(
+        utils.getWeeks().map(date => parseWithDate(url, date))
+      );
+      return flatten(menusPerWeek);
+    } else {
+      return parseWithDate(url, moment());
+    }
   }
 };
 

@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import * as pug from 'pug';
-import webshot from 'webshot';
+import * as webshot from 'webshot';
 import {PassThrough} from 'stream';
 import 'moment/locale/fi';
 

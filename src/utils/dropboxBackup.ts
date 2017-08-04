@@ -1,17 +1,16 @@
 import * as Dropbox from 'dropbox';
-import {spawn} from 'child_process';
 import * as moment from 'moment';
+import * as models from '../models';
 
 const dropbox = new Dropbox({accessToken: process.env.DROPBOX_TOKEN});
 
-const pg_dump = spawn('pg_dump', ['-T menus', process.env.DATABASE_URL]);
-
-let contents = '';
-pg_dump.stdout.on('data', data => {
-  contents += data.toString();
-});
-
-pg_dump.on('exit', () => {
+models.sequelize.sync().then(async () => {
+  const areas = await models.Area.findAll({raw: true});
+  const restaurants = await models.Restaurant.findAll({raw: true});
+  const favorites = await models.Favorite.findAll({raw: true});
   const path = '/' + moment().format('DD-MM-YYYY_HH-mm-ss');
-  dropbox.filesUpload({contents, path});
+  dropbox.filesUpload({
+    path,
+    contents: JSON.stringify({areas, restaurants, favorites})
+  });
 });
