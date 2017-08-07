@@ -14,15 +14,17 @@ export const verifyAdmin = (req, res, next) => {
 
 export const updateAreaMaps = async (req, res) => {
   const areas = await models.Area.findAll();
-  await Promise.all(areas.map(async area => {
+  for (const area of areas) {
     await area.fetchMapImageUrl();
-    return area.save();
-  }));
+    await area.save();
+  }
   res.json({message: 'Success.'});
 };
 
-export const updateRestaurants = (req, res) =>
-  worker.updateAllRestaurants().then(() => res.json({message: 'ok'}));
+export const updateRestaurants = async (req, res) => {
+  await worker.updateAllRestaurants();
+  res.json({message: 'ok'});
+};
 
 export default express.Router()
 .use(auth)

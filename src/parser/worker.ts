@@ -35,14 +35,15 @@ function joinLangMenus(langMenus) {
 }
 
 export async function updateRestaurantMenus(restaurant) {
-  const langMenus = await Promise.all(
-    langs.map(lang => parse(restaurant.menuUrl, lang))
-  );
+  const langMenus = [];
+  for (const lang of langs) {
+    langMenus.push(await parse(restaurant.menuUrl, lang));
+  }
   const menus = joinLangMenus(langMenus);
   console.log(`\tFound ${menus.length} days of menus.`);
-  return Promise.all(
-    menus.map(menu => createOrUpdateMenu(menu, restaurant))
-  );
+  for (const menu of menus) {
+    await createOrUpdateMenu(menu, restaurant);
+  }
 }
 
 export async function updateAllRestaurants() {

@@ -14,7 +14,7 @@ export interface Parser {
   parse: (url: string, lang: 'fi' | 'en') => Promise<Array<MenuItem>>
 };
 
-export default function parse(url, lang) {
+export default async function parse(url, lang) {
   if (!lang) {
     throw new Error('The second argument (lang) is required!');
   }
@@ -26,7 +26,7 @@ export default function parse(url, lang) {
     return parser.parse(url, lang);
   }
 
-  return Promise.reject('there is no parser for ' + url);
+  throw new Error('No parser found for: ' + url);
 }
 
 async function startFromCommandLine() {
