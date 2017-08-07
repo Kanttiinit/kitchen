@@ -2,8 +2,12 @@ import fetch from 'node-fetch';
 import * as models from '../models';
 
 const getUserModel = async fields => {
-  await models.User.upsert(fields);
-  return models.User.findOne({where: {email: fields.email}});
+  const existing = await models.User.findOne({where: {email: fields.email}});
+  if (existing) {
+    return existing.update(fields);
+  } else {
+    return models.User.create(fields);
+  }
 };
 
 const getUserByFacebook = async token => {
@@ -13,7 +17,6 @@ const getUserByFacebook = async token => {
   if (data.error) {
     throw new Error(data.error);
   }
-
   return getUserModel({
     email: data.email,
     displayName: data.name,
@@ -55,6 +58,7 @@ export default async (req, res, next) => {
     req.session.user = user.email;
     res.json({message: 'Success.'});
   } catch (e) {
+    console.log(e);
     if (!e.code) {
       next({code: 403, message: 'Authorization error.'}); 
     } else {
