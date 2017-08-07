@@ -2,7 +2,7 @@
 Kitchen is the backend powering Kanttiinit. It's built with express and uses a Postgres database.
 
 ## Local Development
-Run `yarn install` (or `npm install`) to install dependencies.
+Run `npm install` to install dependencies.
 
 See the table below and make sure that all required environment variables are available. Then run `npm start` to start the development server.
 
