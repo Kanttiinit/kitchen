@@ -39,14 +39,34 @@ export const getAreas = async (req, res) => {
 
 export const getRestaurants = async (req, res, next) => {
   try {
-    let queryPromise;
-    if (req.query.location) {
+    let restaurants;
+    if (req.query.query) {
+      const options = {
+        model: models.Restaurant,
+        mapToModel: true,
+        replacements: {query: `%${req.query.query}%`}
+      };
+      restaurants = await models.sequelize.query(`
+        SELECT * FROM restaurants
+        WHERE name_i18n->>'fi' ILIKE :query OR name_i18n->>'en' ILIKE :query
+      `, options)
+      if (!restaurants.length) {
+        const areas = await models.sequelize.query(`
+          SELECT restaurants.* FROM restaurants, (
+            SELECT * FROM areas
+            WHERE name_i18n->>'fi' ILIKE :query OR name_i18n->>'en' ILIKE :query
+          ) as areas
+          WHERE areas.id = restaurants."AreaId";
+        `, options);
+        restaurants = areas;
+      }
+    }  else if (req.query.location) {
       const [latitude, longitude] = req.query.location.split(',');
       const {distance = 2000} = req.query;
       if (isNaN(latitude) || isNaN(longitude) || isNaN(distance)) {
         next({code: 400, message: 'Bad request.'});
       } else {
-        queryPromise = models.sequelize.query(`
+        restaurants = await models.sequelize.query(`
           SELECT *
           FROM (
             SELECT *,
@@ -66,9 +86,8 @@ export const getRestaurants = async (req, res, next) => {
       if (req.query.ids) {
         where.id = {$in: req.query.ids.split(',').filter(id => !isNaN(id)).map(id => Number(id))};
       }
-      queryPromise = models.Restaurant.findAll({where});
+      restaurants = await models.Restaurant.findAll({where});
     }
-    const restaurants = await queryPromise;
     res.json(getPublics(restaurants, req.lang));
   } catch(e) {
     next(e);

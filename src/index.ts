@@ -40,6 +40,7 @@ app
   if (err.code) {
     res.status(err.code).json(err);
   } else {
+    console.error(err);
     res.status(500).json({code: 500, message: 'Server error.'});
   }
 });
