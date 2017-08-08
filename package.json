@@ -10,6 +10,7 @@
     "@types/sequelize": "^4.0.67",
     "aws-sdk": "^2.90.0",
     "body-parser": "^1.14.1",
+    "buffer-equal-constant-time": "^1.0.1",
     "connect-session-sequelize": "^4.1.0",
     "cors": "^2.8.4",
     "dropbox": "^2.5.7",
