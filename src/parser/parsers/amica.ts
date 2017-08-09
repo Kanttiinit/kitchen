@@ -28,8 +28,8 @@ async function parseWithDate(url, date) {
 const parser: Parser = {
   pattern: /www.amica.fi|www.fazerfoodco.fi/,
   async parse(url, lang) {
+    url = url.replace('language=fi', 'language=' + lang);
     if (url.match('amica')) {
-      url = url.replace('language=fi', 'language=' + lang);
       const menusPerWeek = await Promise.all(
         utils.getWeeks().map(date => parseWithDate(url, date))
       );
