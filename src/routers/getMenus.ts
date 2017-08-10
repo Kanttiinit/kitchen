@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+
 import * as Sequelize from 'sequelize';
 import * as models from '../models';
 
@@ -8,6 +10,9 @@ function formatIds(idString) {
 export default async (req, res) => {
   const restaurantIds = formatIds(req.query.restaurants);
   const areaIds = formatIds(req.query.areas);
+  const days = (req.query.days || '').split(',')
+    .map(day => moment(day))
+    .filter(m => m.isValid())
 
   let where = {};
   if (restaurantIds) {
@@ -23,7 +28,9 @@ export default async (req, res) => {
         required: false,
         model: models.Menu,
         where: {
-          day: {$gte: Sequelize.fn('date_trunc', 'day', Sequelize.fn('now'))}
+          day: days.length 
+            ? {$in: days.map(day => day.format('YYYY-MM-DD'))}
+            : {$gte: Sequelize.fn('date_trunc', 'day', Sequelize.fn('now'))}
         }
       }
     ],
