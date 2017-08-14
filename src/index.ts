@@ -45,8 +45,9 @@ app
   }
 });
 
-sequelize.sync().then(() => {
+(async () => {
+  await sequelize.sync();
   const server = app.listen(process.env.PORT || 3000, () => {
     console.log('Listening at http://%s:%s', server.address().address, server.address().port);
   });
-});
+})();

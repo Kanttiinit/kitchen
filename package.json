@@ -36,6 +36,8 @@
     "chai-json-schema": "^1.5.0",
     "eslint": "^4.4.1",
     "mocha": "^3.5.0",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.2",
     "supertest": "^2.0.0"
   },
   "engines": {
@@ -49,7 +51,9 @@
     "build": "tsc",
     "update-menus": "node dist/parser/worker.js",
     "backup": "node dist/utils/dropboxBackup.js",
-    "watch": "tsc -w"
+    "watch:dist": "nodemon --ignore src dist/index.js",
+    "watch:ts": "tsc -w",
+    "develop": "tsc && npm-run-all --parallel watch:*"
   },
   "author": "bodyflex",
   "license": "MIT"
