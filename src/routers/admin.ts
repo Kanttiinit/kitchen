@@ -3,13 +3,13 @@ import * as worker from '../parser/worker';
 import * as models from '../models';
 import createModelRouter from '../utils/createModelRouter';
 import auth from '../utils/auth';
-import bufferEq from 'buffer-equal-constant-time';
+import * as bufferEq from 'buffer-equal-constant-time';
 import * as crypto from 'crypto';
 
 const adminPassword = process.env.ADMIN_PASSWORD;
 
 export const verifyAdmin = (req, res, next) => {
-  if (req.user.admin || req.session.admin) {
+  if ((req.user && req.user.admin) || req.session.admin) {
     next();
   } else {
     next({code: 401, message: 'Unauthorized.'});
@@ -32,7 +32,7 @@ export const updateRestaurants = async (req, res) => {
 
 export const login = (req, res) => {
   const requestPassword = new Buffer(crypto.createHash('sha256').update(req.body.password).digest('base64'));
-  const password = new Buffer(adminPassword);
+  const password = new Buffer(crypto.createHash('sha256').update(adminPassword).digest('base64'));
   if (req.session.admin) {
     res.json({message: 'Already logged in.'});
   } else if (bufferEq(requestPassword, password)) {
