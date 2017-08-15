@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import fetch from 'node-fetch';
 
-export const propertyRegex = /\b([A-Z]{1,2})\b/g;
+export const propertyRegex = /\b([A-Z]{1,2}|veg)\b/gi;
 
 export const getWeeks = () =>
   [moment(), moment().add({weeks: 1})].map(d => d.startOf('week').add({days: 1}));

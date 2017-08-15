@@ -4,6 +4,8 @@ import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
 
+const regexp = /\(([A-Za-z]+(?:,\s?)?)+\)$/;
+
 const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
 
 const parser: Parser = {
@@ -21,10 +23,10 @@ const parser: Parser = {
       return {
         day: date.format('YYYY-MM-DD'),
         courses: Array.from(p.nextElementSibling.querySelectorAll('li')).map((course: any) => {
-          const properties = course.textContent.match(/([A-Z]{1,2}\s?)+$/);
+          const properties = course.textContent.match(regexp);
           // return course
           return {
-            title: course.textContent.replace(/([A-Z]{1,2}\s?)+$/, '').trim(),
+            title: course.textContent.replace(regexp, '').trim(),
             properties: properties ? transformProperties(properties[0].match(utils.propertyRegex)) : []
           };
         })
