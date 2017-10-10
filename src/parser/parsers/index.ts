@@ -4,6 +4,7 @@ import sodexo from './sodexo';
 import taffa from './taffa';
 import unicafe from './unicafe';
 import maukas from './maukas';
+import ravioli from './ravioli';
 
 import {Parser} from '../index';
 
@@ -13,7 +14,8 @@ const parsers: Array<Parser> = [
   sodexo,
   taffa,
   unicafe,
-  maukas
+  maukas,
+  ravioli
 ];
 
 export default parsers;
