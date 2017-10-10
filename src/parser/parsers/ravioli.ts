@@ -14,7 +14,7 @@ const parseMenu = async (id: string) => {
       courses: day.Meals.map(meal => {
         const properties = meal.Name.match(regExp) || [];
         return {
-          title: `${meal.MealType}: ${meal.Name.replace(regExp, '').trim()}`,
+          title: `${meal.MealType}: ${meal.Name.replace(regExp, '').replace('♥', '').trim()}`,
           properties: Array.from(new Set(properties.map(p => p.replace(',', ''))))
         };
       })
@@ -40,7 +40,9 @@ const parser: Parser = {
       for (const menu of await parseMenu(menuId)) {
         const existingDayIndex = allMenus.findIndex(m => m.day === menu.day);
         if (existingDayIndex > -1) {
-          allMenus[existingDayIndex].courses.push(menu.courses);
+          for (const course of menu.courses) {
+            allMenus[existingDayIndex].courses.push(course);
+          }
         } else {
           allMenus.push(menu);
         }
