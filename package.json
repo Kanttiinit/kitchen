@@ -27,6 +27,7 @@
     "sequelize": "^4.4.2",
     "sequelize-decorators": "^1.0.1",
     "typescript": "^2.4.2",
+    "universal-analytics": "^0.4.15",
     "webshot": "^0.18.0",
     "xml2js": "^0.4.16"
   },

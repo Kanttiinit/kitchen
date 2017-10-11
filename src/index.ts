@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as session from 'express-session';
 import * as SequelizeSession from 'connect-session-sequelize';
+import * as ua from 'universal-analytics';
 
 import {sequelize} from './models';
 import routers from './routers/';
@@ -33,6 +34,18 @@ app
   resave: false,
   store: new SessionStore({db: sequelize})
 }))
+.use(ua.middleware(process.env.UA_ID))
+.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    req.visitor
+    .timing('Request', 'Finished', duration)
+    .pageview(req.url)
+    .send();
+  });
+  next();
+})
 .use(bodyParser.json())
 .use(bodyParser.urlencoded({extended: false}))
 .use(routers)
