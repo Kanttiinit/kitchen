@@ -4,6 +4,7 @@ import createFavorite from './Favorite';
 import createMenu from './Menu';
 import createRestaurant from './Restaurant';
 import createUser from './User';
+import createUpdate from './Update';
 
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
   logging: process.env.SEQUELIZE_LOGGING ? console.log : false
@@ -14,6 +15,7 @@ export const Favorite = createFavorite(sequelize, Sequelize);
 export const Menu = createMenu(sequelize, Sequelize);
 export const Restaurant = createRestaurant(sequelize, Sequelize);
 export const User = createUser(sequelize, Sequelize);
+export const Update = createUpdate(sequelize, Sequelize);
 
 Area.hasMany(Restaurant);
 Menu.belongsTo(Restaurant);

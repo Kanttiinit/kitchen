@@ -94,10 +94,18 @@ export const getRestaurants = async (req, res, next) => {
   }
 };
 
+export const getUpdates = async (req, res) => {
+  const updates = await models.Update.findAll({
+    order: [['created_at', 'DESC']]
+  });
+  res.json(getPublics(updates, req.lang));
+};
+
 export default express.Router()
 .use(parseLanguage)
 .get('/menus', getMenus)
 .get('/restaurants/:restaurantId/menu(.:ext)?', getRestaurantMenus)
 .get('/favorites', getFavorites)
 .get('/areas', getAreas)
-.get('/restaurants', getRestaurants);
+.get('/restaurants', getRestaurants)
+.get('/updates', getUpdates);

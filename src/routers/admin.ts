@@ -66,6 +66,7 @@ router
 .use(createModelRouter(models.Area))
 .use(createModelRouter(models.Restaurant))
 .use(createModelRouter(models.Favorite))
+.use(createModelRouter(models.Update))
 .get('/update-area-maps', updateAreaMaps)
 .post('/update-restaurants', updateRestaurants);
 
