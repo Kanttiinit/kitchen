@@ -40,7 +40,7 @@ app
   res.on('finish', () => {
     const duration = Date.now() - start;
     (req as any).visitor
-    .timing('Request', 'Finished', duration)
+    .timing('Request finished', req.url, duration)
     .pageview(req.url)
     .send();
   });
