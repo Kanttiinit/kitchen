@@ -42,7 +42,7 @@
     "supertest": "^2.0.0"
   },
   "engines": {
-    "node": "8.6.0"
+    "node": "8.8.1"
   },
   "scripts": {
     "test": "mocha test",
