@@ -95,8 +95,9 @@ export const getRestaurants = async (req, res, next) => {
 };
 
 export const getUpdates = async (req, res) => {
+  console.log(1);
   const updates = await models.Update.findAll({
-    order: [['created_at', 'DESC']]
+    order: [['createdAt', 'DESC']]
   });
   res.json(getPublics(updates, req.lang));
 };

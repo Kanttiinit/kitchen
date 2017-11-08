@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
     tableName: 'updates'
   });
   Update.prototype.getPublicAttributes = function(lang) {
-    return utils.parsePublicParams(this, ['id', 'type', 'description', 'created_at'], lang);
+    return utils.parsePublicParams(this, ['id', 'type', 'description', 'createdAt'], lang);
   };
   return Update;
 };
