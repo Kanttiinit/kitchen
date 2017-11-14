@@ -3,6 +3,14 @@ import * as moment from 'moment';
 
 import {Parser} from '../index';
 
+/*
+Properties:
+G: gluten-free
+M: milk-free
+L: lactose-free
+VL: low in lactose
+*/
+
 const parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {

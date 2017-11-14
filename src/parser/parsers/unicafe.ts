@@ -3,6 +3,20 @@ import * as moment from 'moment';
 
 import {Parser} from '../index';
 
+/*
+Properties:
+G: gluten-free
+K: vegetarian
+L: lactose-free
+M: milk-free
+PÄ: contains nuts
+SE: contains celery
+SO: contains soy
+V: contains garlic
+VE: vegan
+VL: low in lactose
+*/
+
 const parser: Parser = {
   pattern: /hyyravintolat\.fi/,
   async parse(url, lang) {

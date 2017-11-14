@@ -4,6 +4,18 @@ import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
 
+/*
+Properties:
+A: contains allergens
+G: gluten-free
+K: egg-free
+L: lactose-free
+M: milk-free
+S: soy-free
+T: healthier choice
+VL: low in lactose
+*/
+
 const regexp = /\(([A-Za-z]+(?:,\s?)?)+\)$/;
 
 const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);

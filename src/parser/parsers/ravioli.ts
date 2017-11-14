@@ -4,6 +4,16 @@ import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
 
+/*
+Properties:
+G: gluten-free
+K: vegetarian
+L: lactose-free
+M: milk-free
+O: "Korkeakouluopiskelijoiden lounas"
+VL: low in lactose
+*/
+
 const regExp = /([A-Z]{1,2})(?:,|$)/g;
 
 const parseMenu = async (id: string) => {

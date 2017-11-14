@@ -4,6 +4,18 @@ import {flatten} from 'lodash';
 
 import {Parser} from '../index';
 
+/*
+Properties:
+*: "Voi hyvin" (healthier choice?)
+A: contains allergens
+G: gluten-free
+L: lactose-free
+M: milk-free
+Veg: Suitable for a vegan diet
+VL: low in lactose
+VS: contains fresh garlic
+*/
+
 async function parseWithDate(url, date) {
   const json = await utils.json(utils.formatUrl(url, date));
   return (json.MenusForDays ? json.MenusForDays.map(day => {
