@@ -4,7 +4,6 @@ import * as moment from 'moment';
 
 import {Parser} from '../index';
 
-
 function parseXml(xml): Promise<any> {
   return new Promise((resolve, reject) => {
     xml2js(xml, function(err, data) {

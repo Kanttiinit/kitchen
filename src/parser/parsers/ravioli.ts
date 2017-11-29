@@ -1,23 +1,22 @@
-import * as utils from '../utils';
+import {json, Property} from '../utils';
 import * as moment from 'moment';
 import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
 
-/*
-Properties:
-G: gluten-free
-K: vegetarian
-L: lactose-free
-M: milk-free
-O: "Korkeakouluopiskelijoiden lounas"
-VL: low in lactose
-*/
+const propertyMap = {
+  'G': Property.GLUTEN_FREE,
+  'K': Property.VEGETARIAN,
+  'L': Property.LACTOSE_FREE,
+  'M': Property.MILK_FREE,
+  'O': Property.IGNORE,
+  'VL': Property.LOW_IN_LACTOSE
+};
 
 const regExp = /([A-Z]{1,2})(?:,|$)/g;
 
 const parseMenu = async (id: string) => {
-  const data = await utils.json(`http://lounasravintolat.ravioli.fi/AromiStorage/blob/menu/${id}`);
+  const data = await json(`http://lounasravintolat.ravioli.fi/AromiStorage/blob/menu/${id}`);
   return data.Days.map(day => {
     return {
       day: moment(day.Date).format('YYYY-MM-DD'),
@@ -39,7 +38,7 @@ const parser: Parser = {
     if (!restaurantId) {
       throw new Error('Could not parse restaurant ID from URL.');
     }
-    const restaurants = await utils.json('http://lounasravintolat.ravioli.fi/AromiStorage/blob/main/AromiMenusJsonData');
+    const restaurants = await json('http://lounasravintolat.ravioli.fi/AromiStorage/blob/main/AromiMenusJsonData');
     const restaurantData = restaurants.Restaurants.find(r => r.RestaurantId === restaurantId);
     if (!restaurantData) {
       throw new Error('Could not find restaurant data for the id provided.');

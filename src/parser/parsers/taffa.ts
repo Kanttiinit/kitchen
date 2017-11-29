@@ -1,20 +1,19 @@
-import * as utils from '../utils';
 import * as moment from 'moment';
 import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
+import {text, Property, propertyRegex} from '../utils';
 
-/*
-Properties:
-A: contains allergens
-G: gluten-free
-K: egg-free
-L: lactose-free
-M: milk-free
-S: soy-free
-T: healthier choice
-VL: low in lactose
-*/
+const propertyMap = {
+  'A': Property.CONTAINS_ALLERGENS,
+  'G': Property.GLUTEN_FREE,
+  'K': Property.EGG_FREE,
+  'L': Property.LACTOSE_FREE,
+  'M': Property.MILK_FREE,
+  'S': Property.SOY_FREE,
+  'T': Property.HEALTHIER_CHOICE,
+  'VL': Property.LOW_IN_LACTOSE
+};
 
 const regexp = /\(([A-Za-z]+(?:,\s?)?)+\)$/;
 
@@ -24,7 +23,7 @@ const parser: Parser = {
   pattern: /api.teknolog.fi/,
   async parse(url, lang) {
     const formattedUrl = url.replace('/fi/', '/' + lang + '/');
-    const html = await utils.text(formattedUrl);
+    const html = await text(formattedUrl);
     // parse html
     const {document} = new JSDOM(html, {features: {QuerySelector: true}}).window;
 
@@ -39,7 +38,7 @@ const parser: Parser = {
           // return course
           return {
             title: course.textContent.replace(regexp, '').trim(),
-            properties: properties ? transformProperties(properties[0].match(utils.propertyRegex)) : []
+            properties: properties ? transformProperties(properties[0].match(propertyRegex)) : []
           };
         })
         .filter(course => course.title) // filter out empty-titled courses

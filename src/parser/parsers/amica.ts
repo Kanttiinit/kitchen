@@ -1,24 +1,23 @@
-import * as utils from '../utils';
 import * as moment from 'moment';
 import {flatten} from 'lodash';
 
 import {Parser} from '../index';
+import {json, formatUrl, propertyRegex, getWeeks, Property} from '../utils';
 
-/*
-Properties:
-*: "Voi hyvin" (healthier choice?)
-A: contains allergens
-G: gluten-free
-L: lactose-free
-M: milk-free
-Veg: Suitable for a vegan diet
-VL: low in lactose
-VS: contains fresh garlic
-*/
+const propertyMap = {
+  '*': Property.HEALTHIER_CHOICE,
+  'A': Property.CONTAINS_ALLERGENS,
+  'G': Property.GLUTEN_FREE,
+  'L': Property.LACTOSE_FREE,
+  'M': Property.MILK_FREE,
+  'Veg': Property.VEGAN,
+  'VL': Property.LOW_IN_LACTOSE,
+  'VS': Property.CONTAINS_GARLIC
+};
 
 async function parseWithDate(url, date) {
-  const json = await utils.json(utils.formatUrl(url, date));
-  return (json.MenusForDays ? json.MenusForDays.map(day => {
+  const data = await json(formatUrl(url, date));
+  return (data.MenusForDays ? data.MenusForDays.map(day => {
     const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
     return {
       day: date.format('YYYY-MM-DD'),
@@ -30,7 +29,7 @@ async function parseWithDate(url, date) {
         const properties = course.match(regex);
         return {
           title: course.replace(regex, ''),
-          properties: properties ? properties[0].match(utils.propertyRegex) || [] : []
+          properties: properties ? properties[0].match(propertyRegex) || [] : []
         };
       })
     };
@@ -43,7 +42,7 @@ const parser: Parser = {
     url = url.replace('language=fi', 'language=' + lang);
     if (url.match('amica')) {
       const menusPerWeek = await Promise.all(
-        utils.getWeeks().map(date => parseWithDate(url, date))
+        getWeeks().map(date => parseWithDate(url, date))
       );
       return flatten(menusPerWeek);
     } else {

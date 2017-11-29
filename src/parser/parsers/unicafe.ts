@@ -1,27 +1,26 @@
-import * as utils from '../utils';
 import * as moment from 'moment';
 
 import {Parser} from '../index';
+import {Property, json} from '../utils';
 
-/*
-Properties:
-G: gluten-free
-K: vegetarian
-L: lactose-free
-M: milk-free
-PÄ: contains nuts
-SE: contains celery
-SO: contains soy
-V: contains garlic
-VE: vegan
-VL: low in lactose
-*/
+const propertyMap = {
+  'G': Property.GLUTEN_FREE,
+  'K': Property.VEGETARIAN,
+  'L': Property.LACTOSE_FREE,
+  'M': Property.MILK_FREE,
+  'PÄ': Property.CONTAINS_NUTS,
+  'SE': Property.CONTAINS_CELERY,
+  'SO': Property.CONTAINS_SOY,
+  'V': Property.CONTAINS_GARLIC,
+  'VE': Property.VEGAN,
+  'VL': Property.LOW_IN_LACTOSE
+};
 
 const parser: Parser = {
   pattern: /hyyravintolat\.fi/,
   async parse(url, lang) {
-    const json = await utils.json(url);
-    return json.data
+    const {data} = await json(url);
+    return data
     .filter(m => m.data.length)
     .map(m => {
       const date = moment(m.date_en, 'ddd DD.MM.');
