@@ -5,17 +5,17 @@ Parsers are, among other things, responsible of converting properties to the Kan
 
 |Property|Meaning|
 |--------|-------|
-|A|contains allergens|
+|A*|contains allergens|
+|C*|contains celery|
 |E|egg-free|
 |G|gluten-free|
-|K|vegetarian|
+|H|healthier choice|
 |L|lactose-free|
+|LL|low in lactose|
 |M|milk-free|
-|N|contains nuts|
+|N*|contains nuts|
+|O*|contains garlic|
 |S|soy-free|
-|SE|contains celery|
-|SO|contains soy|
-|T|healthier choice|
-|V|vegan|
-|VL|low in lactose|
-|VS|contains garlic|
+|S*|contains soy|
+|V|vegetarian|
+|VV|vegan|
