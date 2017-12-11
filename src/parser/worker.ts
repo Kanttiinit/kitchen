@@ -27,7 +27,10 @@ function joinLangMenus(langMenus) {
     return {
       day: menu.day,
       courses_i18n: langs.reduce((carry, lang, j) => {
-        carry[lang] = langMenus[j].find(m => m.day === menu.day).courses;
+        const langMenu = langMenus[j].find(m => m.day === menu.day);
+        if (langMenu) {
+          carry[lang] = langMenu.courses;
+        }
         return carry;
       }, {})
     };
