@@ -31,7 +31,7 @@ async function parseWithDate(url, date) {
         const properties = course.match(regex);
         return {
           title: course.replace(regex, ''),
-          properties: properties ? normalizeProperties(properties[0].match(propertyRegex)) || [] : []
+          properties: properties ? normalizeProperties(properties[0].match(propertyRegex) || []) : []
         };
       })
     };
