@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import {JSDOM} from 'jsdom';
 
 import {Parser} from '../index';
-import {text, Property, propertyRegex} from '../utils';
+import {text, Property, propertyRegex, createPropertyNormalizer} from '../utils';
 
 const propertyMap = {
   'A': Property.CONTAINS_ALLERGENS,
@@ -15,9 +15,9 @@ const propertyMap = {
   'VL': Property.LOW_IN_LACTOSE
 };
 
-const regexp = /\(([A-Za-z]+(?:,\s?)?)+\)$/;
+const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-const transformProperties = props => props.map(p => p === 'K' ? 'MU' : p);
+const regexp = /\(([A-Za-z]+(?:,\s?)?)+\)$/;
 
 const parser: Parser = {
   pattern: /api.teknolog.fi/,
@@ -38,7 +38,7 @@ const parser: Parser = {
           // return course
           return {
             title: course.textContent.replace(regexp, '').trim(),
-            properties: properties ? transformProperties(properties[0].match(propertyRegex)) : []
+            properties: properties ? normalizeProperties(properties[0].match(propertyRegex)) : []
           };
         })
         .filter(course => course.title) // filter out empty-titled courses

@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
 import {Parser} from '../index';
-import {Property, json} from '../utils';
+import {Property, json, createPropertyNormalizer} from '../utils';
 
 const propertyMap = {
   'G': Property.GLUTEN_FREE,
@@ -16,6 +16,8 @@ const propertyMap = {
   'VL': Property.LOW_IN_LACTOSE
 };
 
+const normalizeProperties = createPropertyNormalizer(propertyMap);
+
 const parser: Parser = {
   pattern: /hyyravintolat\.fi/,
   async parse(url, lang) {
@@ -28,13 +30,15 @@ const parser: Parser = {
         day: date.format('YYYY-MM-DD'),
         courses: m.data.map(c => ({
           title: lang === 'fi' ? c.name : c.name_en,
-          properties: c.meta[0].map(p => {
-            const bracketedProp = p.match(/^\[(.+)\]$/);
-            if (bracketedProp) {
-              return bracketedProp[1];
-            }
-            return p;
-          })
+          properties: normalizeProperties(
+            c.meta[0].map(p => {
+              const bracketedProp = p.match(/^\[(.+)\]$/);
+              if (bracketedProp) {
+                return bracketedProp[1];
+              }
+              return p;
+            })
+          )
         }))
       };
     });

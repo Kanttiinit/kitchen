@@ -17,28 +17,28 @@ export const json = url => fetch(url).then(r => r.json());
 export const text = url => fetch(url).then(r => r.text());
 
 export enum Property {
-  CONTAINS_ALLERGENS = 'A*',
-  CONTAINS_CELERY = 'C*',
+  CONTAINS_ALLERGENS = 'A+',
+  CONTAINS_CELERY = 'C+',
   EGG_FREE = 'E',
   GLUTEN_FREE = 'G',
   HEALTHIER_CHOICE = 'H',
   LACTOSE_FREE = 'L',
   LOW_IN_LACTOSE = 'LL',
   MILK_FREE = 'M',
-  CONTAINS_NUTS = 'N*',
-  CONTAINS_GARLIC = 'O*',
+  CONTAINS_NUTS = 'N+',
+  CONTAINS_GARLIC = 'O+',
   SOY_FREE = 'S',
-  CONTAINS_SOY = 'S*',
+  CONTAINS_SOY = 'S+',
   VEGETARIAN = 'V',
   VEGAN = 'VV',
   IGNORE = '?'
 };
 
-export const normalizeProperties = (properties: Array<string>, map: {[source: string]: Property}) =>
+export const createPropertyNormalizer = (map: {[source: string]: Property}) => (properties: Array<string>) =>
   properties
   .map(p => {
     const mapped = map[p];
-    return mapped ? mapped : p;
+    return mapped ? mapped : Property.IGNORE;
   })
   .filter(p => p !== Property.IGNORE)
   .sort();

@@ -1,4 +1,4 @@
-import {json, Property} from '../utils';
+import {json, Property, createPropertyNormalizer} from '../utils';
 import * as moment from 'moment';
 import {JSDOM} from 'jsdom';
 
@@ -13,6 +13,8 @@ const propertyMap = {
   'VL': Property.LOW_IN_LACTOSE
 };
 
+const normalizeProperties = createPropertyNormalizer(propertyMap);
+
 const regExp = /([A-Z]{1,2})(?:,|$)/g;
 
 const parseMenu = async (id: string) => {
@@ -22,9 +24,10 @@ const parseMenu = async (id: string) => {
       day: moment(day.Date).format('YYYY-MM-DD'),
       courses: day.Meals.map(meal => {
         const properties = meal.Name.match(regExp) || [];
+        const cleanedProperties = Array.from(new Set<string>(properties.map(p => p.replace(',', ''))));
         return {
           title: `${meal.MealType}: ${meal.Name.replace(regExp, '').replace('♥', '').trim()}`,
-          properties: Array.from(new Set(properties.map(p => p.replace(',', ''))))
+          properties: normalizeProperties(cleanedProperties)
         };
       })
     };

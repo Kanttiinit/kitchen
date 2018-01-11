@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import {flatten} from 'lodash';
 
 import {Parser} from '../index';
-import {json, formatUrl, propertyRegex, getWeeks, Property} from '../utils';
+import {json, formatUrl, propertyRegex, getWeeks, Property, createPropertyNormalizer} from '../utils';
 
 const propertyMap = {
   '*': Property.HEALTHIER_CHOICE,
@@ -14,6 +14,8 @@ const propertyMap = {
   'VL': Property.LOW_IN_LACTOSE,
   'VS': Property.CONTAINS_GARLIC
 };
+
+const normalizeProperties = createPropertyNormalizer(propertyMap);
 
 async function parseWithDate(url, date) {
   const data = await json(formatUrl(url, date));
@@ -29,7 +31,7 @@ async function parseWithDate(url, date) {
         const properties = course.match(regex);
         return {
           title: course.replace(regex, ''),
-          properties: properties ? properties[0].match(propertyRegex) || [] : []
+          properties: properties ? normalizeProperties(properties[0].match(propertyRegex)) || [] : []
         };
       })
     };

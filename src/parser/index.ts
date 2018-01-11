@@ -1,11 +1,12 @@
 import {inspect} from 'util';
 import parsers from './parsers';
+import { Property } from './utils';
 
 interface MenuItem {
   day: string,
   courses: Array<{
     title: string,
-    properties: Array<string>
+    properties: Array<Property>
   }>
 };
 
