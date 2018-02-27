@@ -67,6 +67,7 @@ router
 .use(createModelRouter(models.Restaurant))
 .use(createModelRouter(models.Favorite))
 .use(createModelRouter(models.Update))
+.get('/logged-in', (req, res) => res.json({message: 'Yes.'}))
 .get('/update-area-maps', updateAreaMaps)
 .post('/update-restaurants', updateRestaurants);
 
