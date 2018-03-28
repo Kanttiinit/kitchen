@@ -19,9 +19,17 @@ export default model => {
   .get(basePath, (req, res) =>
     model.findAll().then(items => res.json(items))
   )
-  .post(basePath, (req, res) =>
-     model.create(req.body).then(item => res.json(item))
-  )
+  .post(basePath, async (req, res, next) => {
+    try {
+      const item = await model.create(req.body);
+      res.json(item);
+    } catch (e) {
+      next({
+        code: 401,
+        message: 'Validation error: ' + e.message
+      });
+    }
+  })
   .delete(itemPath, (req, res) =>
      req[modelName].destroy().then(() => res.json({message: 'deleted'}))
   )
