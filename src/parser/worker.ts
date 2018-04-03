@@ -63,7 +63,11 @@ export async function updateAllRestaurants() {
 }
 
 if (!module.parent) {
-  models.sequelize.sync()
-  .then(() => updateAllRestaurants())
-  .then(() => process.exit());
+  (async () => {
+    await models.sequelize.sync();
+    while (true) {
+      updateAllRestaurants();
+      await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 60));
+    }
+  })();
 }
