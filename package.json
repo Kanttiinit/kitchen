@@ -1,5 +1,5 @@
 {
-  "name": "kanttiinit-backend",
+  "name": "kanttiinit-kitchen",
   "version": "4.3.0",
   "description": "",
   "main": "index.js",
@@ -23,12 +23,10 @@
     "node-fetch": "^2.1.2",
     "pg": "^7.1.0",
     "pg-hstore": "^2.3.2",
-    "pug": "^2.0.0-rc.3",
     "sequelize": "^4.4.2",
     "sequelize-decorators": "^1.0.1",
     "typescript": "^2.4.2",
     "universal-analytics": "^0.4.15",
-    "webshot": "^0.18.0",
     "xml2js": "^0.4.16"
   },
   "devDependencies": {

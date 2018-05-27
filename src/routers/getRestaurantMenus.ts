@@ -1,15 +1,11 @@
 import * as moment from 'moment';
 
 import * as models from '../models';
-import * as aws from '../utils/aws';
-import {getImageStream, renderHtml} from '../image-generator';
 
 export default async (req, res, next) => {
-  const {restaurantId, ext} = req.params;
-  const {width} = req.query;
+  const { restaurantId } = req.params;
 
   const day = moment(req.query.day).format('YYYY-MM-DD');
-  const filename = restaurantId + '_' + day + '.png';
 
   const restaurant = await models.Restaurant.findOne({
     where: { id: restaurantId },
@@ -23,22 +19,8 @@ export default async (req, res, next) => {
   });
 
   if (!restaurant) {
-    next({code: 404, message: 'Not found.'});
-  } else if (!ext) {
-    res.json(restaurant.getPublicAttributes(req.lang));
-  } else if (ext === 'png') {
-    let url = await aws.getUrl(filename);
-    if (!url) {
-      const imageStream = getImageStream(renderHtml(restaurant, day, width));
-      url = await aws.upload(imageStream, filename);
-    }
-    res.redirect(url);
+    next({ code: 404, message: 'Not found.' });
   } else {
-    const html = renderHtml(restaurant, day, width);
-
-    if (ext === 'html')
-      return res.send(html);
-
-    return getImageStream(html).pipe(res);
+    res.json(restaurant.getPublicAttributes(req.lang));
   }
 };
