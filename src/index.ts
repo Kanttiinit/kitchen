@@ -22,7 +22,7 @@ if (!origins) {
   throw new Error('ORIGINS is required.');
 }
 
-app
+export default app
 .use(cors({
   credentials: true,
   origin: origins.split(','),
@@ -58,9 +58,12 @@ app
   }
 });
 
-(async () => {
-  await sequelize.sync();
-  const server = app.listen(process.env.PORT || 3000, () => {
-    console.log('Listening at http://%s:%s', server.address().address, server.address().port);
-  });
-})();
+if (!module.parent) {
+  (async () => {
+    await sequelize.sync();
+    const server = app.listen(process.env.PORT || 3000, () => {
+      const address: any = server.address();
+      console.log('Listening at http://%s:%s', address.address, address.port);
+    });
+  })();
+}
