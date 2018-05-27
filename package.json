@@ -33,19 +33,20 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
-    "chai": "^3.5.0",
+    "chai": "^4.1.2",
     "chai-json-schema": "^1.5.0",
     "eslint": "^4.4.1",
-    "mocha": "^3.5.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
-    "supertest": "^2.0.0"
+    "supertest": "^3.1.0"
   },
   "engines": {
     "node": "10.1.0"
   },
   "scripts": {
-    "test": "mocha test",
+    "test": "mocha test/**",
+    "test:watch": "mocha --watch test/**",
     "start": "node dist/index.js",
     "install": "npm run build",
     "build": "tsc",
