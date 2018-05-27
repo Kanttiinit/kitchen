@@ -1,7 +1,9 @@
 module.exports = {
   "env": {
-    "browser": false,
-    "es6": true
+    "es6": true,
+    "mocha": true,
+    "amd": true,
+    "node": true
   },
   "extends": "eslint:recommended",
   "parser": "babel-eslint",
@@ -12,15 +14,6 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [],
-  "globals": {
-    "process": true,
-    "console": true,
-    "__dirname": true,
-    "module": true,
-    "require": true,
-    "describe": true,
-    "it": true
-  },
   "rules": {
     "no-console": 0,
     "indent": [
