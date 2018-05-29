@@ -121,4 +121,9 @@ describe.only('Opening hours', () => {
     expect(hours[6].opens).to.equal('12:00');
     await destroy(mon, tue, wed, thu, fri, sat, sun);
   });
+
+  it('throws an error when weekday is out of range', async () => {
+    await expect(createOpeningHour({ weekday: -1 })).to.be.rejected;
+    await expect(createOpeningHour({ weekday: 7 })).to.be.rejected;
+  });
 });

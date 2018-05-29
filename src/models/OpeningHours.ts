@@ -36,6 +36,11 @@ export default (sequelize, DataTypes) => {
           if ((!this.opens || !this.closes) && !this.closed) {
             throw new Error('Must specify opening hours if not closed.');
           }
+        },
+        weekdayWithinRange() {
+          if (this.weekday < 0 || this.weekday > 6) {
+            throw new Error('Week day must be between 0 and 6 (inclusive).');
+          }
         }
       }
     }
