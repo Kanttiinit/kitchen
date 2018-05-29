@@ -1,4 +1,8 @@
 const models = require('../dist/models');
+const moment = require('moment');
+
+const destroy = (...models) =>
+  Promise.all(models.map(model => model.destroy()));
 
 function createArea(id, fields) {
   return models.Area.create({
@@ -40,6 +44,23 @@ function createFavorite(id) {
   });
 }
 
+const createOpeningHour = (fields, startOffset = -1, endOffset = 1) => {
+  return models.OpeningHours.create({
+    from: moment()
+    .add({ day: startOffset })
+    .format('YYYY-MM-DD'),
+    to: moment()
+    .add({ day: endOffset })
+    .format('YYYY-MM-DD'),
+    opens: '10:00',
+    closes: '12:00',
+    manualEntry: true,
+    weekday: 0,
+    RestaurantId: 1,
+    ...fields
+  });
+};
+
 async function resetDB() {
   await models.sequelize.sync({ force: true, match: /_test$/ });
 }
@@ -60,4 +81,10 @@ async function setUpModels() {
   await Promise.all([createFavorite(1), createFavorite(2), createFavorite(3)]);
 }
 
-module.exports = {setUpModels, resetDB};
+module.exports = {
+  setUpModels,
+  resetDB,
+  createRestaurant,
+  createOpeningHour,
+  destroy
+};

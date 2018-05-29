@@ -8,7 +8,7 @@ import createUpdate from './Update';
 import createOpeningHours from './OpeningHours';
 
 export const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  logging: process.env.SEQUELIZE_LOGGING ? console.log : false
+  logging: Number(process.env.SEQUELIZE_LOGGING) ? console.log : false
 });
 
 export const Area = createArea(sequelize, Sequelize);
