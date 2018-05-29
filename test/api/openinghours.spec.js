@@ -6,14 +6,15 @@ chai.use(require('chai-as-promised'));
 const { expect } = chai;
 
 describe.only('Opening hours', () => {
-  let restaurant;
+  let restaurants = [];
   before(async () => {
     await sequelize.sync({ force: true });
-    restaurant = await createRestaurant(1);
+    restaurants.push(await createRestaurant(1));
+    restaurants.push(await createRestaurant(2));
   });
 
   after(async () => {
-    await restaurant.destroy();
+    await destroy(...restaurants);
   });
 
   it('prefers manual entries', async () => {
@@ -76,30 +77,53 @@ describe.only('Opening hours', () => {
     await destroy(a);
   });
 
-  it('does not require opening and closing times when marked as closed', async () => {
-    (await createOpeningHour({
-      closed: true,
-      opens: undefined,
-      closes: undefined
-    })).destroy();
-  });
-
-  it('throws an error when there is no opening time when not marked as closed', () => {
-    return expect(
-      createOpeningHour({
-        closed: false,
-        opens: undefined
-      })
-    ).to.be.rejected;
-  });
-
-  it('throws an error when there is no closing time when not marked as closed', () => {
-    return expect(
-      createOpeningHour({
-        closed: false,
+  describe('validation', () => {
+    it('does not require opening and closing times when marked as closed', async () => {
+      (await createOpeningHour({
+        closed: true,
+        opens: undefined,
         closes: undefined
-      })
-    ).to.be.rejected;
+      })).destroy();
+    });
+
+    it('throws an error when there is no opening time when not marked as closed', () => {
+      return expect(
+        createOpeningHour({
+          closed: false,
+          opens: undefined
+        })
+      ).to.be.rejected;
+    });
+
+    it('throws an error when there is no closing time when not marked as closed', () => {
+      return expect(
+        createOpeningHour({
+          closed: false,
+          closes: undefined
+        })
+      ).to.be.rejected;
+    });
+
+    it('throws an error when weekday is out of range', async () => {
+      await expect(createOpeningHour({ weekday: -1 })).to.be.rejected;
+      await expect(createOpeningHour({ weekday: 7 })).to.be.rejected;
+    });
+
+    it('throws error when opening time is wrongly formatted', () => {
+      return expect(
+        createOpeningHour({
+          opens: '9:00'
+        })
+      ).to.be.rejected;
+    });
+
+    it('throws error when closing time is wrongly formatted', () => {
+      return expect(
+        createOpeningHour({
+          closes: '9:00'
+        })
+      ).to.be.rejected;
+    });
   });
 
   it('returns opening hours in correct order', async () => {
@@ -122,8 +146,23 @@ describe.only('Opening hours', () => {
     await destroy(mon, tue, wed, thu, fri, sat, sun);
   });
 
-  it('throws an error when weekday is out of range', async () => {
-    await expect(createOpeningHour({ weekday: -1 })).to.be.rejected;
-    await expect(createOpeningHour({ weekday: 7 })).to.be.rejected;
+  it('only returns opening time, closing time and closed flag', async () => {
+    const a = await createOpeningHour();
+    const hours = await OpeningHours.forRestaurant(1);
+    expect(Object.keys(hours[0]).sort()).to.deep.equal([
+      'closed',
+      'closes',
+      'opens'
+    ]);
+    await a.destroy();
+  });
+
+  it('does not return opening hours for another restaurant', async () => {
+    const a = await createOpeningHour({ RestaurantId: 1, opens: '10:00' }),
+      b = await createOpeningHour({ RestaurantId: 2, opens: '12:00' });
+    const hours = await OpeningHours.forRestaurant(2);
+    expect(hours[0].opens).to.equal('12:00');
+    expect(hours.length).to.equal(1);
+    destroy(a, b);
   });
 });

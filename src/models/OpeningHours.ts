@@ -1,6 +1,12 @@
 import * as Sequelize from 'sequelize';
 const timeOfDayRegExp = /[0-9]{2}\:[0-9]{2}/;
 
+type OpeningHour = {
+  opens: string;
+  closes: string;
+  closed: boolean;
+};
+
 export default (sequelize, DataTypes) => {
   const Model = sequelize.define(
     'OpeningHours',
@@ -15,7 +21,7 @@ export default (sequelize, DataTypes) => {
       closes: {
         type: DataTypes.STRING,
         allowNull: true,
-        validtae: { is: timeOfDayRegExp }
+        validate: { is: timeOfDayRegExp }
       },
       closed: {
         type: DataTypes.BOOLEAN,
@@ -46,8 +52,10 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Model.forRestaurant = restaurantId => {
-    return sequelize.query(
+  Model.forRestaurant = async (
+    restaurantId: string
+  ): Promise<Array<OpeningHour>> => {
+    const results = await sequelize.query(
       `
       WITH hours as (
         SELECT * FROM opening_hours
@@ -65,6 +73,11 @@ export default (sequelize, DataTypes) => {
         raw: true
       }
     );
+    return results.map(({ opens, closes, closed }) => ({
+      opens,
+      closes,
+      closed
+    }));
   };
 
   return Model;
