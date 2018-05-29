@@ -33,7 +33,7 @@ export default (sequelize, DataTypes) => {
         defaultValue: false,
         allowNull: false
       },
-      weekday: { type: DataTypes.INTEGER, allowNull: false } // 0 == monday, 6 == sunday
+      dayOfWeek: { type: DataTypes.INTEGER, allowNull: false } // 0 == monday, 6 == sunday
     },
     {
       tableName: 'opening_hours',
@@ -43,8 +43,8 @@ export default (sequelize, DataTypes) => {
             throw new Error('Must specify opening hours if not closed.');
           }
         },
-        weekdayWithinRange() {
-          if (this.weekday < 0 || this.weekday > 6) {
+        dayOfWeekWithinRange() {
+          if (this.dayOfWeek < 0 || this.dayOfWeek > 6) {
             throw new Error('Week day must be between 0 and 6 (inclusive).');
           }
         }
@@ -63,9 +63,9 @@ export default (sequelize, DataTypes) => {
           "RestaurantId" = :restaurantId
           AND CURRENT_DATE >= "from"
           AND CURRENT_DATE <= "to"
-        ORDER BY "manualEntry" DESC, "from" DESC, "weekday" ASC
+        ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC
       )
-      SELECT DISTINCT ON (weekday) * FROM hours
+      SELECT DISTINCT ON ("dayOfWeek") * FROM hours
     `,
       {
         replacements: { restaurantId },
@@ -73,10 +73,11 @@ export default (sequelize, DataTypes) => {
         raw: true
       }
     );
-    return results.map(({ opens, closes, closed }) => ({
+    return results.map(({ opens, closes, closed, dayOfWeek }) => ({
       opens,
       closes,
-      closed
+      closed,
+      dayOfWeek
     }));
   };
 

@@ -8,6 +8,7 @@ const { expect } = chai;
 describe.only('Opening hours', () => {
   let restaurants = [];
   before(async () => {
+    await sequelize.drop();
     await sequelize.sync({ force: true });
     restaurants.push(await createRestaurant(1));
     restaurants.push(await createRestaurant(2));
@@ -17,36 +18,38 @@ describe.only('Opening hours', () => {
     await destroy(...restaurants);
   });
 
-  it('prefers manual entries', async () => {
-    const a = await createOpeningHour({ manualEntry: true, opens: '10:00' }),
-      b = await createOpeningHour({ manualEntry: false, opens: '12:00' });
-    const hours = await OpeningHours.forRestaurant(1);
-    expect(hours[0].opens).to.equals('10:00');
-    await destroy(a, b);
-  });
+  describe('preference', () => {
+    it('prefers manual entries', async () => {
+      const a = await createOpeningHour({ manualEntry: true, opens: '10:00' }),
+        b = await createOpeningHour({ manualEntry: false, opens: '12:00' });
+      const hours = await OpeningHours.forRestaurant(1);
+      expect(hours[0].opens).to.equals('10:00');
+      await destroy(a, b);
+    });
 
-  it('prefers entries added at a later date', async () => {
-    const a = await createOpeningHour({ opens: '10:00' }, -3, 1),
-      b = await createOpeningHour({ opens: '12:00' }, -1, 1);
-    const hours = await OpeningHours.forRestaurant(1);
-    expect(hours[0].opens).to.equals('12:00');
-    await destroy(a, b);
-  });
+    it('prefers entries added at a later date', async () => {
+      const a = await createOpeningHour({ opens: '10:00' }, -3, 1),
+        b = await createOpeningHour({ opens: '12:00' }, -1, 1);
+      const hours = await OpeningHours.forRestaurant(1);
+      expect(hours[0].opens).to.equals('12:00');
+      await destroy(a, b);
+    });
 
-  it('prefers manually added entry even though there is a newer one', async () => {
-    const a = await createOpeningHour(
-        { opens: '10:00', manualEntry: true },
-        -3,
-        1
-      ),
-      b = await createOpeningHour(
-        { opens: '12:00', manualEntry: false },
-        -1,
-        1
-      );
-    const hours = await OpeningHours.forRestaurant(1);
-    expect(hours[0].opens).to.equals('10:00');
-    await destroy(a, b);
+    it('prefers manually added entry even though there is a newer one', async () => {
+      const a = await createOpeningHour(
+          { opens: '10:00', manualEntry: true },
+          -3,
+          1
+        ),
+        b = await createOpeningHour(
+          { opens: '12:00', manualEntry: false },
+          -1,
+          1
+        );
+      const hours = await OpeningHours.forRestaurant(1);
+      expect(hours[0].opens).to.equals('10:00');
+      await destroy(a, b);
+    });
   });
 
   it('does not return an entry which has expired', async () => {
@@ -63,15 +66,22 @@ describe.only('Opening hours', () => {
     await destroy(a);
   });
 
-  it('does return an entry which starts today', async () => {
+  it('returns an entry which starts today', async () => {
     const a = await createOpeningHour({}, 0, 5);
     const hours = await OpeningHours.forRestaurant(1);
     expect(hours.length).to.equal(1);
     await destroy(a);
   });
 
-  it('does return an antry which ends today', async () => {
+  it('returns an entry which ends today', async () => {
     const a = await createOpeningHour({}, -5, 0);
+    const hours = await OpeningHours.forRestaurant(1);
+    expect(hours.length).to.equal(1);
+    await destroy(a);
+  });
+
+  it('returns an entry which only lasts a day', async () => {
+    const a = await createOpeningHour({}, 0, 0);
     const hours = await OpeningHours.forRestaurant(1);
     expect(hours.length).to.equal(1);
     await destroy(a);
@@ -104,9 +114,9 @@ describe.only('Opening hours', () => {
       ).to.be.rejected;
     });
 
-    it('throws an error when weekday is out of range', async () => {
-      await expect(createOpeningHour({ weekday: -1 })).to.be.rejected;
-      await expect(createOpeningHour({ weekday: 7 })).to.be.rejected;
+    it('throws an error when dayOfWeek is out of range', async () => {
+      await expect(createOpeningHour({ dayOfWeek: -1 })).to.be.rejected;
+      await expect(createOpeningHour({ dayOfWeek: 7 })).to.be.rejected;
     });
 
     it('throws error when opening time is wrongly formatted', () => {
@@ -126,14 +136,14 @@ describe.only('Opening hours', () => {
     });
   });
 
-  it('returns opening hours in correct order', async () => {
-    const sun = await createOpeningHour({ weekday: 6, opens: '12:00' });
-    const tue = await createOpeningHour({ weekday: 1, opens: '09:30' });
-    const thu = await createOpeningHour({ weekday: 3, opens: '10:30' });
-    const sat = await createOpeningHour({ weekday: 5, opens: '11:30' });
-    const mon = await createOpeningHour({ weekday: 0, opens: '09:00' });
-    const fri = await createOpeningHour({ weekday: 4, opens: '11:00' });
-    const wed = await createOpeningHour({ weekday: 2, opens: '10:00' });
+  it('returns all opening hours', async () => {
+    const sun = await createOpeningHour({ dayOfWeek: 6, opens: '12:00' });
+    const tue = await createOpeningHour({ dayOfWeek: 1, opens: '09:30' });
+    const thu = await createOpeningHour({ dayOfWeek: 3, opens: '10:30' });
+    const sat = await createOpeningHour({ dayOfWeek: 5, opens: '11:30' });
+    const mon = await createOpeningHour({ dayOfWeek: 0, opens: '09:00' });
+    const fri = await createOpeningHour({ dayOfWeek: 4, opens: '11:00' });
+    const wed = await createOpeningHour({ dayOfWeek: 2, opens: '10:00' });
     const hours = await OpeningHours.forRestaurant(1);
     expect(hours.length).to.equal(7);
     expect(hours[0].opens).to.equal('09:00');
@@ -146,12 +156,13 @@ describe.only('Opening hours', () => {
     await destroy(mon, tue, wed, thu, fri, sat, sun);
   });
 
-  it('only returns opening time, closing time and closed flag', async () => {
+  it('return fields are: opening time, closing time, closed flag and day of week', async () => {
     const a = await createOpeningHour();
     const hours = await OpeningHours.forRestaurant(1);
     expect(Object.keys(hours[0]).sort()).to.deep.equal([
       'closed',
       'closes',
+      'dayOfWeek',
       'opens'
     ]);
     await a.destroy();

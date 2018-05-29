@@ -55,7 +55,7 @@ const createOpeningHour = (fields, startOffset = -1, endOffset = 1) => {
     opens: '10:00',
     closes: '12:00',
     manualEntry: true,
-    weekday: 0,
+    dayOfWeek: 0,
     RestaurantId: 1,
     ...fields
   });
