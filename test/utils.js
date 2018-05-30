@@ -61,30 +61,15 @@ const createOpeningHour = (fields, startOffset = -1, endOffset = 1) => {
   });
 };
 
-async function resetDB() {
+async function syncDB() {
   await models.sequelize.sync({ force: true, match: /_test$/ });
 }
 
-async function setUpModels() {
-  console.log('Setting up models...');
-  await resetDB();
-  await Promise.all([
-    createArea(1),
-    createArea(2),
-    createArea(3, { hidden: true })
-  ]);
-  await Promise.all([
-    createRestaurant(1, { AreaId: 1 }),
-    createRestaurant(2, { AreaId: 2 }),
-    createRestaurant(3, { AreaId: 2, hidden: true })
-  ]);
-  await Promise.all([createFavorite(1), createFavorite(2), createFavorite(3)]);
-}
-
 module.exports = {
-  setUpModels,
-  resetDB,
+  syncDB,
   createRestaurant,
   createOpeningHour,
-  destroy
+  destroy,
+  createArea,
+  createFavorite
 };
