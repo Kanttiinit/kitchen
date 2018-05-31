@@ -1,12 +1,11 @@
 const parse = require('../dist/parser').default;
+const { validateMenu } = require('./validateSchema');
 
-const menuSchema = require('../schema/menu.json');
-
-function expectCorrectFormat(url, lang) {
-  return parse(url, lang).then(menus => {
-    expect(menus[0]).to.be.jsonSchema(menuSchema);
-    console.log(menus[0].courses[0].title);
-  });
+async function expectCorrectFormat(url, lang) {
+  const menus = await parse(url, lang);
+  const validationResult = validateMenu(menus[0]);
+  expect(validationResult).toBe(true);
+  console.log(menus[0].courses[0].title);
 }
 
 const urls = [
@@ -18,22 +17,24 @@ const urls = [
   'http://www.mau-kas.fi/ravintola.html?listtype=lunch&showall=true'
 ];
 
-describe.skip('Restaurants', () => {
-  urls.forEach(url => {
-    describe('Parser for ' + url.split('/')[2], function() {
-      it('parses menus in Finnish', () => expectCorrectFormat(url, 'fi'));
+describe('Parsers', () => {
+  describe('restaurant', () => {
+    urls.forEach(url => {
+      describe('parser for ' + url.split('/')[2], function() {
+        test('parses menus in Finnish', () => expectCorrectFormat(url, 'fi'));
 
-      it('parses menus in English', () => expectCorrectFormat(url, 'en'));
+        test('parses menus in English', () => expectCorrectFormat(url, 'en'));
+      });
     });
   });
-});
 
-describe.skip('General', () => {
-  it('throws error when not provided with language', function() {
-    try {
-      expectCorrectFormat('');
-    } catch (e) {
-      expect(e).to.be.an('error');
-    }
+  describe('in general', () => {
+    test('throws error when not provided with language', function() {
+      try {
+        expectCorrectFormat('');
+      } catch (e) {
+        expect(e).to.be.an('error');
+      }
+    });
   });
 });
