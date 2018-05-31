@@ -1,38 +1,46 @@
 {
-   "$schema": "http://json-schema.org/draft-04/schema#",
-   "title": "Area",
-   "description": "An area that contains certain restaurants.",
-   "type": "object",
-   "required": ["id", "name", "latitude", "longitude", "locationRadius", "restaurants"],
-   "properties": {
-      "id": {
-         "description:": "A unique indentifier.",
-         "type": "integer"
-      },
-      "name": {
-         "description": "Human-readable name of area.",
-         "type": "string"
-      },
-      "latitude": {
-         "description": "The latitude-coordinate of the center of the area.",
-         "type": "number"
-      },
-      "longitude": {
-         "description": "The longitude-coordinate of the center of the area.",
-         "type": "number"
-      },
-      "locationRadius": {
-         "description": "The radius (in kilometers) that the area covers around the center in a circle.",
-         "type": "integer"
-      },
-      "restaurants": {
-         "description": "A list of restaurants within this area.",
-         "type": "array",
-         "items": {"$ref": "restaurant.json"}
-      },
-      "mapImageUrl": {
-        "description": "Image URL for map of area.",
-        "type": "string"
-      }
-   }
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Area",
+  "description": "An area that contains certain restaurants.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "latitude",
+    "longitude",
+    "locationRadius",
+    "restaurants"
+  ],
+  "properties": {
+    "id": {
+      "description:": "A unique indentifier.",
+      "type": "integer"
+    },
+    "name": {
+      "description": "Human-readable name of area.",
+      "type": "string"
+    },
+    "latitude": {
+      "description": "The latitude-coordinate of the center of the area.",
+      "type": "number"
+    },
+    "longitude": {
+      "description": "The longitude-coordinate of the center of the area.",
+      "type": "number"
+    },
+    "locationRadius": {
+      "description":
+        "The radius (in kilometers) that the area covers around the center in a circle.",
+      "type": "integer"
+    },
+    "restaurants": {
+      "description": "A list of restaurants within this area.",
+      "type": "array",
+      "items": { "$ref": "restaurant.json" }
+    },
+    "mapImageUrl": {
+      "description": "Image URL for map of area.",
+      "type": "string"
+    }
+  }
 }

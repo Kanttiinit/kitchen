@@ -1,8 +1,11 @@
 const request = require('supertest');
 const app = require('../dist').default;
-const { matchers } = require('jest-json-schema');
-
-expect.extend(matchers);
+const {
+  validateRestaurant,
+  validateArea,
+  validateFavorite,
+  validateMenuEndpoint
+} = require('./validateSchema');
 
 const {
   createArea,
@@ -11,34 +14,10 @@ const {
   syncDB
 } = require('./utils');
 
-const areaSchema = require('../schema/area.json');
-const restaurantSchema = require('../schema/restaurant.json');
-const favoriteSchema = require('../schema/favorite.json');
-const menuEndpointSchema = require('../schema/menu-endpoint.json');
-
-function generateListSchema(schema) {
-  return {
-    $schema: 'http://json-schema.org/draft-04/schema',
-    type: 'array',
-    items: schema
-  };
-}
-
-function validateEndpoint(endpoint, schema) {
-  return new Promise((resolve, reject) => {
-    request(app)
-    .get(endpoint)
-    .expect(200)
-    .end(function(err, res) {
-      if (err) {
-        return reject(err);
-      }
-
-      expect(res.body).toMatchSchema(schema);
-      resolve();
-    });
-  });
-}
+const get = endpoint =>
+  request(app)
+  .get(endpoint)
+  .expect(200);
 
 describe.only('Data endpoints', function() {
   beforeAll(async () => {
@@ -60,31 +39,38 @@ describe.only('Data endpoints', function() {
     ]);
   });
 
-  it.skip('basic schemas are ok', () => {
-    const endpointSchemas = {
-      '/menus?restaurants=1,2,3': menuEndpointSchema,
-      '/areas': generateListSchema(areaSchema),
-      '/restaurants': generateListSchema(restaurantSchema),
-      '/favorites': generateListSchema(favoriteSchema)
-    };
-
-    return Promise.all(
-      Object.keys(endpointSchemas).map(key =>
-        validateEndpoint(key, endpointSchemas[key])
-      )
-    );
+  test('restaurant endpoint returns correct data', async () => {
+    const response = await get('/restaurants');
+    expect(validateRestaurant(response.body, true)).toBe(true);
   });
 
-  it('does not return hidden areas', async () => {
+  test('area endpoint returns correct data', async () => {
+    const response = await get('/areas');
+    expect(validateArea(response.body, true)).toBe(true);
+  });
+
+  test('favorites endpoint returns correct data', async () => {
+    const response = await get('/favorites');
+    expect(validateFavorite(response.body, true)).toBe(true);
+  });
+
+  test('menu endpoint returns correct data', async () => {
+    const response = await get('/menus?restaurants=1,2,3');
+    expect(validateMenuEndpoint(response.body)).toBe(true);
+  });
+
+  test('does not return hidden areas', async () => {
     const res = await request(app).get('/areas');
     expect(res.body.find(area => area.id === 3)).toBeUndefined();
   });
 
-  it('does not return hidden restaurants', async () => {
+  test('does not return hidden restaurants', async () => {
     const res = await request(app).get('/restaurants');
     expect(res.body.find(restaurant => restaurant.id === 3)).toBeUndefined();
   });
 
-  it.skip('menu endpoint responds with json', () =>
-    validateEndpoint('/restaurants/1/menu', restaurantSchema));
+  test('restaurant-specific menu endpoint returns correct data', async () => {
+    const response = await get('/restaurants/1/menu');
+    expect(validateRestaurant(response.body)).toBe(true);
+  });
 });
