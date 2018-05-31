@@ -62,7 +62,7 @@ export default (sequelize, DataTypes) => {
         WHERE
           "RestaurantId" = :restaurantId
           AND CURRENT_DATE >= "from"
-          AND CURRENT_DATE <= "to"
+          AND (CURRENT_DATE <= "to" OR "to" IS NULL)
         ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC
       )
       SELECT DISTINCT ON ("dayOfWeek") * FROM hours

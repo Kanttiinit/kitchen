@@ -168,4 +168,11 @@ describe('Opening hours', () => {
     expect(hours.length).toBe(1);
     destroy(a, b);
   });
+
+  test('returns an entry without an ending time', async () => {
+    const a = await createOpeningHour({ to: undefined });
+    const hours = await OpeningHours.forRestaurant(1);
+    expect(hours.length).toBe(1);
+    destroy(a);
+  });
 });
