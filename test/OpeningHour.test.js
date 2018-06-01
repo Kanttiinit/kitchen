@@ -148,16 +148,24 @@ describe('Opening hours', () => {
     await destroy(mon, tue, wed, thu, fri, sat, sun);
   });
 
-  test('return fields are: opening time, closing time, closed flag and day of week', async () => {
-    const a = await createOpeningHour();
-    const hours = await OpeningHours.forRestaurant(1);
-    expect(Object.keys(hours[0]).sort()).toEqual([
-      'closed',
-      'closes',
-      'dayOfWeek',
-      'opens'
-    ]);
-    await a.destroy();
+  describe('fields', () => {
+    test('has correct fields when closed', async () => {
+      const a = await createOpeningHour({ closed: true });
+      const hours = await OpeningHours.forRestaurant(1);
+      expect(Object.keys(hours[0]).sort()).toEqual(['closed', 'dayOfWeek']);
+      await a.destroy();
+    });
+
+    test('has correct fields when not closed', async () => {
+      const a = await createOpeningHour();
+      const hours = await OpeningHours.forRestaurant(1);
+      expect(Object.keys(hours[0]).sort()).toEqual([
+        'closes',
+        'dayOfWeek',
+        'opens'
+      ]);
+      await a.destroy();
+    });
   });
 
   test('does not return opening hours for another restaurant', async () => {

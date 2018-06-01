@@ -58,7 +58,7 @@ export default (sequelize, DataTypes) => {
     const results = await sequelize.query(
       `
       WITH hours as (
-        SELECT * FROM opening_hours
+        SELECT "opens", "closes", "dayOfWeek", "closed" FROM opening_hours
         WHERE
           "RestaurantId" = :restaurantId
           AND CURRENT_DATE >= "from"
@@ -73,12 +73,12 @@ export default (sequelize, DataTypes) => {
         raw: true
       }
     );
-    return results.map(({ opens, closes, closed, dayOfWeek }) => ({
-      opens,
-      closes,
-      closed,
-      dayOfWeek
-    }));
+    return results.map(({ opens, closes, closed, dayOfWeek }) => {
+      if (closed) {
+        return { dayOfWeek, closed };
+      }
+      return { opens, closes, dayOfWeek };
+    });
   };
 
   return Model;

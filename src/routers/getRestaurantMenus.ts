@@ -21,6 +21,11 @@ export default async (req, res, next) => {
   if (!restaurant) {
     next({ code: 404, message: 'Not found.' });
   } else {
-    res.json(restaurant.getPublicAttributes(req.lang));
+    res.json(
+      await restaurant.getPublicAttributes(
+        req.lang,
+        !!req.query.newOpeningHours
+      )
+    );
   }
 };

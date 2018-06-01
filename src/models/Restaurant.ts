@@ -1,5 +1,5 @@
 import utils from './utils';
-import { ConfigurationServicePlaceholders } from 'aws-sdk/lib/config_service_placeholders';
+import { OpeningHours } from './index';
 
 const publicAttrs = [
   'id',
@@ -41,9 +41,19 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Restaurant.prototype.getPublicAttributes = function(lang) {
+  Restaurant.prototype.getPublicAttributes = async function(
+    lang,
+    newOpeningHours
+  ) {
+    let openingHours;
+    if (newOpeningHours) {
+      openingHours = await OpeningHours.forRestaurant(this.id);
+    } else {
+      openingHours = this.getPrettyOpeningHours();
+    }
+
     const output = {
-      openingHours: this.getPrettyOpeningHours(),
+      openingHours,
       distance:
         this.dataValues.distance && Math.round(this.dataValues.distance * 1000),
       ...utils.parsePublicParams(this, publicAttrs, lang)
