@@ -30,6 +30,6 @@ const formatTime = time => {
       }
     }
     // console.log(openingHours);
-    models.OpeningHours.bulkCreate(openingHours);
+    models.OpeningHour.bulkCreate(openingHours);
   }
 })();

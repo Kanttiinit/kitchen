@@ -1,5 +1,5 @@
 import utils from './utils';
-import { OpeningHours } from './index';
+import { OpeningHour } from './index';
 
 const publicAttrs = [
   'id',
@@ -47,7 +47,7 @@ export default (sequelize, DataTypes) => {
   ) {
     let openingHours;
     if (newOpeningHours) {
-      openingHours = await OpeningHours.forRestaurant(this.id);
+      openingHours = await OpeningHour.forRestaurant(this.id);
     } else {
       openingHours = this.getPrettyOpeningHours();
     }

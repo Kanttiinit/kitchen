@@ -1,11 +1,15 @@
-const { OpeningHours, sequelize } = require('../dist/models');
-const { createRestaurant, createOpeningHour, destroy } = require('./utils');
+const { OpeningHour } = require('../dist/models');
+const {
+  createRestaurant,
+  createOpeningHour,
+  destroy,
+  syncDB
+} = require('./utils');
 
 describe('Opening hours', () => {
   let restaurants = [];
   beforeAll(async () => {
-    await sequelize.drop();
-    await sequelize.sync({ force: true });
+    await syncDB();
     restaurants.push(await createRestaurant(1));
     restaurants.push(await createRestaurant(2));
   });
@@ -18,7 +22,7 @@ describe('Opening hours', () => {
     test('prefers manual entries', async () => {
       const a = await createOpeningHour({ manualEntry: true, opens: '10:00' }),
         b = await createOpeningHour({ manualEntry: false, opens: '12:00' });
-      const hours = await OpeningHours.forRestaurant(1);
+      const hours = await OpeningHour.forRestaurant(1);
       expect(hours[0].opens).toBe('10:00');
       await destroy(a, b);
     });
@@ -26,7 +30,7 @@ describe('Opening hours', () => {
     test('prefers entries added at a later date', async () => {
       const a = await createOpeningHour({ opens: '10:00' }, -3, 1),
         b = await createOpeningHour({ opens: '12:00' }, -1, 1);
-      const hours = await OpeningHours.forRestaurant(1);
+      const hours = await OpeningHour.forRestaurant(1);
       expect(hours[0].opens).toBe('12:00');
       await destroy(a, b);
     });
@@ -42,7 +46,7 @@ describe('Opening hours', () => {
           -1,
           1
         );
-      const hours = await OpeningHours.forRestaurant(1);
+      const hours = await OpeningHour.forRestaurant(1);
       expect(hours[0].opens).toBe('10:00');
       await destroy(a, b);
     });
@@ -50,35 +54,35 @@ describe('Opening hours', () => {
 
   test('does not return an entry which has expired', async () => {
     const a = await createOpeningHour({}, -5, -1);
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(0);
     await destroy(a);
   });
 
   test('does not return an entry which is coming up', async () => {
     const a = await createOpeningHour({}, 1, 5);
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(0);
     await destroy(a);
   });
 
   test('returns an entry which starts today', async () => {
     const a = await createOpeningHour({}, 0, 5);
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(1);
     await destroy(a);
   });
 
   test('returns an entry which ends today', async () => {
     const a = await createOpeningHour({}, -5, 0);
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(1);
     await destroy(a);
   });
 
   test('returns an entry which only lasts a day', async () => {
     const a = await createOpeningHour({}, 0, 0);
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(1);
     await destroy(a);
   });
@@ -136,7 +140,7 @@ describe('Opening hours', () => {
     const mon = await createOpeningHour({ dayOfWeek: 0, opens: '09:00' });
     const fri = await createOpeningHour({ dayOfWeek: 4, opens: '11:00' });
     const wed = await createOpeningHour({ dayOfWeek: 2, opens: '10:00' });
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(7);
     expect(hours[0].opens).toBe('09:00');
     expect(hours[1].opens).toBe('09:30');
@@ -151,14 +155,14 @@ describe('Opening hours', () => {
   describe('fields', () => {
     test('has correct fields when closed', async () => {
       const a = await createOpeningHour({ closed: true });
-      const hours = await OpeningHours.forRestaurant(1);
+      const hours = await OpeningHour.forRestaurant(1);
       expect(Object.keys(hours[0]).sort()).toEqual(['closed', 'dayOfWeek']);
       await a.destroy();
     });
 
     test('has correct fields when not closed', async () => {
       const a = await createOpeningHour();
-      const hours = await OpeningHours.forRestaurant(1);
+      const hours = await OpeningHour.forRestaurant(1);
       expect(Object.keys(hours[0]).sort()).toEqual([
         'closes',
         'dayOfWeek',
@@ -171,7 +175,7 @@ describe('Opening hours', () => {
   test('does not return opening hours for another restaurant', async () => {
     const a = await createOpeningHour({ RestaurantId: 1, opens: '10:00' }),
       b = await createOpeningHour({ RestaurantId: 2, opens: '12:00' });
-    const hours = await OpeningHours.forRestaurant(2);
+    const hours = await OpeningHour.forRestaurant(2);
     expect(hours[0].opens).toBe('12:00');
     expect(hours.length).toBe(1);
     destroy(a, b);
@@ -179,7 +183,7 @@ describe('Opening hours', () => {
 
   test('returns an entry without an ending time', async () => {
     const a = await createOpeningHour({ to: undefined });
-    const hours = await OpeningHours.forRestaurant(1);
+    const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(1);
     destroy(a);
   });

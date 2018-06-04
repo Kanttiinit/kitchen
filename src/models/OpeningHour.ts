@@ -9,7 +9,7 @@ type OpeningHour = {
 
 export default (sequelize, DataTypes) => {
   const Model = sequelize.define(
-    'OpeningHours',
+    'OpeningHour',
     {
       from: { type: DataTypes.DATEONLY, allowNull: false },
       to: { type: DataTypes.DATEONLY, allowNull: true },
