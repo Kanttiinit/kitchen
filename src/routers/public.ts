@@ -24,7 +24,9 @@ export const getAreas = async (req, res) => {
     where: { hidden: false },
     include: [{ model: models.Restaurant }]
   });
-  const data = getPublics(areas, req.lang);
+  const data: any = await Promise.all(
+    areas.map(area => area.getPublicAttributes(req.lang))
+  );
   if (req.query.idsOnly) {
     const ids = data.map(area => ({
       ...area,
