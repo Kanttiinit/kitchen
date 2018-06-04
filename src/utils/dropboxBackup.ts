@@ -1,4 +1,4 @@
-import { Dropbox } from 'dropbox';
+const { Dropbox } = require('dropbox');
 import * as moment from 'moment';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
