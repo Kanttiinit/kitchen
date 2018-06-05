@@ -1,99 +1,83 @@
 const { OpeningHour } = require('../dist/models');
-const {
-  createRestaurant,
-  createOpeningHour,
-  destroy,
-  syncDB
-} = require('./utils');
+const { createRestaurant, createOpeningHour, syncDB } = require('./utils');
+
+const get = (date = '2018-01-01') => OpeningHour.forRestaurant(1, date);
 
 describe('Opening hours', () => {
   let restaurants = [];
-  beforeAll(async () => {
+  beforeEach(async () => {
     await syncDB();
     restaurants.push(await createRestaurant(1));
     restaurants.push(await createRestaurant(2));
   });
 
-  afterAll(async () => {
-    await destroy(...restaurants);
-  });
-
   describe('preference', () => {
     test('prefers manual entries', async () => {
-      const a = await createOpeningHour({ manualEntry: true, opens: '10:00' }),
-        b = await createOpeningHour({ manualEntry: false, opens: '12:00' });
-      const hours = await OpeningHour.forRestaurant(1);
+      await createOpeningHour({ manualEntry: true, opens: '10:00' });
+      await createOpeningHour({ manualEntry: false, opens: '12:00' });
+      const hours = await get();
       expect(hours[0].opens).toBe('10:00');
-      await destroy(a, b);
     });
 
     test('prefers entries added at a later date', async () => {
-      const a = await createOpeningHour({ opens: '10:00' }, -3, 1),
-        b = await createOpeningHour({ opens: '12:00' }, -1, 1);
-      const hours = await OpeningHour.forRestaurant(1);
+      await createOpeningHour({ opens: '10:00' }, 0);
+      await createOpeningHour({ opens: '12:00' }, 1);
+      const hours = await get();
       expect(hours[0].opens).toBe('12:00');
-      await destroy(a, b);
     });
 
     test('prefers manually added entry even though there is a newer one', async () => {
-      const a = await createOpeningHour(
-          { opens: '10:00', manualEntry: true },
-          -3,
-          1
-        ),
-        b = await createOpeningHour(
-          { opens: '12:00', manualEntry: false },
-          -1,
-          1
-        );
-      const hours = await OpeningHour.forRestaurant(1);
+      await createOpeningHour({ opens: '10:00', manualEntry: true }, -5);
+      await createOpeningHour({ opens: '12:00', manualEntry: false });
+      const hours = await get();
       expect(hours[0].opens).toBe('10:00');
-      await destroy(a, b);
     });
   });
 
   test('does not return an entry which has expired', async () => {
-    const a = await createOpeningHour({}, -5, -1);
-    const hours = await OpeningHour.forRestaurant(1);
-    expect(hours.length).toBe(0);
-    await destroy(a);
+    await createOpeningHour({ from: '2018-01-01', to: '2018-02-01' });
+    const hours = await get('2018-03-01');
+    expect(hours.length).toBe(1);
+    expect(hours[0].closed).toBe(true);
   });
 
   test('does not return an entry which is coming up', async () => {
-    const a = await createOpeningHour({}, 1, 5);
-    const hours = await OpeningHour.forRestaurant(1);
-    expect(hours.length).toBe(0);
-    await destroy(a);
+    await createOpeningHour({}, 8);
+    const hours = await get();
+    expect(hours.length).toBe(1);
+    expect(hours[0].closed).toBe(true);
   });
 
-  test('returns an entry which starts today', async () => {
-    const a = await createOpeningHour({}, 0, 5);
-    const hours = await OpeningHour.forRestaurant(1);
-    expect(hours.length).toBe(1);
-    await destroy(a);
+  test('returns an entry which starts on the week start', async () => {
+    await createOpeningHour({
+      from: '2018-01-01',
+      to: '2018-02-01',
+      opens: '10:00'
+    });
+    const hours = await get('2018-01-01');
+    expect(hours.length).toBe(2);
+    expect(hours[0].opens).toBe('10:00');
   });
 
-  test('returns an entry which ends today', async () => {
-    const a = await createOpeningHour({}, -5, 0);
-    const hours = await OpeningHour.forRestaurant(1);
-    expect(hours.length).toBe(1);
-    await destroy(a);
+  test('returns an entry which ends on the week start', async () => {
+    await createOpeningHour({ from: '2017-10-10', to: '2018-01-01' });
+    const hours = await get('2018-01-01');
+    expect(hours.length).toBe(2);
   });
 
   test('returns an entry which only lasts a day', async () => {
-    const a = await createOpeningHour({}, 0, 0);
+    await createOpeningHour({}, 0, 0);
     const hours = await OpeningHour.forRestaurant(1);
     expect(hours.length).toBe(1);
-    await destroy(a);
   });
 
   describe('validation', () => {
     test('does not require opening and closing times when marked as closed', async () => {
-      (await createOpeningHour({
+      await createOpeningHour({
         closed: true,
         opens: undefined,
         closes: undefined
-      })).destroy();
+      });
     });
 
     test('throws an error when there is no opening time when not marked as closed', () =>
@@ -130,17 +114,27 @@ describe('Opening hours', () => {
           closes: '9:00'
         })
       ).rejects.toThrow());
+
+    test('throws an error when to is before from', () =>
+      expect(createOpeningHour({}, 0, -1)).rejects.toThrow());
+
+    test('throws an error when closing time is before opening time', () =>
+      expect(
+        createOpeningHour({ opens: '10:00', closes: '09:59' })
+      ).rejects.toThrow());
   });
 
   test('returns all opening hours', async () => {
-    const sun = await createOpeningHour({ dayOfWeek: 6, opens: '12:00' });
-    const tue = await createOpeningHour({ dayOfWeek: 1, opens: '09:30' });
-    const thu = await createOpeningHour({ dayOfWeek: 3, opens: '10:30' });
-    const sat = await createOpeningHour({ dayOfWeek: 5, opens: '11:30' });
-    const mon = await createOpeningHour({ dayOfWeek: 0, opens: '09:00' });
-    const fri = await createOpeningHour({ dayOfWeek: 4, opens: '11:00' });
-    const wed = await createOpeningHour({ dayOfWeek: 2, opens: '10:00' });
-    const hours = await OpeningHour.forRestaurant(1);
+    await Promise.all([
+      createOpeningHour({ dayOfWeek: 6, opens: '12:00' }),
+      createOpeningHour({ dayOfWeek: 1, opens: '09:30' }),
+      createOpeningHour({ dayOfWeek: 3, opens: '10:30' }),
+      createOpeningHour({ dayOfWeek: 5, opens: '11:30' }),
+      createOpeningHour({ dayOfWeek: 0, opens: '09:00' }),
+      createOpeningHour({ dayOfWeek: 4, opens: '11:00' }),
+      createOpeningHour({ dayOfWeek: 2, opens: '10:00' })
+    ]);
+    const hours = await get();
     expect(hours.length).toBe(7);
     expect(hours[0].opens).toBe('09:00');
     expect(hours[1].opens).toBe('09:30');
@@ -149,42 +143,81 @@ describe('Opening hours', () => {
     expect(hours[4].opens).toBe('11:00');
     expect(hours[5].opens).toBe('11:30');
     expect(hours[6].opens).toBe('12:00');
-    await destroy(mon, tue, wed, thu, fri, sat, sun);
   });
 
   describe('fields', () => {
     test('has correct fields when closed', async () => {
-      const a = await createOpeningHour({ closed: true });
-      const hours = await OpeningHour.forRestaurant(1);
-      expect(Object.keys(hours[0]).sort()).toEqual(['closed', 'dayOfWeek']);
-      await a.destroy();
+      await createOpeningHour({
+        closed: true,
+        from: '2018-01-01',
+        to: '2018-02-01'
+      });
+      const hours = await get();
+      expect(Object.keys(hours[0]).sort()).toEqual(['closed', 'daysOfWeek']);
     });
 
     test('has correct fields when not closed', async () => {
-      const a = await createOpeningHour();
-      const hours = await OpeningHour.forRestaurant(1);
+      await createOpeningHour({
+        from: '2018-01-01',
+        to: '2018-02-01'
+      });
+      const hours = await get('2018-01-01');
       expect(Object.keys(hours[0]).sort()).toEqual([
         'closes',
-        'dayOfWeek',
+        'daysOfWeek',
         'opens'
       ]);
-      await a.destroy();
+    });
+
+    test('concatenates adjacent times that are the same', async () => {
+      await Promise.all([
+        createOpeningHour({
+          opens: '09:00',
+          closes: '10:00',
+          from: '2018-01-01',
+          to: '2018-02-01',
+          dayOfWeek: 0
+        }),
+        createOpeningHour({
+          opens: '09:00',
+          closes: '10:00',
+          from: '2018-01-01',
+          to: '2018-02-01',
+          dayOfWeek: 1
+        }),
+        createOpeningHour({
+          opens: '09:00',
+          closes: '12:00',
+          from: '2018-01-01',
+          to: '2018-02-01',
+          dayOfWeek: 2
+        })
+      ]);
+      const hours = await get('2018-01-02');
+      expect(hours.length).toBe(3);
+      expect(hours[0].daysOfWeek.length).toBe(2);
+      expect(hours[0].closes).toBe('10:00');
+      expect(hours[1].daysOfWeek.length).toBe(1);
+      expect(hours[1].closes).toBe('12:00');
+      expect(hours[2].daysOfWeek.length).toBe(4);
+      expect(hours[2].closed).toBe(true);
     });
   });
 
   test('does not return opening hours for another restaurant', async () => {
-    const a = await createOpeningHour({ RestaurantId: 1, opens: '10:00' }),
-      b = await createOpeningHour({ RestaurantId: 2, opens: '12:00' });
-    const hours = await OpeningHour.forRestaurant(2);
+    await Promise.all([
+      createOpeningHour({ RestaurantId: 1, opens: '10:00' }),
+      createOpeningHour({ RestaurantId: 2, opens: '12:00' })
+    ]);
+    const hours = await OpeningHour.forRestaurant(2, '2018-01-01');
     expect(hours[0].opens).toBe('12:00');
-    expect(hours.length).toBe(1);
-    destroy(a, b);
+    expect(hours.length).toBe(2);
   });
 
   test('returns an entry without an ending time', async () => {
-    const a = await createOpeningHour({ to: undefined });
-    const hours = await OpeningHour.forRestaurant(1);
-    expect(hours.length).toBe(1);
-    destroy(a);
+    await createOpeningHour({ to: null, opens: '12:34' });
+    const hours = await get();
+    expect(hours.length).toBe(2);
+    expect(hours[0].opens).toBe('12:34');
   });
 });

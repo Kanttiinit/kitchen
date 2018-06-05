@@ -44,16 +44,19 @@ function createFavorite(id) {
   });
 }
 
-const createOpeningHour = (fields, startOffset = -1, endOffset = 1) => {
-  return models.OpeningHours.create({
-    from: moment()
-    .add({ day: startOffset })
-    .format('YYYY-MM-DD'),
-    to: moment()
-    .add({ day: endOffset })
-    .format('YYYY-MM-DD'),
+const createOpeningHour = (fields, offset = 0, duration = 7) => {
+  const from = moment('2018-01-01').add({ days: offset });
+  return models.OpeningHour.create({
+    from: from.format('YYYY-MM-DD'),
+    to:
+      fields.to === null
+        ? undefined
+        : from
+        .clone()
+        .add({ days: duration })
+        .format('YYYY-MM-DD'),
     opens: '10:00',
-    closes: '12:00',
+    closes: '18:00',
     manualEntry: true,
     dayOfWeek: 0,
     RestaurantId: 1,

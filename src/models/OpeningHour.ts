@@ -1,4 +1,6 @@
 import * as Sequelize from 'sequelize';
+import * as moment from 'moment';
+
 const timeOfDayRegExp = /[0-9]{2}\:[0-9]{2}/;
 
 type OpeningHour = {
@@ -47,38 +49,86 @@ export default (sequelize, DataTypes) => {
           if (this.dayOfWeek < 0 || this.dayOfWeek > 6) {
             throw new Error('Week day must be between 0 and 6 (inclusive).');
           }
+        },
+        toIsNotBeforeFrom() {
+          if (this.to && moment(this.to).isBefore(moment(this.from), 'day')) {
+            throw new Error('"to" must be after "from".');
+          }
+        },
+        closesIsNotBeforeOpens() {
+          if (this.opens && this.closes) {
+            if (
+              moment(this.closes, 'HH:mm').isSameOrBefore(
+                moment(this.opens, 'HH:mm'),
+                'minute'
+              )
+            ) {
+              throw new Error('"closes" must be after "opens".');
+            }
+          }
         }
       }
     }
   );
 
   Model.forRestaurant = async (
-    restaurantId: string
+    restaurantId: string,
+    date: string = moment().format('YYYY-MM-DD')
   ): Promise<Array<OpeningHour>> => {
     const results = await sequelize.query(
       `
       WITH hours as (
-        SELECT "opens", "closes", "dayOfWeek", "closed" FROM opening_hours
+        SELECT "opens", "closes", "dayOfWeek", "closed"
+        FROM opening_hours, (
+          SELECT date_trunc('week', :date::date)::date as "weekStart",
+          date_trunc('week', :date::date)::date + '1 week'::interval as "weekEnd"
+        ) as x
         WHERE
           "RestaurantId" = :restaurantId
-          AND CURRENT_DATE >= "from"
-          AND (CURRENT_DATE <= "to" OR "to" IS NULL)
+          AND "from" <= "weekEnd"
+          AND ("to" >= "weekStart" OR "to" IS NULL)
         ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC
       )
       SELECT DISTINCT ON ("dayOfWeek") * FROM hours
     `,
       {
-        replacements: { restaurantId },
+        replacements: { restaurantId, date },
         type: Sequelize.QueryTypes.SELECT,
         raw: true
       }
     );
-    return results.map(({ opens, closes, closed, dayOfWeek }) => {
-      if (closed) {
-        return { dayOfWeek, closed };
+
+    const output = [];
+    for (const dayOfWeek of [0, 1, 2, 3, 4, 5, 6]) {
+      let entry = { closed: true };
+      const item = results.find(n => n.dayOfWeek === dayOfWeek) || {
+        closed: true,
+        dayOfWeek
+      };
+      const previous = output[output.length - 1];
+      if (
+        previous &&
+        ((previous.opens === item.opens && previous.closes === item.closes) ||
+          previous.closed === item.closed)
+      ) {
+        previous.daysOfWeek.push(dayOfWeek);
+      } else {
+        if (item.closed) {
+          output.push({
+            closed: true,
+            daysOfWeek: [dayOfWeek]
+          });
+        } else {
+          output.push({
+            opens: item.opens,
+            closes: item.closes,
+            daysOfWeek: [dayOfWeek]
+          });
+        }
       }
-      return { opens, closes, dayOfWeek };
-    });
+    }
+
+    return output;
   };
 
   return Model;
