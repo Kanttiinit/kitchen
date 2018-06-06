@@ -28,7 +28,7 @@ export default model => {
       } catch (e) {
         next({
           code: 401,
-          message: 'Validation error: ' + e.message
+          message: e.message
         });
       }
     })
@@ -36,8 +36,15 @@ export default model => {
       await req[modelName].destroy();
       res.json({ message: 'deleted' });
     })
-    .put(itemPath, async (req, res) => {
-      const item = await req[modelName].update(req.body);
-      res.json(item);
+    .put(itemPath, async (req, res, next) => {
+      try {
+        const item = await req[modelName].update(req.body);
+        res.json(item);
+      } catch (e) {
+        next({
+          code: 401,
+          message: e.message
+        });
+      }
     });
 };

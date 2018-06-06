@@ -32,7 +32,7 @@ export default (sequelize, DataTypes) => {
       },
       manualEntry: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        defaultValue: true,
         allowNull: false
       },
       dayOfWeek: { type: DataTypes.INTEGER, allowNull: false } // 0 == monday, 6 == sunday
