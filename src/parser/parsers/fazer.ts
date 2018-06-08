@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { flatten } from 'lodash';
 import { Parser } from '../index';
 
 import { json, formatUrl, createPropertyNormalizer, Property } from '../utils';
@@ -34,12 +35,14 @@ const parser: Parser = {
 
     return data.LunchMenus.map(menu => ({
       day: moment(menu.Date, 'D.M.YYYY').format('YYYY-MM-DD'),
-      courses: !menu.SetMenus.length
-        ? []
-        : menu.SetMenus[0].Meals.map(course => ({
+      courses: flatten(
+        menu.SetMenus.map(m =>
+          m.Meals.map(course => ({
             title: course.Name,
             properties: normalizeProperties(course.Diets)
           }))
+        )
+      )
     }));
   }
 };
