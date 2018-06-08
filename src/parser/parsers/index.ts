@@ -5,8 +5,9 @@ import taffa from './taffa';
 import unicafe from './unicafe';
 import maukas from './maukas';
 import ravioli from './ravioli';
+import fazer from './fazer';
 
-import {Parser} from '../index';
+import { Parser } from '../index';
 
 const parsers: Array<Parser> = [
   amica,
@@ -15,7 +16,8 @@ const parsers: Array<Parser> = [
   taffa,
   unicafe,
   maukas,
-  ravioli
+  ravioli,
+  fazer
 ];
 
 export default parsers;
