@@ -80,6 +80,15 @@ router
   .use(createModelRouter(models.Update))
   .use(createModelRouter(models.OpeningHour))
   .get('/logged-in', (req, res) => res.json({ message: 'Yes.' }))
+  .get('/opening-hours/:restaurantId', async (req, res) => {
+    res.json(
+      await models.OpeningHour.forRestaurant(
+        req.params.restaurantId,
+        undefined,
+        true
+      )
+    );
+  })
   .get('/update-area-maps', updateAreaMaps)
   .post('/update-restaurants', updateRestaurants);
 

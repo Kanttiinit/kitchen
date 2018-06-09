@@ -71,32 +71,38 @@ export default (sequelize, DataTypes) => {
     }
   );
 
+  const getQuery = distinct => {
+    const baseQuery = `
+    SELECT * FROM opening_hours, (
+      SELECT date_trunc('week', :date::date)::date as "weekStart",
+      date_trunc('week', :date::date + '1 week'::interval)::date as "weekEnd"
+    ) as x
+    WHERE
+      "RestaurantId" = :restaurantId
+      AND "from" <= "weekEnd"
+      AND ("to" >= "weekStart" OR "to" IS NULL)
+    ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC`;
+
+    if (distinct) {
+      return `WITH hours as (${baseQuery}) SELECT DISTINCT ON ("dayOfWeek") * FROM hours`;
+    }
+    return baseQuery;
+  };
+
   Model.forRestaurant = async (
     restaurantId: string,
-    date: string = moment().format('YYYY-MM-DD')
+    date: string = moment().format('YYYY-MM-DD'),
+    everything: boolean
   ): Promise<Array<OpeningHour>> => {
-    const results = await sequelize.query(
-      `
-      WITH hours as (
-        SELECT "opens", "closes", "dayOfWeek", "closed"
-        FROM opening_hours, (
-          SELECT date_trunc('week', :date::date)::date as "weekStart",
-          date_trunc('week', :date::date)::date + '1 week'::interval as "weekEnd"
-        ) as x
-        WHERE
-          "RestaurantId" = :restaurantId
-          AND "from" <= "weekEnd"
-          AND ("to" >= "weekStart" OR "to" IS NULL)
-        ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC
-      )
-      SELECT DISTINCT ON ("dayOfWeek") * FROM hours
-    `,
-      {
-        replacements: { restaurantId, date },
-        type: Sequelize.QueryTypes.SELECT,
-        raw: true
-      }
-    );
+    const results = await sequelize.query(getQuery(!everything), {
+      replacements: { restaurantId, date },
+      type: Sequelize.QueryTypes.SELECT,
+      raw: true
+    });
+
+    if (everything) {
+      return results;
+    }
 
     const output = [];
     for (const dayOfWeek of [0, 1, 2, 3, 4, 5, 6]) {
