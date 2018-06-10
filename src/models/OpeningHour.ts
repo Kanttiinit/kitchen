@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import * as moment from 'moment';
 
-const timeOfDayRegExp = /[0-9]{2}\:[0-9]{2}/;
+const timeOfDayRegExp = /^[0-9]{2}\:[0-9]{2}$/;
 
 type OpeningHour = {
   opens: string;

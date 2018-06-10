@@ -20,7 +20,7 @@ const formatTime = time => {
           openingHours.push({
             opens: formatTime(opens),
             closes: formatTime(closes),
-            manualEntry: false,
+            manualEntry: true,
             from,
             dayOfWeek,
             RestaurantId: restaurant.id
