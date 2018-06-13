@@ -20,8 +20,8 @@ describe('Opening hours', () => {
     });
 
     test('prefers entries added at a later date', async () => {
-      await createOpeningHour({ opens: '10:00' }, 0);
-      await createOpeningHour({ opens: '12:00' }, 1);
+      await createOpeningHour({ opens: '12:00' }, 3);
+      await createOpeningHour({ opens: '10:00' }, 1);
       const hours = await get();
       expect(hours[0].opens).toBe('12:00');
     });
@@ -122,6 +122,12 @@ describe('Opening hours', () => {
       expect(
         createOpeningHour({ opens: '10:00', closes: '09:59' })
       ).rejects.toThrow());
+  });
+
+  test('does not return opening hour that starts on monday', async () => {
+    await createOpeningHour({}, 7);
+    const hours = await get();
+    expect(hours[0].closed).toBe(true);
   });
 
   test('returns all opening hours', async () => {

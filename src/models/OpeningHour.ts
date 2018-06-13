@@ -79,12 +79,12 @@ export default (sequelize, DataTypes) => {
     ) as x
     WHERE
       "RestaurantId" = :restaurantId
-      AND "from" <= "weekEnd"
+      AND "from" < "weekEnd"
       AND ("to" >= "weekStart" OR "to" IS NULL)
-    ORDER BY "manualEntry" DESC, "from" DESC, "dayOfWeek" ASC`;
+    ORDER BY "manualEntry" DESC, "dayOfWeek" ASC, "from" DESC`;
 
     if (distinct) {
-      return `WITH hours as (${baseQuery}) SELECT DISTINCT ON ("dayOfWeek") * FROM hours`;
+      return `SELECT DISTINCT ON ("dayOfWeek") * FROM (${baseQuery}) as hours`;
     }
     return baseQuery;
   };
@@ -106,7 +106,6 @@ export default (sequelize, DataTypes) => {
 
     const output = [];
     for (const dayOfWeek of [0, 1, 2, 3, 4, 5, 6]) {
-      let entry = { closed: true };
       const item = results.find(n => n.dayOfWeek === dayOfWeek) || {
         closed: true,
         dayOfWeek
