@@ -13,6 +13,7 @@
     "buffer-equal-constant-time": "^1.0.1",
     "connect-session-sequelize": "^5.2.1",
     "cors": "^2.8.4",
+    "dotenv": "^6.0.0",
     "dropbox": "^4.0.4",
     "express": "^4.15.4",
     "express-session": "^1.15.5",
