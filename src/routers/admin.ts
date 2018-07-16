@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as worker from '../parser/worker';
+import * as worker from '../menu-parser/worker';
 import * as models from '../models';
 import createModelRouter from '../utils/createModelRouter';
 import * as bufferEq from 'buffer-equal-constant-time';
