@@ -3,10 +3,11 @@ import * as moment from 'moment';
 
 const timeOfDayRegExp = /^[0-9]{2}\:[0-9]{2}$/;
 
-type OpeningHour = {
-  opens: string;
-  closes: string;
-  closed: boolean;
+export type OpeningHour = {
+  opens?: string;
+  closes?: string;
+  closed?: boolean;
+  daysOfWeek: Array<number>;
 };
 
 export default (sequelize, DataTypes) => {
@@ -104,7 +105,7 @@ export default (sequelize, DataTypes) => {
       return results;
     }
 
-    const output = [];
+    const output: Array<OpeningHour> = [];
     for (const dayOfWeek of [0, 1, 2, 3, 4, 5, 6]) {
       const item = results.find(n => n.dayOfWeek === dayOfWeek) || {
         closed: true,
