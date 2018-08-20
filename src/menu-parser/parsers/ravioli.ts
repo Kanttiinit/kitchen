@@ -1,16 +1,16 @@
-import {json, Property, createPropertyNormalizer} from '../utils';
+import { json, Property, createPropertyNormalizer } from '../utils';
 import * as moment from 'moment';
-import {JSDOM} from 'jsdom';
+import { JSDOM } from 'jsdom';
 
-import {Parser} from '../index';
+import { Parser } from '../index';
 
 const propertyMap = {
-  'G': Property.GLUTEN_FREE,
-  'K': Property.VEGETARIAN,
-  'L': Property.LACTOSE_FREE,
-  'M': Property.MILK_FREE,
-  'O': Property.IGNORE,
-  'VL': Property.LOW_IN_LACTOSE
+  G: Property.GLUTEN_FREE,
+  K: Property.VEGETARIAN,
+  L: Property.LACTOSE_FREE,
+  M: Property.MILK_FREE,
+  O: Property.IGNORE,
+  VL: Property.LOW_IN_LACTOSE
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
@@ -18,15 +18,21 @@ const normalizeProperties = createPropertyNormalizer(propertyMap);
 const regExp = /([A-Z]{1,2})(?:,|$)/g;
 
 const parseMenu = async (id: string) => {
-  const data = await json(`http://lounasravintolat.ravioli.fi/AromiStorage/blob/menu/${id}`);
+  const data = await json(
+    `http://lounasravintolat.ravioli.fi/AromiStorage/blob/menu/${id}`
+  );
   return data.Days.map(day => {
     return {
       day: moment(day.Date).format('YYYY-MM-DD'),
       courses: day.Meals.map(meal => {
         const properties = meal.Name.match(regExp) || [];
-        const cleanedProperties = Array.from(new Set<string>(properties.map(p => p.replace(',', ''))));
+        const cleanedProperties = Array.from(
+          new Set<string>(properties.map(p => p.replace(',', '')))
+        );
         return {
-          title: `${meal.MealType}: ${meal.Name.replace(regExp, '').replace('♥', '').trim()}`,
+          title: `${meal.MealType}: ${meal.Name.replace(regExp, '')
+          .replace('♥', '')
+          .trim()}`,
           properties: normalizeProperties(cleanedProperties)
         };
       })
@@ -41,8 +47,12 @@ const parser: Parser = {
     if (!restaurantId) {
       throw new Error('Could not parse restaurant ID from URL.');
     }
-    const restaurants = await json('http://lounasravintolat.ravioli.fi/AromiStorage/blob/main/AromiMenusJsonData');
-    const restaurantData = restaurants.Restaurants.find(r => r.RestaurantId === restaurantId);
+    const restaurants = await json(
+      'http://lounasravintolat.ravioli.fi/AromiStorage/blob/main/AromiMenusJsonData'
+    );
+    const restaurantData = restaurants.Restaurants.find(
+      r => r.RestaurantId === restaurantId
+    );
     if (!restaurantData) {
       throw new Error('Could not find restaurant data for the id provided.');
     }

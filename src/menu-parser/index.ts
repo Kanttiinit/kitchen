@@ -1,19 +1,19 @@
-import {inspect} from 'util';
+import { inspect } from 'util';
 import parsers from './parsers';
 import { Property } from './utils';
 
 interface MenuItem {
-  day: string,
+  day: string;
   courses: Array<{
-    title: string,
-    properties: Array<Property>
-  }>
-};
+    title: string;
+    properties: Array<Property>;
+  }>;
+}
 
 export interface Parser {
-  pattern: RegExp,
-  parse: (url: string, lang: 'fi' | 'en') => Promise<Array<MenuItem>>
-};
+  pattern: RegExp;
+  parse: (url: string, lang: 'fi' | 'en') => Promise<Array<MenuItem>>;
+}
 
 export default async function parse(url, lang) {
   if (!lang) {

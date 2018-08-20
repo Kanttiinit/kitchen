@@ -13,7 +13,7 @@ async function createOrUpdateMenu(menu, restaurant) {
   });
 
   if (existingMenu) {
-    return existingMenu.update({courses_i18n: menu.courses_i18n});
+    return existingMenu.update({ courses_i18n: menu.courses_i18n });
   }
 
   return models.Menu.create({

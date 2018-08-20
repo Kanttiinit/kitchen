@@ -1,13 +1,18 @@
 import * as moment from 'moment';
 
-import {json, formatUrl, getWeeks, Property, createPropertyNormalizer} from '../utils';
-import {Parser} from '../index';
+import {
+  json,
+  formatUrl,
+  getWeeks,
+  Property,
+  createPropertyNormalizer
+} from '../utils';
 
 const propertyMap = {
-  'G': Property.GLUTEN_FREE,
-  'M': Property.MILK_FREE,
-  'L': Property.LACTOSE_FREE,
-  'VL': Property.LOW_IN_LACTOSE
+  G: Property.GLUTEN_FREE,
+  M: Property.MILK_FREE,
+  L: Property.LACTOSE_FREE,
+  VL: Property.LOW_IN_LACTOSE
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
@@ -24,7 +29,9 @@ const parser = {
           day: timestamp.format('YYYY-MM-DD'),
           courses: feed.menus[day].map(course => ({
             title: lang === 'fi' ? course.title_fi : course.title_en,
-            properties: course.properties ? normalizeProperties(course.properties.split(', ')) : []
+            properties: course.properties
+              ? normalizeProperties(course.properties.split(', '))
+              : []
           }))
         });
       }
