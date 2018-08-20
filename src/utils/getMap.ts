@@ -25,8 +25,8 @@ const getMap = async ({ latitude, longitude, radius }): Promise<string> => {
   const requestUrl = `https://maps.googleapis.com/maps/api/staticmap?format=png&size=${mapSize}x${mapSize}&zoom=${zoom}&center=${latitude},${longitude}&key=${apiKey}&style=${styles}`;
   const filename =
     createHash('sha1')
-      .update(requestUrl)
-      .digest('hex') + '.png';
+    .update(requestUrl)
+    .digest('hex') + '.png';
   const url = await aws.getUrl(filename);
   if (url) {
     return url;

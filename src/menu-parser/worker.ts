@@ -1,6 +1,5 @@
 import * as models from '../models';
 import parse from './index';
-import * as schedule from 'node-schedule';
 
 const langs = ['fi', 'en'];
 
@@ -64,8 +63,5 @@ export async function updateAllRestaurants() {
 }
 
 if (!module.parent) {
-  (async () => {
-    await models.sequelize.sync();
-    schedule.scheduleJob('0 * * * *', updateAllRestaurants);
-  })();
+  updateAllRestaurants();
 }

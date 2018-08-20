@@ -26,44 +26,44 @@ if (!origins) {
 }
 
 export default app
-  .use(
-    cors({
-      credentials: true,
-      origin: origins.split(','),
-      unset: 'destroy'
-    })
-  )
-  .use(
-    session({
-      secret: sessionSecret,
-      saveUninitialized: false,
-      resave: false,
-      store: new SessionStore({ db: sequelize })
-    })
-  )
-  .use(ua.middleware(process.env.UA_ID))
-  .use((req, res, next) => {
-    const start = Date.now();
-    res.on('finish', () => {
-      const duration = Date.now() - start;
-      (req as any).visitor
-        .timing('Request finished', req.url, duration)
-        .pageview(req.url)
-        .send();
-    });
-    next();
+.use(
+  cors({
+    credentials: true,
+    origin: origins.split(','),
+    unset: 'destroy'
   })
-  .use(bodyParser.json())
-  .use(bodyParser.urlencoded({ extended: false }))
-  .use(routers)
-  .use((err, req, res, next) => {
-    if (err.code) {
-      res.status(err.code).json(err);
-    } else {
-      console.error(err);
-      res.status(500).json({ code: 500, message: 'Server error.' });
-    }
+)
+.use(
+  session({
+    secret: sessionSecret,
+    saveUninitialized: false,
+    resave: false,
+    store: new SessionStore({ db: sequelize })
+  })
+)
+.use(ua.middleware(process.env.UA_ID))
+.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    (req as any).visitor
+    .timing('Request finished', req.url, duration)
+    .pageview(req.url)
+    .send();
   });
+  next();
+})
+.use(bodyParser.json())
+.use(bodyParser.urlencoded({ extended: false }))
+.use(routers)
+.use((err, req, res, next) => {
+  if (err.code) {
+    res.status(err.code).json(err);
+  } else {
+    console.error(err);
+    res.status(500).json({ code: 500, message: 'Server error.' });
+  }
+});
 
 if (!module.parent) {
   app.locals.adminPassword = process.env.ADMIN_PASSWORD;

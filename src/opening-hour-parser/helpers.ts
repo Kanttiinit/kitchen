@@ -1,10 +1,13 @@
 import * as fetch from 'node-fetch';
-import {JSDOM} from 'jsdom';
+import { JSDOM } from 'jsdom';
 import { OpeningHour } from '../models/OpeningHour';
 
 const days = ['ma', 'ti', 'ke', 'to', 'pe', 'la', 'su'];
 
-export const parseHours = (dayRange: string, timeRange: string): OpeningHour => {
+export const parseHours = (
+  dayRange: string,
+  timeRange: string
+): OpeningHour => {
   const [startDay, endDay] = dayRange.toLowerCase().split(/\s*\-\s*/);
   const daysOfWeek = [];
   for (let i = days.indexOf(startDay); i <= days.indexOf(endDay); i++) {
@@ -27,6 +30,8 @@ export const parseHours = (dayRange: string, timeRange: string): OpeningHour => 
 export const fetchDocument = async (url: string) => {
   const response = await fetch(url);
   const html = await response.text();
-  const {document} = new JSDOM(html, {features: {QuerySelector: true}}).window;
+  const { document } = new JSDOM(html, {
+    features: { QuerySelector: true }
+  }).window;
   return document;
-}
+};

@@ -38,15 +38,15 @@ const updateRestaurants = async (req, res) => {
 const login = (req, res) => {
   const requestPassword = new Buffer(
     crypto
-      .createHash('sha256')
-      .update(req.body.password)
-      .digest('base64')
+    .createHash('sha256')
+    .update(req.body.password)
+    .digest('base64')
   );
   const password = new Buffer(
     crypto
-      .createHash('sha256')
-      .update(req.app.locals.adminPassword)
-      .digest('base64')
+    .createHash('sha256')
+    .update(req.app.locals.adminPassword)
+    .digest('base64')
   );
   if (req.session.admin) {
     res.json({ message: 'Already logged in.' });
@@ -70,26 +70,26 @@ const logout = (req, res) => {
 const router = express.Router();
 
 router
-  .use(verifyPassword)
-  .post('/login', login)
-  .post('/logout', logout)
-  .use(authenticate)
-  .use(createModelRouter(models.Area))
-  .use(createModelRouter(models.Restaurant))
-  .use(createModelRouter(models.Favorite))
-  .use(createModelRouter(models.Update))
-  .use(createModelRouter(models.OpeningHour))
-  .get('/logged-in', (req, res) => res.json({ message: 'Yes.' }))
-  .get('/opening-hours/:restaurantId', async (req, res) => {
-    res.json(
-      await models.OpeningHour.forRestaurant(
-        req.params.restaurantId,
-        undefined,
-        true
-      )
-    );
-  })
-  .get('/update-area-maps', updateAreaMaps)
-  .post('/update-restaurants', updateRestaurants);
+.use(verifyPassword)
+.post('/login', login)
+.post('/logout', logout)
+.use(authenticate)
+.use(createModelRouter(models.Area))
+.use(createModelRouter(models.Restaurant))
+.use(createModelRouter(models.Favorite))
+.use(createModelRouter(models.Update))
+.use(createModelRouter(models.OpeningHour))
+.get('/logged-in', (req, res) => res.json({ message: 'Yes.' }))
+.get('/opening-hours/:restaurantId', async (req, res) => {
+  res.json(
+    await models.OpeningHour.forRestaurant(
+      req.params.restaurantId,
+      undefined,
+      true
+    )
+  );
+})
+.get('/update-area-maps', updateAreaMaps)
+.post('/update-restaurants', updateRestaurants);
 
 export default router;

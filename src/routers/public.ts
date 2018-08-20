@@ -96,9 +96,9 @@ export const getRestaurants = async (req, res, next) => {
       if (req.query.ids) {
         where.id = {
           $in: req.query.ids
-            .split(',')
-            .filter(id => !isNaN(id))
-            .map(id => Number(id))
+          .split(',')
+          .filter(id => !isNaN(id))
+          .map(id => Number(id))
         };
       }
       restaurants = await models.Restaurant.findAll({ where });
@@ -123,11 +123,11 @@ export const getUpdates = async (req, res) => {
 };
 
 export default express
-  .Router()
-  .use(parseLanguage)
-  .get('/menus', getMenus)
-  .get('/restaurants/:restaurantId/menu(.:ext)?', getRestaurantMenus)
-  .get('/favorites', getFavorites)
-  .get('/areas', getAreas)
-  .get('/restaurants', getRestaurants)
-  .get('/updates', getUpdates);
+.Router()
+.use(parseLanguage)
+.get('/menus', getMenus)
+.get('/restaurants/:restaurantId/menu(.:ext)?', getRestaurantMenus)
+.get('/favorites', getFavorites)
+.get('/areas', getAreas)
+.get('/restaurants', getRestaurants)
+.get('/updates', getUpdates);
