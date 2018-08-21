@@ -63,5 +63,8 @@ export async function updateAllRestaurants() {
 }
 
 if (!module.parent) {
-  updateAllRestaurants();
+  (async () => {
+    await updateAllRestaurants();
+    process.exit();
+  })();
 }

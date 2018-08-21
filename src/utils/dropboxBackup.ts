@@ -23,6 +23,7 @@ const backup = async () => {
   });
 };
 
-models.sequelize.sync().then(() => {
-  backup();
+models.sequelize.sync().then(async () => {
+  await backup();
+  process.exit();
 });
