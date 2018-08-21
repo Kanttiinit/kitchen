@@ -8,6 +8,7 @@ type MenuFormat = {
   LunchMenus: Array<{
     Date: string;
     SetMenus: Array<{
+      Name: string;
       Meals: Array<{
         Name: string;
         Diets: Array<string>;
@@ -36,12 +37,15 @@ const parser: Parser = {
     return data.LunchMenus.map(menu => ({
       day: moment(menu.Date, 'D.M.YYYY').format('YYYY-MM-DD'),
       courses: flatten(
-        menu.SetMenus.map(m =>
-          m.Meals.map(course => ({
-            title: course.Name,
+        menu.SetMenus.map(m => {
+          let unknownGroup = 1;
+          return m.Meals.map(course => ({
+            title: `${m.Name ? m.Name : 'Lunch ' + unknownGroup++}: ${
+              course.Name
+            }`,
             properties: normalizeProperties(course.Diets)
-          }))
-        )
+          }));
+        })
       )
     }));
   }
