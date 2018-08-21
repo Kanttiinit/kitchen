@@ -1,4 +1,4 @@
-import {pick} from 'lodash';
+import { pick } from 'lodash';
 
 export default {
   parsePublicParams: (model, params, lang) => {
@@ -8,9 +8,10 @@ export default {
     .reduce((output, key) => {
       const field = model.getDataValue(key);
       const normalizedKey = key.replace('_i18n', '');
-      const value = lang in field ? field[lang] : field[Object.keys(field)[0]];
-      return {...output, [normalizedKey]: value};
-    }, {}); 
-    return {...basicAttrs, ...langAttrs};
+      const value =
+          lang in field ? field[lang] : field[Object.keys(field)[0]];
+      return { ...output, [normalizedKey]: value };
+    }, {});
+    return { ...basicAttrs, ...langAttrs };
   }
 };

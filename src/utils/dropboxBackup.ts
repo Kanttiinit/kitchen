@@ -3,7 +3,6 @@ import * as moment from 'moment';
 import * as zlib from 'zlib';
 import { promisify } from 'util';
 import * as models from '../models';
-import * as schedule from 'node-schedule';
 import 'isomorphic-fetch';
 
 const dropbox = new Dropbox({ accessToken: process.env.DROPBOX_TOKEN });
@@ -24,6 +23,6 @@ const backup = async () => {
   });
 };
 
-models.sequelize.sync().then(async () => {
-  schedule.scheduleJob('0 0 * * *', backup);
+models.sequelize.sync().then(() => {
+  backup();
 });

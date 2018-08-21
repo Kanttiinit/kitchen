@@ -7,9 +7,9 @@ function formatIds(idString) {
   return (
     idString &&
     idString
-      .split(',')
-      .filter(id => !isNaN(id))
-      .map(id => +id)
+    .split(',')
+    .filter(id => !isNaN(id))
+    .map(id => +id)
   );
 }
 
@@ -17,9 +17,9 @@ export default async (req, res) => {
   const restaurantIds = formatIds(req.query.restaurants);
   const areaIds = formatIds(req.query.areas);
   const days = (req.query.days || '')
-    .split(',')
-    .map(day => moment(day))
-    .filter(m => m.isValid());
+  .split(',')
+  .map(day => moment(day))
+  .filter(m => m.isValid());
 
   let where = {};
   if (restaurantIds) {
