@@ -1,5 +1,6 @@
 import * as models from '../models';
 import parse from './index';
+import { log } from '../utils/log';
 
 const langs = ['fi', 'en'];
 
@@ -43,23 +44,23 @@ export async function updateRestaurantMenus(restaurant) {
     langMenus.push(await parse(restaurant.menuUrl, lang));
   }
   const menus = joinLangMenus(langMenus);
-  console.log(`\tFound ${menus.length} days of menus.`);
   for (const menu of menus) {
     await createOrUpdateMenu(menu, restaurant);
   }
+  log('Menu parser', 'menu updated', restaurant.name, menus.length);
 }
 
 export async function updateAllRestaurants() {
   const restaurants = await models.Restaurant.findAll();
-  console.log('Start processing ' + restaurants.length + ' restaurants.\n');
+  const start = Date.now();
   for (const restaurant of restaurants) {
     try {
-      console.log(`Processing ${restaurant.name_i18n.fi}:`);
       await updateRestaurantMenus(restaurant);
     } catch (e) {
-      console.log(`Failed processing ${restaurant.name_i18n.fi}.`, e);
+      log('Menu parser', 'menu update failed', restaurant.name, e.message);
     }
   }
+  log('Menu parser', 'all menus updated', 'time', Date.now() - start);
 }
 
 if (!module.parent) {
