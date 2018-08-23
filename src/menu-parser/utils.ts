@@ -1,3 +1,4 @@
+const xml2js = require('xml2js').parseString;
 import * as moment from 'moment';
 import fetch from 'node-fetch';
 
@@ -45,3 +46,15 @@ export const createPropertyNormalizer = (map: {
   })
   .filter(p => p !== Property.IGNORE)
   .sort();
+
+export function parseXml(xml): Promise<any> {
+  return new Promise((resolve, reject) => {
+    xml2js(xml, function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}

@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { JSDOM } from 'jsdom';
 import { Parser } from '..';
-import { text, Property, createPropertyNormalizer } from '../utils';
+import { text, Property, createPropertyNormalizer, parseXml } from '../utils';
 
 const normalizeProperties = createPropertyNormalizer({
   '*': Property.HEALTHIER_CHOICE,
@@ -12,58 +12,30 @@ const normalizeProperties = createPropertyNormalizer({
 });
 
 const parser: Parser = {
-  pattern: /^https?:\/\/kipsari.com/,
+  pattern: /^https?:\/\/www.kipsari.com/,
   async parse(url, lang) {
-    const html = await text(url);
-    const [_, name] = url.split('#');
-    const { document } = new JSDOM(html, {
-      features: { QuerySelector: true }
-    }).window;
-    const menuContainers: Array<any> = document.querySelectorAll(
-      '.kipsari-menu-open-container .erm_menu'
-    );
-    const menuContainer = Array.from(menuContainers).find(container =>
-      container
-      .querySelector('h1')
-      .textContent.toLowerCase()
-      .includes(name)
-    );
-    if (menuContainer) {
-      const menus: Array<any> = menuContainer.querySelectorAll('.erm_product');
-      return Array.from(menus)
-      .map((element, i) => {
-        const titleFi = element
-        .querySelector('.erm_product_title')
-        .textContent.trim();
-        const titleEn = element
-        .querySelector('.erm_product_desc')
-        .textContent.trim();
-        const matches = /^([a-z]+)([^\(]+)\((.+)+\)$/gi.exec(titleFi);
-        if (matches) {
-          const [_, dayOfWeek, title, properties] = matches;
-          return {
-            day: moment()
-            .isoWeekday(i + 1)
-            .format('YYYY-MM-DD'),
-            courses: [
-              {
-                title:
-                    lang === 'fi'
-                      ? title.trim()
-                      : titleEn
-                      .split(' ')
-                      .slice(1)
-                      .join(' ')
-                      .trim(),
-                properties: normalizeProperties(properties.split(/,\s?/g))
-              }
-            ]
-          };
-        }
-      })
-      .filter(Boolean);
-    }
-    return [];
+    const xml = await parseXml(await text(url));
+    const items = xml.rss.channel[0].item;
+    return items.map(({ title, description }) => {
+      const date = moment(title[0].split(', ')[1]).format('YYYY-MM-DD');
+      const { document } = new JSDOM(description[0], {
+        features: { QuerySelector: true }
+      }).window;
+      return {
+        date,
+        courses: (Array.from(document.querySelectorAll('span')) as any).map(
+          course => {
+            const match = course.textContent.trim().match(/\(.+\)$/gi);
+            return {
+              title: course.textContent.trim().replace(/\(.+\)$/, ''),
+              properties: match
+                ? normalizeProperties(match[0].split(/,\s?/g))
+                : []
+            };
+          }
+        )
+      };
+    });
   }
 };
 

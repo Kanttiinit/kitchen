@@ -1,6 +1,5 @@
 import { json, Property, createPropertyNormalizer } from '../utils';
 import * as moment from 'moment';
-import { JSDOM } from 'jsdom';
 
 import { Parser } from '../index';
 
