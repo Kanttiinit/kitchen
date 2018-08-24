@@ -29,6 +29,7 @@
     "sequelize-decorators": "^1.0.1",
     "typescript": "^3.0.1",
     "universal-analytics": "^0.4.15",
+    "winston": "^3.0.0",
     "xml2js": "^0.4.16"
   },
   "devDependencies": {

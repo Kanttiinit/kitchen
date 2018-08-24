@@ -1,12 +1,44 @@
-import * as ua from 'universal-analytics';
+import * as winston from 'winston';
+const { combine, printf, timestamp, colorize, json } = winston.format;
 
-const client = ua(process.env.UA_ID);
+const logger = winston.createLogger({
+  format: timestamp(),
+  transports: [
+    new winston.transports.File({
+      format: json(),
+      filename: 'log.log',
+      maxsize: 8192,
+      maxFiles: 10
+    })
+  ]
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  logger.add(
+    new winston.transports.Console({
+      format: combine(
+        colorize(),
+        printf(
+          info =>
+            `${info.timestamp} [${info.level}] ${info.task}: ${info.message} (${
+              info.value
+            })`
+        )
+      )
+    })
+  );
+}
 
 export const log = (
-  category: string,
-  action: string,
-  label?: string,
-  value?: string | number
+  level: string,
+  task: string,
+  message: string,
+  value: string | number
 ) => {
-  client.event(category, action, label, value);
+  logger.log({
+    level,
+    message,
+    task,
+    value
+  });
 };

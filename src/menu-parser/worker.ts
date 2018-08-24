@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import * as models from '../models';
 import parse from './index';
 import { log } from '../utils/log';
@@ -47,7 +49,12 @@ export async function updateRestaurantMenus(restaurant) {
   for (const menu of menus) {
     await createOrUpdateMenu(menu, restaurant);
   }
-  log('Menu parser', 'menu updated', restaurant.name, menus.length);
+  log(
+    'info',
+    'Menu parser',
+    'menu updated for ' + restaurant.name_i18n.fi,
+    menus.length
+  );
 }
 
 export async function updateAllRestaurants() {
@@ -57,10 +64,20 @@ export async function updateAllRestaurants() {
     try {
       await updateRestaurantMenus(restaurant);
     } catch (e) {
-      log('Menu parser', 'menu update failed', restaurant.name, e.message);
+      log(
+        'error',
+        'Menu parser',
+        'menu update failed: ' + e.message,
+        restaurant.name_i18n.fi
+      );
     }
   }
-  log('Menu parser', 'all menus updated', 'time', Date.now() - start);
+  log(
+    'info',
+    'Menu parser',
+    'all menus updated',
+    `${((Date.now() - start) / 1000).toFixed(2)}s`
+  );
 }
 
 if (!module.parent) {
