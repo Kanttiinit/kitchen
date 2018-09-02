@@ -103,11 +103,8 @@ export const getRestaurants = async (req, res, next) => {
       }
       restaurants = await models.Restaurant.findAll({ where });
     }
-    const newOpeningHours = !!req.query.newOpeningHours;
     const response = await Promise.all(
-      restaurants.map(restaurant =>
-        restaurant.getPublicAttributes(req.lang, newOpeningHours)
-      )
+      restaurants.map(restaurant => restaurant.getPublicAttributes(req.lang))
     );
     res.json(response);
   } catch (e) {

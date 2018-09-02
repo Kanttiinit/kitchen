@@ -41,16 +41,8 @@ export default (sequelize, DataTypes) => {
     }
   );
 
-  Restaurant.prototype.getPublicAttributes = async function(
-    lang,
-    newOpeningHours
-  ) {
-    let openingHours;
-    if (newOpeningHours) {
-      openingHours = await OpeningHour.forRestaurant(this.id);
-    } else {
-      openingHours = this.getPrettyOpeningHours();
-    }
+  Restaurant.prototype.getPublicAttributes = async function(lang) {
+    const openingHours = this.getPrettyOpeningHours();
 
     const output = {
       openingHours,
