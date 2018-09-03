@@ -1,3 +1,4 @@
+require('dotenv').config();
 const models = require('../dist/models');
 const moment = require('moment');
 
@@ -64,15 +65,23 @@ const createOpeningHour = (fields, offset = 0, duration = 7) => {
   });
 };
 
+const createChange = fields => {
+  return models.Change.create({
+    ...fields
+  });
+};
+
 async function syncDB() {
   await models.sequelize.sync({ force: true, match: /_test$/ });
 }
 
 module.exports = {
   syncDB,
+  models,
   createRestaurant,
   createOpeningHour,
   destroy,
   createArea,
-  createFavorite
+  createFavorite,
+  createChange
 };

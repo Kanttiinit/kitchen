@@ -8,7 +8,17 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         primaryKey: true
       },
-      modelName: { type: DataTypes.STRING, allowNull: false },
+      modelName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          modelExists(value) {
+            if (!sequelize.models[value]) {
+              throw new Error(`Model "${value}" does not exist.`);
+            }
+          }
+        }
+      },
       modelFilter: { type: DataTypes.JSONB, allowNull: false },
       change: { type: DataTypes.JSONB, allowNull: false },
       appliedAt: {
@@ -44,7 +54,6 @@ export default (sequelize, DataTypes) => {
     const item = await model.findOne({
       where: this.modelFilter
     });
-
     if (!item) {
       throw new Error('No model instance found when trying to apply a change.');
     }
