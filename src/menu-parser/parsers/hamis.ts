@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import { Parser } from '../index';
 
 const parser: Parser = {
-  pattern: /www\.hys\.net\/ruokalista\.xml/,
+  pattern: /hys\.net/,
   async parse(url) {
     const xml = await utils.text(url);
     const json = await utils.parseXml(xml);
@@ -13,9 +13,9 @@ const parser: Parser = {
       return {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
-        .split(/\s*,\s*\<br\s\/\>\r\n/)
+        .split('<br />')
         .filter(c => c.trim().length)
-        .map(_ => ({ title: _, properties: [] }))
+        .map(title => ({ title: title.trim(), properties: [] }))
       };
     });
   }
