@@ -1,5 +1,4 @@
 import utils from './utils';
-import { OpeningHour } from './index';
 
 const publicAttrs = [
   'id',

@@ -35,6 +35,33 @@ export default (sequelize, DataTypes) => {
     }
   );
 
+  Change.prototype.fetchModelInstance = async function() {
+    const model = sequelize.models[this.modelName];
+
+    if (!model) {
+      throw new Error(`No such model "${this.modelName}".`);
+    }
+
+    const item = await model.findOne({
+      where: this.modelFilter
+    });
+
+    if (!item) {
+      throw new Error('No model instance found.');
+    }
+
+    return item;
+  };
+
+  Change.prototype.prettyPrint = async function() {
+    const item = await this.fetchModelInstance();
+    const name = item.name_i18n.fi;
+    const changes = Object.keys(this.change).map(
+      key => `${key}: ${item[key]} -> ${this.change[key]}`
+    );
+    return `${this.modelName}: ${name}\n${changes.join('\n')}`;
+  };
+
   Change.prototype.apply = async function(appliedBy: string) {
     if (this.appliedAt) {
       throw new Error(
@@ -44,19 +71,7 @@ export default (sequelize, DataTypes) => {
       );
     }
 
-    const model = sequelize.models[this.modelName];
-    if (!model) {
-      throw new Error(
-        `No such model "${this.modelName}" when trying to apply a change.`
-      );
-    }
-
-    const item = await model.findOne({
-      where: this.modelFilter
-    });
-    if (!item) {
-      throw new Error('No model instance found when trying to apply a change.');
-    }
+    const item = await this.fetchModelInstance();
 
     await sequelize.transaction(async transaction => {
       await item.update(this.change, { transaction });

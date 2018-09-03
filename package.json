@@ -27,6 +27,7 @@
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.4.2",
     "sequelize-decorators": "^1.0.1",
+    "telegraf": "^3.23.0",
     "typescript": "^3.0.1",
     "universal-analytics": "^0.4.15",
     "winston": "^3.0.0",

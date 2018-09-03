@@ -5,6 +5,7 @@ import { sortBy } from 'lodash';
 const getPublics = (items, lang) =>
   items.map(item => item.getPublicAttributes(lang));
 
+import createChange from './createChange';
 import getMenus from './getMenus';
 import getRestaurantMenus from './getRestaurantMenus';
 
@@ -127,4 +128,5 @@ export default express
 .get('/favorites', getFavorites)
 .get('/areas', getAreas)
 .get('/restaurants', getRestaurants)
-.get('/updates', getUpdates);
+.get('/updates', getUpdates)
+.post('/change', createChange);
