@@ -38,7 +38,10 @@ export default app
     secret: sessionSecret,
     saveUninitialized: false,
     resave: false,
-    store: new SessionStore({ db: sequelize })
+    store: new SessionStore({ db: sequelize }),
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    }
   })
 )
 .use(ua.middleware(process.env.UA_ID))
