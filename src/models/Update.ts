@@ -11,7 +11,8 @@ export default (sequelize, DataTypes) => {
         primaryKey: true
       },
       type: DataTypes.STRING,
-      description: DataTypes.STRING
+      title: DataTypes.STRING,
+      description: DataTypes.TEXT
     },
     {
       tableName: 'updates'
@@ -20,7 +21,7 @@ export default (sequelize, DataTypes) => {
   Update.prototype.getPublicAttributes = function(lang) {
     return utils.parsePublicParams(
       this,
-      ['id', 'type', 'description', 'createdAt'],
+      ['id', 'type', 'title', 'description', 'createdAt'],
       lang
     );
   };

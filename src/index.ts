@@ -13,9 +13,16 @@ import routers from './routers/';
 
 const app = express();
 
-const SessionStore = SequelizeSession(session.Store);
+const cookieMaxAge = 1000 * 60 * 60 * 24 * 30;
 const sessionSecret = process.env.SESSION_SECRET;
 const origins = process.env.ORIGINS;
+
+const SessionStore = new SequelizeSession(session.Store);
+const sessionStore = new SessionStore({
+  db: sequelize,
+  expiration: cookieMaxAge
+});
+app.locals.sessionStore = sessionStore;
 
 if (!sessionSecret) {
   throw new Error('SESSION_SECRET is required.');
@@ -38,9 +45,9 @@ export default app
     secret: sessionSecret,
     saveUninitialized: false,
     resave: false,
-    store: new SessionStore({ db: sequelize }),
+    store: sessionStore,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+      maxAge: cookieMaxAge
     }
   })
 )
