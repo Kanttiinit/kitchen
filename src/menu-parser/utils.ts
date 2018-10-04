@@ -13,7 +13,8 @@ export const formatUrl = (url, date = moment()) =>
   url
   .replace('%year%', date.format('YYYY'))
   .replace('%month%', date.format('MM'))
-  .replace('%day%', date.format('DD'));
+  .replace('%day%', date.format('DD'))
+  .replace('%week%', date.format('ww'));
 
 export const json = url => fetch(url).then(r => r.json());
 export const text = url => fetch(url).then(r => r.text());

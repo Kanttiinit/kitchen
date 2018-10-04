@@ -4,7 +4,8 @@ import {
   json,
   Property,
   createPropertyNormalizer,
-  propertyRegex
+  propertyRegex,
+  formatUrl
 } from '../utils';
 import { Parser } from '..';
 
@@ -33,7 +34,7 @@ type Response = {
 const parser: Parser = {
   pattern: /restel\.fi/,
   async parse(url) {
-    const data: Response = await json(url);
+    const data: Response = await json(formatUrl(url));
     const referenceDate = moment(
       `${data.lunch_weeks}-${data.list_year}`,
       'WW-YYYY'
