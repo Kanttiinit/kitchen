@@ -10,6 +10,7 @@
         "${workspaceRoot}/node_modules/.bin/jest",
         "--runInBand",
         "--onlyChanged",
+        "--setupTestFrameworkScriptFile='<rootDir>/test/setup.js'",
         "--watch"
       ],
       "console": "integratedTerminal",

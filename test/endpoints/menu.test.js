@@ -49,4 +49,15 @@ describe('/menu', () => {
     expect(Object.keys(response.body['2'])).toEqual(['2018-06-03']);
     expect(response.body['3']).toBeUndefined();
   });
+
+  it('respects the language', async () => {
+    const responseEn = await request(app)
+    .get('/menus?lang=en&days=2018-06-01')
+    .expect(200);
+    expect(responseEn.body['1']['2018-06-01'][0].title).toEqual('Food 1');
+    const responseFi = await request(app)
+    .get('/menus?lang=fi&days=2018-06-01')
+    .expect(200);
+    expect(responseFi.body['1']['2018-06-01'][0].title).toEqual('Ruoka 1');
+  });
 });

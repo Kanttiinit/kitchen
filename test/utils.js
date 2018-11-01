@@ -19,11 +19,16 @@ function createMenu(id, fields) {
   return models.Menu.create({
     id,
     day: moment('2018-01-01').toDate(),
-    courses_i18n: [
-      { title_fi: 'Ruoka', title_en: 'Food', properties: ['G', 'L'] },
-      { title_fi: 'Ruoka 2', title_en: 'Food 2', properties: ['G', 'L'] },
-      { title_fi: 'Ruoka 3', title_en: 'Food 3', properties: ['G', 'L'] }
-    ],
+    courses_i18n: {
+      fi: [
+        { title: 'Ruoka 1', properties: ['G', 'L'] },
+        { title: 'Ruoka 2', properties: ['G', 'L'] }
+      ],
+      en: [
+        { title: 'Food 1', properties: ['G', 'L'] },
+        { title: 'Food 2', properties: ['G', 'L'] }
+      ]
+    },
     ...fields
   });
 }

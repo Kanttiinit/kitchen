@@ -12,7 +12,18 @@ export default (sequelize, DataTypes) => {
         primaryKey: true
       },
       day: { type: DataTypes.DATEONLY, allowNull: false },
-      courses_i18n: { type: DataTypes.JSON, allowNull: false }
+      courses_i18n: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        validate: {
+          isCorrectFormat(value) {
+            const langs = Object.keys(value);
+            if (langs.some(lang => lang !== 'fi' && lang !== 'en')) {
+              throw new Error('The only allowed languages are fi and en.');
+            }
+          }
+        }
+      }
     },
     {
       tableName: 'menus'
