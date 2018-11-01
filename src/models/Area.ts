@@ -1,15 +1,6 @@
 import utils from './utils';
-import getMap from '../utils/getMap';
 
-const publicAttrs = [
-  'id',
-  'name',
-  'image',
-  'latitude',
-  'longitude',
-  'locationRadius',
-  'mapImageUrl'
-];
+const publicAttrs = ['id', 'name', 'latitude', 'longitude', 'locationRadius'];
 
 export default (sequelize, DataTypes) => {
   const Area = sequelize.define(
@@ -22,7 +13,6 @@ export default (sequelize, DataTypes) => {
         primaryKey: true
       },
       name_i18n: DataTypes.JSON,
-      image: DataTypes.STRING,
       locationRadius: DataTypes.INTEGER,
       latitude: DataTypes.DOUBLE,
       longitude: DataTypes.DOUBLE,
@@ -30,15 +20,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
-      },
-      mapImageUrl: DataTypes.STRING
+      }
     },
     {
-      tableName: 'areas',
-      hooks: {
-        beforeUpdate: area => area.fetchMapImageUrl(),
-        beforeCreate: area => area.fetchMapImageUrl()
-      }
+      tableName: 'areas'
     }
   );
 
@@ -52,14 +37,6 @@ export default (sequelize, DataTypes) => {
     }
 
     return output;
-  };
-
-  Area.prototype.fetchMapImageUrl = async function() {
-    this.mapImageUrl = await getMap({
-      latitude: this.latitude,
-      longitude: this.longitude,
-      radius: this.locationRadius
-    });
   };
 
   return Area;
