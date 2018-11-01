@@ -1,10 +1,16 @@
 const request = require('supertest');
-const app = require('../dist/').default;
+const app = require('../../dist').default;
+const utils = require('../utils');
 
 const password = 'password';
 app.locals.adminPassword = password;
 
 describe('Admin functionality', () => {
+  afterAll(async () => {
+    await app.locals.sessionStore.stopExpiringSessions();
+    await utils.closeDB();
+  });
+
   describe('before logging in', () => {
     test('can not read logged in state', async () => {
       await request(app)

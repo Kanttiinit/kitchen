@@ -1,4 +1,3 @@
-require('dotenv').config();
 const models = require('../dist/models');
 const moment = require('moment');
 
@@ -12,6 +11,19 @@ function createArea(id, fields) {
     locationRadius: 2,
     latitude: 60.123,
     longitude: 24.123,
+    ...fields
+  });
+}
+
+function createMenu(id, fields) {
+  return models.Menu.create({
+    id,
+    day: moment('2018-01-01').toDate(),
+    courses_i18n: [
+      { title_fi: 'Ruoka', title_en: 'Food', properties: ['G', 'L'] },
+      { title_fi: 'Ruoka 2', title_en: 'Food 2', properties: ['G', 'L'] },
+      { title_fi: 'Ruoka 3', title_en: 'Food 3', properties: ['G', 'L'] }
+    ],
     ...fields
   });
 }
@@ -75,13 +87,19 @@ async function syncDB() {
   await models.sequelize.sync({ force: true, match: /_test$/ });
 }
 
+async function closeDB() {
+  await models.sequelize.close();
+}
+
 module.exports = {
   syncDB,
+  closeDB,
   models,
   createRestaurant,
   createOpeningHour,
   destroy,
   createArea,
   createFavorite,
-  createChange
+  createChange,
+  createMenu
 };

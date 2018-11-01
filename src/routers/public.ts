@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as models from '../models';
+import { Op } from 'sequelize';
 import { sortBy } from 'lodash';
 
 const getPublics = (items, lang) =>
@@ -96,7 +97,7 @@ export const getRestaurants = async (req, res, next) => {
       const where: { id?: any; hidden: boolean } = { hidden: false };
       if (req.query.ids) {
         where.id = {
-          $in: req.query.ids
+          [Op.in]: req.query.ids
           .split(',')
           .filter(id => !isNaN(id))
           .map(id => Number(id))

@@ -1,4 +1,5 @@
 import * as moment from 'moment';
+import { Op } from 'sequelize';
 
 import * as Sequelize from 'sequelize';
 import * as models from '../models';
@@ -23,9 +24,9 @@ export default async (req, res) => {
 
   let where = {};
   if (restaurantIds) {
-    where['id'] = { $in: restaurantIds };
+    where['id'] = { [Op.in]: restaurantIds };
   } else if (areaIds) {
-    where['AreaId'] = { $in: areaIds };
+    where['AreaId'] = { [Op.in]: areaIds };
   }
 
   const restaurants = await models.Restaurant.findAll({
@@ -36,8 +37,10 @@ export default async (req, res) => {
         model: models.Menu,
         where: {
           day: days.length
-            ? { $in: days.map(day => day.format('YYYY-MM-DD')) }
-            : { $gte: Sequelize.fn('date_trunc', 'day', Sequelize.fn('now')) }
+            ? { [Op.in]: days.map(day => day.format('YYYY-MM-DD')) }
+            : {
+              [Op.gte]: Sequelize.fn('date_trunc', 'day', Sequelize.fn('now'))
+            }
         }
       }
     ],

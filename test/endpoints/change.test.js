@@ -7,8 +7,9 @@ describe('/change', () => {
     await utils.syncDB();
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await app.locals.sessionStore.stopExpiringSessions();
+    await utils.closeDB();
   });
 
   it('creating change works', async () => {

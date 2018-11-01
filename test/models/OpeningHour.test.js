@@ -1,9 +1,9 @@
-const { OpeningHour } = require('../dist/models');
-const { createRestaurant, createOpeningHour, syncDB } = require('./utils');
+const { OpeningHour } = require('../../dist/models');
+const { createRestaurant, createOpeningHour, syncDB } = require('../utils');
 
 const get = (date = '2018-01-01') => OpeningHour.forRestaurant(1, date);
 
-describe('Opening hours', () => {
+describe.skip('Opening hours', () => {
   let restaurants = [];
   beforeEach(async () => {
     await syncDB();

@@ -1,25 +1,26 @@
 const request = require('supertest');
-const app = require('../dist').default;
+const app = require('../../dist').default;
 const {
   validateRestaurant,
   validateArea,
   validateFavorite,
   validateMenuEndpoint
-} = require('./validateSchema');
+} = require('../validateSchema');
 
 const {
   createArea,
   createRestaurant,
   createFavorite,
-  syncDB
-} = require('./utils');
+  syncDB,
+  closeDB
+} = require('../utils');
 
 const get = endpoint =>
   request(app)
   .get(endpoint)
   .expect(200);
 
-describe.only('Data endpoints', function() {
+describe('Data endpoints', function() {
   beforeAll(async () => {
     await syncDB();
     await Promise.all([
@@ -37,6 +38,11 @@ describe.only('Data endpoints', function() {
       createFavorite(2),
       createFavorite(3)
     ]);
+  });
+
+  afterAll(async () => {
+    await app.locals.sessionStore.stopExpiringSessions();
+    await closeDB();
   });
 
   test('restaurant endpoint returns correct data', async () => {

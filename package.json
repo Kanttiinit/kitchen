@@ -46,8 +46,8 @@
     "node": "10.1.0"
   },
   "scripts": {
-    "test": "jest --runInBand",
-    "test:watch": "jest --watch --runInBand",
+    "test": "jest --runInBand --setupTestFrameworkScriptFile '<rootDir>/test/setup.js'",
+    "test:watch": "yarn test --watch",
     "start": "node dist/index.js",
     "install": "npm run build",
     "lint": "eslint src/**/*.ts",

@@ -1,8 +1,18 @@
-const { createRestaurant, createChange, syncDB, models } = require('./utils');
+const {
+  createRestaurant,
+  createChange,
+  syncDB,
+  closeDB,
+  models
+} = require('../utils');
 
 describe('Change', () => {
   beforeEach(async () => {
     await syncDB();
+  });
+
+  afterAll(async () => {
+    await closeDB();
   });
 
   describe('creating', () => {
