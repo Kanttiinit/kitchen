@@ -13,7 +13,7 @@ if (process.env.NODE_ENV !== 'test') {
 
   bot.on('callback_query', async ctx => {
     try {
-      const [_, id] = ctx.callbackQuery.data.split(':');
+      const [, id] = ctx.callbackQuery.data.split(':');
       const change = await Change.findById(Number(id));
       await change.apply(ctx.callbackQuery.from.username);
       await ctx.editMessageText(

@@ -14,7 +14,7 @@ export const parseLanguage = (req, res, next) => {
   if (['fi', 'en'].indexOf(req.query.lang) > -1) {
     req.lang = req.query.lang;
   } else {
-    req.lang = 'fi'
+    req.lang = 'fi';
   }
   next();
 };
