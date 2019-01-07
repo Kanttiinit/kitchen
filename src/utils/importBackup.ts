@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { readFileSync } from 'fs';
 import * as readline from 'readline';
 import { promisify } from 'util';
