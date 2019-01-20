@@ -1,4 +1,5 @@
 import utils from './utils';
+import * as moment from 'moment';
 
 const publicAttrs = [
   'id',
@@ -13,6 +14,14 @@ const publicAttrs = [
 
 function formatHour(hour) {
   return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
+}
+
+function formatHours(hours) {
+  if (!hours) {
+    return 'closed';
+  }
+
+  return `${formatHour(hours[0])} - ${formatHour(hours[1])}`;
 }
 
 export default (sequelize, DataTypes) => {
@@ -36,7 +45,33 @@ export default (sequelize, DataTypes) => {
       hidden: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
     },
     {
-      tableName: 'restaurants'
+      tableName: 'restaurants',
+      validate: {
+        areValidOpeningHours() {
+          const value = this.openingHours;
+          if (value.length !== 7) {
+            throw new Error('Opening hours array needs to have a length of 7.');
+          }
+          for (const hours of value) {
+            const isClosed = hours === null;
+            if (isClosed) {
+              continue;
+            }
+            const [open, close] = hours;
+            if (typeof open !== 'number' || typeof close !== 'number') {
+              throw new Error('Open and close times need to be numbers.');
+            }
+            const openMoment = moment(formatHour(open), 'HH:mm');
+            const closeMoment = moment(formatHour(close), 'HH:mm');
+            if (!openMoment.isValid() || !closeMoment.isValid()) {
+              throw new Error(`One or both of the following are not valid opening hours: ${open}, ${close}.`);
+            }
+            if (openMoment.isSameOrAfter(closeMoment)) {
+              throw new Error(`Opening time cannot be after closing time: ${open}, ${close}.`);
+            }
+          }
+        }
+      }
     }
   );
 
@@ -59,9 +94,36 @@ export default (sequelize, DataTypes) => {
 
   Restaurant.prototype.getPrettyOpeningHours = function() {
     return this.openingHours.map(curr => {
-      if (curr) return formatHour(curr[0]) + ' - ' + formatHour(curr[1]);
+      if (curr) {
+        return formatHours(curr);
+      }
       return null;
     });
+  };
+
+  Restaurant.changeFormatters = {
+    openingHours(previousValue, nextValue) {
+      return nextValue
+      .map((nextHours, i) => {
+        const previousHours = previousValue[i];
+        const weekday = moment()
+        .set({ isoWeekday: i + 1 })
+        .format('ddd');
+        return [weekday, formatHours(previousHours), formatHours(nextHours)];
+      })
+      .filter(([, prev, next]) => prev !== next)
+      .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
+      .join('\n');
+    },
+    address(previousValue, nextValue) {
+      return `${previousValue} -> ${nextValue}`;
+    },
+    latitude(previousValue, nextValue) {
+      return `${previousValue} -> ${nextValue}`;
+    },
+    longitude(previousValue, nextValue) {
+      return `${previousValue} -> ${nextValue}`;
+    }
   };
 
   return Restaurant;

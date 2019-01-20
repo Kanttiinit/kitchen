@@ -4,14 +4,7 @@ export default (sequelize, DataTypes) => {
     {
       modelName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          modelExists(value) {
-            if (!sequelize.models[value]) {
-              throw new Error(`Model "${value}" does not exist.`);
-            }
-          }
-        }
+        allowNull: false
       },
       uuid: {
         type: DataTypes.UUID,
@@ -30,7 +23,26 @@ export default (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: 'changes'
+      tableName: 'changes',
+      validate: {
+        modelExistsAndHasChangeFormatter() {
+          const model = sequelize.models[this.modelName];
+          if (!model) {
+            throw new Error(`Model "${this.modelName}" does not exist.`);
+          }
+
+          const blockedFields = Object.keys(this.change).filter(
+            key => !model.changeFormatters[key]
+          );
+          if (blockedFields.length) {
+            throw new Error(
+              `Creating a change is not allowed for the following fields: ${blockedFields.join(
+                ', '
+              )}`
+            );
+          }
+        }
+      }
     }
   );
 
@@ -53,10 +65,11 @@ export default (sequelize, DataTypes) => {
   };
 
   Change.prototype.prettyPrint = async function() {
+    const model = sequelize.models[this.modelName];
     const item = await this.fetchModelInstance();
     const name = item.name_i18n.fi;
     const changes = Object.keys(this.change).map(
-      key => `${key}: ${item[key]} -> ${this.change[key]}`
+      key => `${key}:\n${model.changeFormatters[key](item[key], this.change[key])}\n\n`
     );
     return `${this.modelName}: ${name}\n${changes.join('\n')}`;
   };
