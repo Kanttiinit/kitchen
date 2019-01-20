@@ -42,7 +42,7 @@ describe('Change', () => {
       });
       await change.apply('Person');
       const newRestaurant = await models.Restaurant.findById(restaurant.id);
-      const newChange = await models.Change.findById(change.id);
+      const newChange = await models.Change.findByPk(change.uuid);
       expect(newRestaurant.address).toBe('New address');
       expect(newRestaurant.latitude).toBe(61.321);
       expect(newChange.appliedBy).toBe('Person');
@@ -60,7 +60,7 @@ describe('Change', () => {
         }
       });
       await change.apply('Person');
-      const sameChange = await models.Change.findById(change.id);
+      const sameChange = await models.Change.findByPk(change.uuid);
       await expect(sameChange.apply('Another person')).rejects.toThrowError();
     });
 

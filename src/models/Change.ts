@@ -2,12 +2,6 @@ export default (sequelize, DataTypes) => {
   const Change = sequelize.define(
     'Change',
     {
-      id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
-      },
       modelName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -18,6 +12,11 @@ export default (sequelize, DataTypes) => {
             }
           }
         }
+      },
+      uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
       },
       modelFilter: { type: DataTypes.JSONB, allowNull: false },
       change: { type: DataTypes.JSONB, allowNull: false },

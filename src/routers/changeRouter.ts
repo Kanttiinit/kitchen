@@ -13,8 +13,8 @@ if (process.env.NODE_ENV !== 'test') {
 
   bot.on('callback_query', async ctx => {
     try {
-      const [, id] = ctx.callbackQuery.data.split(':');
-      const change = await Change.findById(Number(id));
+      const [, uuid] = ctx.callbackQuery.data.split(':');
+      const change = await Change.findByPk(Number(uuid));
       await change.apply(ctx.callbackQuery.from.username);
       await ctx.editMessageText(
         ctx.callbackQuery.message.text.replace(
@@ -34,25 +34,13 @@ if (process.env.NODE_ENV !== 'test') {
 
 export default express
 .Router()
-.get('/accepted', async (req, res) => {
-  const changes = await Change.findAll({
-    where: {
-      id: { [Op.in]: req.session.createdChanges || [] },
-      appliedBy: { [Op.not]: null }
-    }
-  });
-  req.session.createdChanges = (req.session.createdChanges || []).filter(
-    id => !changes.some(change => change.id === id)
-  );
-  res.json(changes);
+.get('/:uuid', async (req, res) => {
+  const change = await Change.findByPk(req.params.uuid);
+  res.json(change);
 })
 .post('/', async (req, res, next) => {
   try {
     const change = await Change.create(req.body);
-    req.session.createdChanges = [
-      ...(req.session.createdChanges || []),
-      change.id
-    ];
 
     if (process.env.NODE_ENV !== 'test') {
       await telegram.sendMessage(
@@ -60,13 +48,13 @@ export default express
         `*Change requested*\n${await change.prettyPrint()}`,
         Extra.markdown().markup(m =>
           m.inlineKeyboard([
-            m.callbackButton('Accept', `accept:${change.id}`)
+            m.callbackButton('Accept', `accept:${change.uuid}`)
           ])
         )
       );
     }
 
-    res.json({ message: 'Success.' });
+    res.json({ uuid: change.uuid });
     next();
   } catch (e) {
     next({ code: 400, message: e.message });
