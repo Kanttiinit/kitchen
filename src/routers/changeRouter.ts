@@ -14,7 +14,7 @@ if (process.env.NODE_ENV !== 'test') {
   bot.on('callback_query', async ctx => {
     try {
       const [, uuid] = ctx.callbackQuery.data.split(':');
-      const change = await Change.findByPk(Number(uuid));
+      const change = await Change.findByPk(uuid);
       await change.apply(ctx.callbackQuery.from.username);
       await ctx.editMessageText(
         ctx.callbackQuery.message.text.replace(
