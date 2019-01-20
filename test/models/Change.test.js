@@ -90,6 +90,17 @@ describe('Change', () => {
       await expect(change.apply('Person')).rejects.toThrowError();
     });
 
+    it('throws when trying to create a change with a field without a change formatter', async () => {
+      const restaurant = await createRestaurant();
+      await expect(createChange({
+        modelName: 'Restaurant',
+        modelFilter: { id: restaurant.id },
+        change: {
+          AreaId: 6
+        }
+      })).rejects.toThrow('Creating a change is not allowed for the following fields: AreaId.');
+    });
+
     it('only applies a change to one result', async () => {
       const restaurantOne = await createRestaurant(1, {
         address: 'Address'

@@ -38,7 +38,7 @@ export default (sequelize, DataTypes) => {
             throw new Error(
               `Creating a change is not allowed for the following fields: ${blockedFields.join(
                 ', '
-              )}`
+              )}.`
             );
           }
         }
