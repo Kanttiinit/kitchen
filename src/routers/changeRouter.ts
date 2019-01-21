@@ -39,7 +39,7 @@ export default express
       }
     }
   });
-  res.json(changes);
+  res.json(changes.map(change => change.getPublicAttributes()));
 })
 .post('/', async (req, res, next) => {
   try {

@@ -64,6 +64,15 @@ export default (sequelize, DataTypes) => {
     return item;
   };
 
+  Change.prototype.getPublicAttributes = function() {
+    return {
+      createdAt: this.createdAt,
+      appliedAt: this.appliedAt,
+      change: this.change,
+      modelName: this.modelName
+    };
+  };
+
   Change.prototype.prettyPrint = async function() {
     const model = sequelize.models[this.modelName];
     const item = await this.fetchModelInstance();
