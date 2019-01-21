@@ -14,7 +14,7 @@ export const formatUrl = (url, date = moment()) =>
   .replace('%year%', date.format('YYYY'))
   .replace('%month%', date.format('MM'))
   .replace('%day%', date.format('DD'))
-  .replace('%week%', date.format('ww'));
+  .replace('%week%', date.format('w'));
 
 export const json = url => fetch(url).then(r => r.json());
 export const text = url => fetch(url).then(r => r.text());
