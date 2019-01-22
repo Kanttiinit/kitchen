@@ -78,9 +78,10 @@ export default (sequelize, DataTypes) => {
     const item = await this.fetchModelInstance();
     const name = item.name_i18n.fi;
     const changes = Object.keys(this.change).map(
-      key => `${key}:\n${model.changeFormatters[key](item[key], this.change[key])}\n\n`
+      key =>
+        `${key}:\n${model.changeFormatters[key](item[key], this.change[key])}\n`
     );
-    return `${this.modelName}: ${name}\n${changes.join('\n')}`;
+    return `${this.modelName}: ${name}\n\n${changes.join('\n')}`;
   };
 
   Change.prototype.apply = async function(appliedBy: string) {
