@@ -8,7 +8,7 @@ import * as moment from 'moment';
 
 const chatId = Number(process.env.TG_CHAT_ID);
 export const telegram = new Telegram(process.env.BOT_TOKEN);
-const bot = new Telegraf(process.env.BOT_TOKEN);
+export const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.on('callback_query', async ctx => {
   try {
