@@ -2,7 +2,7 @@ import * as moment from 'moment';
 import { Op } from 'sequelize';
 
 import * as Sequelize from 'sequelize';
-import * as models from '../models';
+import * as models from '../../models';
 
 function formatIds(idString) {
   return (

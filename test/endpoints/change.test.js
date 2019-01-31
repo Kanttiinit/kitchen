@@ -1,28 +1,7 @@
 const request = require('supertest');
 const app = require('../../dist').default;
 const utils = require('../utils');
-const { telegram, bot } = require('../../dist/routers/changeRouter');
-
-jest.mock('telegraf', () => ({
-  default: class {
-    constructor() {
-      this.on = jest.fn((action, fn) => {
-        this.on_callback = fn;
-      });
-      this.startPolling = jest.fn();
-    }
-  }
-}));
-
-jest.mock(
-  'telegraf/telegram',
-  () =>
-    class {
-      constructor() {
-        this.sendMessage = jest.fn().mockResolvedValue();
-      }
-    }
-);
+const { telegram, bot } = require('../../dist/routers/public/changeRouter');
 
 describe('/change', () => {
   beforeEach(async () => {

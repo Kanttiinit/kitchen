@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import * as express from 'express';
-import { Change } from '../models';
+import { Change } from '../../models';
 import Telegraf from 'telegraf';
 import * as Telegram from 'telegraf/telegram';
 import * as Extra from 'telegraf/extra';

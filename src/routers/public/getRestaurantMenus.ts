@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 
-import * as models from '../models';
+import * as models from '../../models';
 
 export default async (req, res, next) => {
   const { restaurantId } = req.params;

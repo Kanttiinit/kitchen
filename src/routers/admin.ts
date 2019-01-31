@@ -21,15 +21,6 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-const updateAreaMaps = async (req, res) => {
-  const areas = await models.Area.findAll();
-  for (const area of areas) {
-    await area.fetchMapImageUrl();
-    await area.save();
-  }
-  res.json({ message: 'Success.' });
-};
-
 const updateRestaurants = async (req, res) => {
   await worker.updateAllRestaurants();
   res.json({ message: 'ok' });
@@ -79,7 +70,6 @@ router
 .use(createModelRouter(models.Favorite))
 .use(createModelRouter(models.Update))
 .get('/logged-in', (req, res) => res.json({ message: 'Yes.' }))
-.get('/update-area-maps', updateAreaMaps)
 .post('/update-restaurants', updateRestaurants);
 
 export default router;
