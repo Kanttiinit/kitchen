@@ -31,12 +31,12 @@ export default (sequelize, DataTypes) => {
             throw new Error(`Model "${this.modelName}" does not exist.`);
           }
 
-          const blockedFields = Object.keys(this.change).filter(
-            key => !model.changeFormatters[key]
+          const unallowedFields = Object.keys(this.change).filter(
+            key => !model.changeableFields.includes(key)
           );
-          if (blockedFields.length) {
+          if (unallowedFields.length) {
             throw new Error(
-              `Creating a change is not allowed for the following fields: ${blockedFields.join(
+              `Creating a change is not allowed for the following fields: ${unallowedFields.join(
                 ', '
               )}.`
             );
@@ -74,14 +74,8 @@ export default (sequelize, DataTypes) => {
   };
 
   Change.prototype.prettyPrint = async function() {
-    const model = sequelize.models[this.modelName];
     const item = await this.fetchModelInstance();
-    const name = item.name_i18n.fi;
-    const changes = Object.keys(this.change).map(
-      key =>
-        `${key}:\n${model.changeFormatters[key](item[key], this.change[key])}\n`
-    );
-    return `${this.modelName}: ${name}\n\n${changes.join('\n')}`;
+    return item.formatChange(this.change);
   };
 
   Change.prototype.apply = async function(appliedBy: string) {

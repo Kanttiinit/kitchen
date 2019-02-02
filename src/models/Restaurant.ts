@@ -64,10 +64,14 @@ export default (sequelize, DataTypes) => {
             const openMoment = moment(formatHour(open), 'HH:mm');
             const closeMoment = moment(formatHour(close), 'HH:mm');
             if (!openMoment.isValid() || !closeMoment.isValid()) {
-              throw new Error(`One or both of the following are not valid opening hours: ${open}, ${close}.`);
+              throw new Error(
+                `One or both of the following are not valid opening hours: ${open}, ${close}.`
+              );
             }
             if (openMoment.isSameOrAfter(closeMoment)) {
-              throw new Error(`Opening time cannot be after closing time: ${open}, ${close}.`);
+              throw new Error(
+                `Opening time cannot be after closing time: ${open}, ${close}.`
+              );
             }
           }
         }
@@ -101,11 +105,22 @@ export default (sequelize, DataTypes) => {
     });
   };
 
-  Restaurant.changeFormatters = {
-    openingHours(previousValue, nextValue) {
-      return nextValue
+  Restaurant.changeableFields = [
+    'openingHours',
+    'address',
+    'latitude',
+    'longitude'
+  ];
+
+  const latLngLink = (lat, lon) =>
+    `[${lat}, ${lon}](http://www.google.com/maps/place/${lat},${lon})`;
+
+  Restaurant.prototype.formatChange = function(change) {
+    let formattedChange = '';
+    if (change.openingHours) {
+      formattedChange += change.openingHours
       .map((nextHours, i) => {
-        const previousHours = previousValue[i];
+        const previousHours = this.openingHours[i];
         const weekday = moment()
         .set({ isoWeekday: i + 1 })
         .format('ddd');
@@ -114,16 +129,22 @@ export default (sequelize, DataTypes) => {
       .filter(([, prev, next]) => prev !== next)
       .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
       .join('\n');
-    },
-    address(previousValue, nextValue) {
-      return `${previousValue} -> ${nextValue}`;
-    },
-    latitude(previousValue, nextValue) {
-      return `${previousValue} -> ${nextValue}`;
-    },
-    longitude(previousValue, nextValue) {
-      return `${previousValue} -> ${nextValue}`;
     }
+
+    if (change.address) {
+      formattedChange += `\nAddress: ${this.address} -> ${change.address}`;
+    }
+
+    if (change.latitude || change.longitude) {
+      formattedChange += `\nLocation: ${latLngLink(
+        this.latitude,
+        this.longitude
+      )} -> ${latLngLink(change.latitude, change.longitude)}`;
+    }
+
+    return `Restaurant name: ${this.name_i18n.fi}\nHomepage: ${
+      this.url
+    }\n\n${formattedChange}`;
   };
 
   return Restaurant;

@@ -11,10 +11,10 @@ export const telegram = new Telegram(process.env.BOT_TOKEN);
 export const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.on('callback_query', async ctx => {
+  const user = ctx.callbackQuery.from;
   try {
     const [action, uuid] = ctx.callbackQuery.data.split(':');
     const change = await Change.findByPk(uuid);
-    const user = ctx.callbackQuery.from;
     const time = moment().format('[on] DD.MM.YYYY [at] HH:mm');
     switch (action) {
       case 'accept':
@@ -24,9 +24,11 @@ bot.on('callback_query', async ctx => {
             '📝 Change requested',
             `✅ Change accepted by [${user.username}](tg://user?id=${
               user.id
-            }) at ${time}`
+            }) ${time}`
           ),
-          Extra.markdown().markup(m => m.inlineKeyboard([]))
+          Extra.markdown()
+          .webPreview(false)
+          .markup(m => m.inlineKeyboard([]))
         );
         break;
       case 'reject':
@@ -36,15 +38,20 @@ bot.on('callback_query', async ctx => {
             '📝 Change requested',
             `🚫 Change rejected by [${user.username}](tg://user?id=${
               user.id
-            }) at ${time}`
+            }) ${time}`
           ),
-          Extra.markdown().markup(m => m.inlineKeyboard([]))
+          Extra.markdown()
+          .webPreview(false)
+          .markup(m => m.inlineKeyboard([]))
         );
         break;
     }
   } catch (e) {
     console.log(e);
-    ctx.reply(`Error: ${e.message}`);
+    ctx.reply(
+      `[${user.username}](tg://user?id=${user.id}), Error: ${e.message}`,
+      Extra.markdown()
+    );
   }
 });
 
@@ -69,7 +76,9 @@ export default express
     await telegram.sendMessage(
       chatId,
       `📝 Change requested\n${await change.prettyPrint()}`,
-      Extra.markdown().markup(m =>
+      Extra.markdown()
+      .webPreview(false)
+      .markup(m =>
         m.inlineKeyboard([
           m.callbackButton('Accept', `accept:${change.uuid}`),
           m.callbackButton('Reject', `reject:${change.uuid}`)
