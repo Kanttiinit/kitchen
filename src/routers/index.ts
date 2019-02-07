@@ -2,10 +2,12 @@ import * as express from 'express';
 
 import adminRouter from './admin';
 import publicRouter from './public';
+import graphql from './graphql';
 const { version } = require('../../package.json');
 
 export default express
 .Router()
+.use('/graphql', graphql)
 .use('/admin', adminRouter)
 .use('/', publicRouter)
 .get('/help', (req, res) =>

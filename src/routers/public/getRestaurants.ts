@@ -1,7 +1,7 @@
 import * as models from '../../models';
 import { Op } from 'sequelize';
 
-async function getRestaurantsByQuery(query: string) {
+export async function getRestaurantsByQuery(query: string) {
   const options = {
     model: models.Restaurant,
     mapToModel: true,
@@ -29,7 +29,7 @@ async function getRestaurantsByQuery(query: string) {
   );
 }
 
-async function getRestaurantsByLocation(
+export async function getRestaurantsByLocation(
   latitude: number,
   longitude: number,
   distance: number
