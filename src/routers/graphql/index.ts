@@ -1,5 +1,5 @@
 import * as graphqlHTTP from 'express-graphql';
-import { Area, Restaurant, Favorite } from '../../models';
+import { Area, Restaurant, Favorite, Update } from '../../models';
 import {
   getRestaurantsByLocation,
   getRestaurantsByQuery
@@ -54,6 +54,15 @@ const rootValue = {
       id: f.id,
       name: f.name_i18n[lang] || f.name_i18n.fi,
       regexp: f.regexp
+    }));
+  },
+  async updates() {
+    const updates = await Update.findAll();
+    return updates.map(u => ({
+      id: u.id,
+      type: u.type,
+      title: u.title,
+      description: u.description
     }));
   }
 };

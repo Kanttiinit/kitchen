@@ -9,6 +9,7 @@ type Query {
   restaurantsByLocation(latitude: Float!, longitude: Float!, lang: Lang!, distance: Int = 2000): [Restaurant!]!
   restaurantsByQuery(query: String!, lang: Lang!): [Restaurant!]!
   favorites(lang: Lang!): [Favorite!]!
+  updates: [Update!]!
 }
 
 enum Lang {
@@ -37,7 +38,7 @@ type Restaurant {
   latitude: Float!
   longitude: Float!
   address: String
-  menus(day: String!): [Menu!]!
+  menus(day: String): [Menu!]!
 }
 
 type Menu {
@@ -52,7 +53,7 @@ type Course {
 
 type Update {
   id: Int!
-  type: String!
+  type: String
   title: String!
   description: String!
 }

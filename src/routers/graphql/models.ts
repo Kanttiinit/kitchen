@@ -1,4 +1,5 @@
 import { Area, Restaurant, Menu, Favorite } from '../../models';
+import * as moment from 'moment';
 
 class GraphQLModel {
   constructor(fields) {
@@ -42,7 +43,7 @@ export class GraphQLRestaurant extends GraphQLModel {
     return new GraphQLArea(item, this.lang);
   };
 
-  menus = async ({ day }) => {
+  menus = async ({ day = moment().format('YYYY-MM-DD') }) => {
     const items = await Menu.findAll({
       where: { RestaurantId: this.id, day: new Date(day) }
     });
@@ -56,6 +57,6 @@ export class GraphQLMenu extends GraphQLModel {
 
   constructor(fields, lang) {
     super(fields);
-    this.courses = this.courses_i18n[lang];
+    this.courses = this.courses_i18n[lang] || this.courses_i18n.fi || [];
   }
 }
