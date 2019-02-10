@@ -43,11 +43,11 @@ export class GraphQLRestaurant extends GraphQLModel {
     return new GraphQLArea(item, this.lang);
   };
 
-  menus = async ({ day = moment().format('YYYY-MM-DD') }) => {
-    const items = await Menu.findAll({
+  menu = async ({ day = moment().format('YYYY-MM-DD') }) => {
+    const item = await Menu.findOne({
       where: { RestaurantId: this.id, day: new Date(day) }
     });
-    return items.map(item => new GraphQLMenu(item, this.lang));
+    return new GraphQLMenu(item, this.lang);
   };
 }
 
