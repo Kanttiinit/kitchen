@@ -39,6 +39,8 @@ type RestaurantWithDistance {
   longitude: Float!
   # The human-readable address of the restaurant.
   address: String
+  # Weekly opening hours, first element in array is Monday.
+  openingHours: [String]!
   menu(day: String): Menu!
   distance: Float!
 }
@@ -52,6 +54,8 @@ type Restaurant {
   longitude: Float!
   # The human-readable address of the restaurant.
   address: String
+  # Weekly opening hours, first element in array is Monday.
+  openingHours: [String]!
   menu(day: String): Menu!
 }
 

@@ -2,7 +2,10 @@ import { Area, Restaurant, Menu, Favorite } from '../../models';
 import * as moment from 'moment';
 
 class GraphQLModel {
+  dbModel: any;
+
   constructor(fields) {
+    this.dbModel = fields;
     Object.assign(this, fields.get({ plain: true }));
   }
 }
@@ -31,11 +34,14 @@ export class GraphQLRestaurant extends GraphQLModel {
   AreaId: number;
   name: string;
   lang: Lang;
+  openingHours: Array<Array<string>>;
 
   constructor(fields, lang) {
     super(fields);
     this.name = fields.name_i18n[lang] || fields.name_i18n.fi;
     this.lang = lang;
+    this.openingHours = this.dbModel.getPrettyOpeningHours();
+    console.log(this.openingHours);
   }
 
   area = async () => {
