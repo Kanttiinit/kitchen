@@ -24,19 +24,21 @@ const sessionStore = new SessionStore({
 });
 app.locals.sessionStore = sessionStore;
 
-if (!sessionSecret) {
-  throw new Error('SESSION_SECRET is required.');
-}
+if (process.env.NODE_ENV === 'production') {
+  if (!sessionSecret) {
+    throw new Error('SESSION_SECRET is required.');
+  }
 
-if (!origins) {
-  throw new Error('ORIGINS is required.');
+  if (!origins) {
+    throw new Error('ORIGINS is required.');
+  }
 }
 
 export default app
 .use(
   cors({
     credentials: true,
-    origin: origins.split(','),
+    origin: origins ? origins.split(',') : '',
     unset: 'destroy'
   })
 )

@@ -5,6 +5,10 @@ import { promisify } from 'util';
 import * as models from '../models';
 import 'isomorphic-fetch';
 
+if (process.env.DROPBOX_TOKEN) {
+  throw new Error('DROPBOX_TOKEN is required.');
+}
+
 const dropbox = new Dropbox({ accessToken: process.env.DROPBOX_TOKEN });
 
 const compress = (promisify as any)(zlib.deflate);
