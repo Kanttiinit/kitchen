@@ -12,7 +12,7 @@ const botToken = process.env.BOT_TOKEN;
 export let telegram;
 export let bot;
 
-if (chatId && botToken) {
+if ((chatId && botToken) || process.env.NODE_ENV === 'test') {
   telegram = new Telegram(botToken);
   bot = new Telegraf(botToken);
   bot.on('callback_query', async ctx => {
