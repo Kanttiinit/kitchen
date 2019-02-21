@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import * as models from '../models';
 import 'isomorphic-fetch';
 
-if (process.env.DROPBOX_TOKEN) {
+if (!process.env.DROPBOX_TOKEN) {
   throw new Error('DROPBOX_TOKEN is required.');
 }
 
