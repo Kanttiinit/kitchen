@@ -41,7 +41,7 @@ describe('Change', () => {
         }
       });
       await change.apply('Person');
-      const newRestaurant = await models.Restaurant.findById(restaurant.id);
+      const newRestaurant = await models.Restaurant.findByPk(restaurant.id);
       const newChange = await models.Change.findByPk(change.uuid);
       expect(newRestaurant.address).toBe('New address');
       expect(newRestaurant.latitude).toBe(61.321);
@@ -92,13 +92,17 @@ describe('Change', () => {
 
     it('throws when trying to create a change with a field without a change formatter', async () => {
       const restaurant = await createRestaurant();
-      await expect(createChange({
-        modelName: 'Restaurant',
-        modelFilter: { id: restaurant.id },
-        change: {
-          AreaId: 6
-        }
-      })).rejects.toThrow('Creating a change is not allowed for the following fields: AreaId.');
+      await expect(
+        createChange({
+          modelName: 'Restaurant',
+          modelFilter: { id: restaurant.id },
+          change: {
+            AreaId: 6
+          }
+        })
+      ).rejects.toThrow(
+        'Creating a change is not allowed for the following fields: AreaId.'
+      );
     });
 
     it('only applies a change to one result', async () => {
@@ -116,10 +120,10 @@ describe('Change', () => {
         }
       });
       await change.apply('Person');
-      const restaurantOneNew = await models.Restaurant.findById(
+      const restaurantOneNew = await models.Restaurant.findByPk(
         restaurantOne.id
       );
-      const restaurantTwoNew = await models.Restaurant.findById(
+      const restaurantTwoNew = await models.Restaurant.findByPk(
         restaurantTwo.id
       );
       expect(
