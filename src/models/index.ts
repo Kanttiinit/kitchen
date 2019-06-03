@@ -1,4 +1,4 @@
-import * as Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import createArea from './Area';
 import createFavorite from './Favorite';
 import createMenu from './Menu';

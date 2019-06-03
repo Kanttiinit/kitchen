@@ -3,7 +3,7 @@ import { pick } from 'lodash';
 export default {
   parsePublicParams: (model, params, lang) => {
     const basicAttrs = pick(model.dataValues, params);
-    const langAttrs = model.attributes
+    const langAttrs = Object.keys(model.rawAttributes)
     .filter(v => v.endsWith('_i18n'))
     .reduce((output, key) => {
       const field = model.getDataValue(key);
