@@ -41,7 +41,6 @@ export class GraphQLRestaurant extends GraphQLModel {
     this.name = fields.name_i18n[lang] || fields.name_i18n.fi;
     this.lang = lang;
     this.openingHours = this.dbModel.getPrettyOpeningHours();
-    console.log(this.openingHours);
   }
 
   area = async () => {
@@ -49,11 +48,15 @@ export class GraphQLRestaurant extends GraphQLModel {
     return new GraphQLArea(item, this.lang);
   };
 
-  menu = async ({ day = moment().format('YYYY-MM-DD') }) => {
+  courses = async ({ day = moment().format('YYYY-MM-DD') }) => {
     const item = await Menu.findOne({
-      where: { RestaurantId: this.id, day: new Date(day) }
+      where: { RestaurantId: this.id, day: moment(day).toDate() }
     });
-    return new GraphQLMenu(item, this.lang);
+    if (item) {
+      const menu = new GraphQLMenu(item, this.lang);
+      return menu.courses;
+    }
+    return [];
   };
 }
 

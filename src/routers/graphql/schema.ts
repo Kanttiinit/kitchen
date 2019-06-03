@@ -41,7 +41,7 @@ type RestaurantWithDistance {
   address: String
   # Weekly opening hours, first element in array is Monday.
   openingHours: [String]!
-  menu(day: String): Menu
+  courses(day: String): [Course]!
   distance: Float!
 }
 
@@ -56,7 +56,7 @@ type Restaurant {
   address: String
   # Weekly opening hours, first element in array is Monday.
   openingHours: [String]!
-  menu(day: String): Menu
+  courses(day: String): [Course]!
 }
 
 type Menu {
