@@ -1,6 +1,3 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
@@ -10,12 +7,25 @@ import * as ua from 'universal-analytics';
 
 import { sequelize } from './models';
 import routers from './routers/';
+import * as environment from './environment';
+
+if (environment.isProduction) {
+  if (!environment.sessionSecret) {
+    throw new Error('SESSION_SECRET is required.');
+  }
+
+  if (!environment.origins) {
+    throw new Error('ORIGINS is required.');
+  }
+
+  if (!environment.adminPassword) {
+    throw new Error('ADMIN_PASSWORD is required');
+  }
+}
 
 const app = express();
 
 const cookieMaxAge = 1000 * 60 * 60 * 24 * 30;
-const sessionSecret = process.env.SESSION_SECRET;
-const origins = process.env.ORIGINS;
 
 const SessionStore = new SequelizeSession(session.Store);
 const sessionStore = new SessionStore({
@@ -24,27 +34,17 @@ const sessionStore = new SessionStore({
 });
 app.locals.sessionStore = sessionStore;
 
-if (process.env.NODE_ENV === 'production') {
-  if (!sessionSecret) {
-    throw new Error('SESSION_SECRET is required.');
-  }
-
-  if (!origins) {
-    throw new Error('ORIGINS is required.');
-  }
-}
-
 export default app
 .use(
   cors({
     credentials: true,
-    origin: origins ? origins.split(',') : '',
+    origin: environment.origins,
     unset: 'destroy'
   })
 )
 .use(
   session({
-    secret: sessionSecret,
+    secret: environment.sessionSecret,
     saveUninitialized: false,
     resave: false,
     store: sessionStore,
@@ -53,7 +53,7 @@ export default app
     }
   })
 )
-.use(ua.middleware(process.env.UA_ID))
+.use(ua.middleware(environment.universalAnalyticsId))
 .use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
@@ -78,10 +78,10 @@ export default app
 });
 
 if (!module.parent) {
-  app.locals.adminPassword = process.env.ADMIN_PASSWORD;
+  app.locals.adminPassword = environment.adminPassword;
   (async () => {
     await sequelize.sync();
-    const server = app.listen(process.env.PORT || 3000, () => {
+    const server = app.listen(environment.port, () => {
       const address: any = server.address();
       console.log('Listening at http://%s:%s', address.address, address.port);
     });

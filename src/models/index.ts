@@ -7,8 +7,10 @@ import createUser from './User';
 import createUpdate from './Update';
 import createChange from './Change';
 
-export const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  logging: Number(process.env.SEQUELIZE_LOGGING) ? console.log : false
+import * as environment from '../environment';
+
+export const sequelize = new Sequelize(environment.databaseURL, {
+  logging: environment.sequelizeLogging ? console.log : false
 });
 
 export const Area = createArea(sequelize, Sequelize);

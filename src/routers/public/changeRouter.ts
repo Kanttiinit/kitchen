@@ -6,13 +6,15 @@ import * as Telegram from 'telegraf/telegram';
 import * as Extra from 'telegraf/extra';
 import * as moment from 'moment';
 
-const chatId = Number(process.env.TG_CHAT_ID);
-const botToken = process.env.BOT_TOKEN;
+import * as environment from '../../environment';
+
+const chatId = environment.telegramChatId;
+const botToken = environment.telegramBotToken;
 
 export let telegram;
 export let bot;
 
-if ((chatId && botToken) || process.env.NODE_ENV === 'test') {
+if ((chatId && botToken) || environment.isTest) {
   telegram = new Telegram(botToken);
   bot = new Telegraf(botToken);
   bot.on('callback_query', async ctx => {

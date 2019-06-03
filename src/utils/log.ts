@@ -1,4 +1,5 @@
 import * as winston from 'winston';
+import { isProduction } from '../environment';
 const { combine, printf, timestamp, colorize, json } = winston.format;
 
 const logger = winston.createLogger({
@@ -13,7 +14,7 @@ const logger = winston.createLogger({
   ]
 });
 
-if (process.env.NODE_ENV !== 'production') {
+if (isProduction) {
   logger.add(
     new winston.transports.Console({
       format: combine(
