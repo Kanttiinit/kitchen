@@ -81,14 +81,10 @@ function getRestaurantsForQuery(query) {
   return getRestaurantsByIds(ids);
 }
 
-export default async function getRestaurants(req, res, next) {
-  try {
-    const restaurants = await getRestaurantsForQuery(req.query);
-    const response = await Promise.all(
-      restaurants.map(restaurant => restaurant.getPublicAttributes(req.lang))
-    );
-    res.json(response);
-  } catch (e) {
-    next(e);
-  }
+export default async function getRestaurants(req, res) {
+  const restaurants = await getRestaurantsForQuery(req.query);
+  const response = await Promise.all(
+    restaurants.map(restaurant => restaurant.getPublicAttributes(req.lang))
+  );
+  res.json(response);
 }

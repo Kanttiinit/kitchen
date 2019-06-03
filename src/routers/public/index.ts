@@ -9,6 +9,7 @@ import changeRouter from './changeRouter';
 import getMenus from './getMenus';
 import getRestaurantMenus from './getRestaurantMenus';
 import getRestaurants from './getRestaurants';
+import handleRouteErrors from '../../utils/handleRouteErrors';
 
 export const parseLanguage = (req, res, next) => {
   if (['fi', 'en'].indexOf(req.query.lang) > -1) {
@@ -54,10 +55,13 @@ export const getUpdates = async (req, res) => {
 export default express
 .Router()
 .use(parseLanguage)
-.use('/changes', changeRouter)
-.get('/menus', getMenus)
-.get('/restaurants/:restaurantId/menu(.:ext)?', getRestaurantMenus)
-.get('/favorites', getFavorites)
-.get('/areas', getAreas)
-.get('/restaurants', getRestaurants)
-.get('/updates', getUpdates);
+.use('/changes', handleRouteErrors(changeRouter))
+.get('/menus', handleRouteErrors(getMenus))
+.get(
+  '/restaurants/:restaurantId/menu(.:ext)?',
+  handleRouteErrors(getRestaurantMenus)
+)
+.get('/favorites', handleRouteErrors(getFavorites))
+.get('/areas', handleRouteErrors(getAreas))
+.get('/restaurants', handleRouteErrors(getRestaurants))
+.get('/updates', handleRouteErrors(getUpdates));

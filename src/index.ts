@@ -4,6 +4,7 @@ import * as cors from 'cors';
 import * as session from 'express-session';
 import * as SequelizeSession from 'connect-session-sequelize';
 import * as ua from 'universal-analytics';
+import * as Sentry from '@sentry/node';
 
 import { sequelize } from './models';
 import routers from './routers/';
@@ -34,7 +35,10 @@ const sessionStore = new SessionStore({
 });
 app.locals.sessionStore = sessionStore;
 
+Sentry.init({ dsn: environment.sentryDSN });
+
 export default app
+.use(Sentry.Handlers.requestHandler())
 .use(
   cors({
     credentials: true,
@@ -69,12 +73,16 @@ export default app
 .use(bodyParser.urlencoded({ extended: false }))
 .use(routers)
 .use((err, req, res, next) => {
-  if (err.code) {
+  if (err.code && err.code !== 500) {
     res.status(err.code).json(err);
   } else {
-    console.error(err);
-    res.status(500).json({ code: 500, message: 'Server error.' });
+    next(err);
   }
+})
+.use(Sentry.Handlers.errorHandler())
+.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ code: 500, message: 'Server error.' });
 });
 
 if (!module.parent) {

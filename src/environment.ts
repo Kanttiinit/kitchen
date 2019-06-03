@@ -15,3 +15,4 @@ export const sequelizeLogging = Boolean(process.env.SEQUELIZE_LOGGING);
 export const telegramChatId = Number(process.env.TG_CHAT_ID);
 export const telegramBotToken = process.env.BOT_TOKEN;
 export const dropboxToken = process.env.DROPBOX_TOKEN;
+export const sentryDSN = process.env.SENTRY_DSN;
