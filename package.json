@@ -7,16 +7,16 @@
     "@types/express": "^4.0.36",
     "@types/express-session": "^1.15.2",
     "@types/graphql": "^14.0.5",
-    "@types/node": "^10.1.0",
+    "@types/node": "^12.0.4",
     "@types/sequelize": "^4.0.67",
     "body-parser": "^1.14.1",
     "buffer-equal-constant-time": "^1.0.1",
-    "connect-session-sequelize": "^5.2.1",
+    "connect-session-sequelize": "^6.0.0",
     "cors": "^2.8.4",
-    "dotenv": "^6.0.0",
+    "dotenv": "^8.0.0",
     "dropbox": "^4.0.4",
     "express": "^4.15.4",
-    "express-graphql": "^0.7.1",
+    "express-graphql": "^0.8.0",
     "express-session": "^1.15.5",
     "graphql": "^14.1.1",
     "isomorphic-fetch": "^2.2.1",
@@ -38,17 +38,17 @@
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "eslint": "^5.4.0",
-    "eslint-plugin-jest": "^21.17.0",
-    "jest": "^23.0.1",
+    "eslint-plugin-jest": "^22.6.4",
+    "jest": "^24.8.0",
     "nodemon": "^1.11.0",
     "npm-run-all": "^4.0.2",
-    "supertest": "^3.1.0"
+    "supertest": "^4.0.2"
   },
   "engines": {
     "node": "^10.1.0"
   },
   "scripts": {
-    "test": "jest --runInBand --setupTestFrameworkScriptFile '<rootDir>/test/setup.js'",
+    "test": "jest --runInBand --setupFilesAfterEnv '<rootDir>/test/setup.js'",
     "test:watch": "yarn test --watch",
     "start": "node dist/index.js",
     "install": "npm run build",
