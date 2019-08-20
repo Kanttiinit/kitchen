@@ -9,7 +9,7 @@ export default model => {
   return express
   .Router()
   .param(modelName, async (req, res, next) => {
-    const item = await model.findById(req.params[modelName]);
+    const item = await model.findByPk(req.params[modelName]);
     if (item) {
       req[modelName] = item;
       next();
