@@ -11,12 +11,22 @@ export const getWeeks = () =>
 
 export const formatUrl = (url, date = moment()) =>
   url
-  .replace('%year%', date.format('YYYY'))
-  .replace('%month%', date.format('MM'))
-  .replace('%day%', date.format('DD'))
-  .replace('%week%', date.format('w'));
+    .replace('%year%', date.format('YYYY'))
+    .replace('%month%', date.format('MM'))
+    .replace('%day%', date.format('DD'))
+    .replace('%week%', date.format('w'));
 
-export const json = url => fetch(url).then(r => r.json());
+const cache = {};
+const cachedJSONFetch = async url => {
+  if (!(url in cache)) {
+    const response = await fetch(url);
+    cache[url] = response.json();
+  }
+
+  return cache[url];
+};
+
+export const json = url => cachedJSONFetch(url);
 export const text = url => fetch(url).then(r => r.text());
 
 export enum Property {
@@ -38,15 +48,15 @@ export enum Property {
 }
 
 export const createPropertyNormalizer = (map: {
-[source: string]: Property;
+  [source: string]: Property;
 }) => (properties: Array<string>) =>
   properties
-  .map(p => {
-    const mapped = map[p];
-    return mapped ? mapped : Property.IGNORE;
-  })
-  .filter(p => p !== Property.IGNORE)
-  .sort();
+    .map(p => {
+      const mapped = map[p];
+      return mapped ? mapped : Property.IGNORE;
+    })
+    .filter(p => p !== Property.IGNORE)
+    .sort();
 
 export function parseXml(xml): Promise<any> {
   return new Promise((resolve, reject) => {
