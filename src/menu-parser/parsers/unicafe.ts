@@ -16,30 +16,51 @@ const propertyMap = {
   VL: Property.LOW_IN_LACTOSE
 };
 
+interface Course {
+  name: string;
+  meta: {
+    '0': Array<string>;
+  };
+}
+
+interface Menu {
+  data: Array<Course>;
+  date: string;
+}
+
+interface Restaurant {
+  id: number;
+  title: string;
+  slug: string;
+  menuData: {
+    menus: Array<Menu>;
+  };
+}
+
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
 const parser: Parser = {
-  pattern: /hyyravintolat\.fi/,
+  pattern: /unicafe\.fi/,
   async parse(url, lang) {
-    const { data } = await json(url);
-    return data.filter(m => m.data.length).map(m => {
-      const date = moment(m.date_en, 'ddd DD.MM.');
-      return {
-        day: date.format('YYYY-MM-DD'),
-        courses: m.data.map(c => ({
-          title: lang === 'fi' ? c.name : c.name_en,
-          properties: normalizeProperties(
-            c.meta[0].map(p => {
-              const bracketedProp = p.match(/^\[(.+)\]$/);
-              if (bracketedProp) {
-                return bracketedProp[1];
-              }
-              return p;
-            })
-          )
-        }))
-      };
-    });
+    const restaurants: Array<Restaurant> = await json(
+      url.replace('%lang%', lang)
+    );
+    const [, id] = url.split('#');
+    const restaurant = restaurants.find(r => r.id === Number(id));
+    if (restaurant) {
+      return restaurant.menuData.menus
+      .filter(m => m.data.length > 0)
+      .map(menu => {
+        const day = moment(menu.date, 'DD.MM.').format('YYYY-MM-DD');
+        const courses = menu.data.map(course => ({
+          title: course.name,
+          properties: normalizeProperties(course.meta[0])
+        }));
+        return { day, courses };
+      });
+    } else {
+      throw new Error('Restaurant not found in Unicafe data.');
+    }
   }
 };
 
