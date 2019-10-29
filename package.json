@@ -27,7 +27,7 @@
     "node-fetch": "^2.1.2",
     "pg": "^7.1.0",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^5.8.7",
+    "sequelize": "^5.15.1",
     "sequelize-decorators": "^1.0.1",
     "telegraf": "^3.23.0",
     "typescript": "^3.0.1",
