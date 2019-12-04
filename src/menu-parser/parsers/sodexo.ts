@@ -1,12 +1,11 @@
-import * as moment from 'moment';
-
 import {
   json,
   formatUrl,
   getWeeks,
   Property,
   createPropertyNormalizer
-} from '../utils';
+} from "../utils";
+import * as moment from "moment";
 
 const propertyMap = {
   G: Property.GLUTEN_FREE,
@@ -17,27 +16,41 @@ const propertyMap = {
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
+interface Response {
+  courses: {
+    [index: string]: {
+      title_fi: string;
+      title_en: string;
+      category: string;
+      properties: string;
+      price: string;
+    };
+  };
+}
+
 const parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {
-    const days = [];
+    const days = Array(8)
+      .fill(0)
+      .map((_, i) => moment().add({ days: i }));
+    const menus = [];
     const parseWithDate = async date => {
-      const feed = await json(formatUrl(url, date));
-      for (let day in feed.menus) {
-        const timestamp = moment(date).day(day);
-        days.push({
-          day: timestamp.format('YYYY-MM-DD'),
-          courses: feed.menus[day].map(course => ({
-            title: lang === 'fi' ? course.title_fi : course.title_en,
+      const response: Response = await json(formatUrl(url, date));
+      if (response.courses) {
+        menus.push({
+          day: date.format("YYYY-MM-DD"),
+          courses: Object.values(response.courses).map(course => ({
+            title: lang === "fi" ? course.title_fi : course.title_en,
             properties: course.properties
-              ? normalizeProperties(course.properties.split(', '))
+              ? normalizeProperties(course.properties.split(", "))
               : []
           }))
         });
       }
     };
-    await Promise.all(getWeeks().map(parseWithDate));
-    return days;
+    await Promise.all(days.map(parseWithDate));
+    return menus;
   }
 };
 
