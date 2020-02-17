@@ -1,10 +1,5 @@
-import {
-  json,
-  formatUrl,
-  getWeeks,
-  Property,
-  createPropertyNormalizer
-} from "../utils";
+import { json, Property, createPropertyNormalizer } from "../utils";
+import { Parser } from "..";
 import * as moment from "moment";
 
 const propertyMap = {
@@ -17,40 +12,35 @@ const propertyMap = {
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
 interface Response {
-  courses: {
-    [index: string]: {
-      title_fi: string;
-      title_en: string;
-      category: string;
-      properties: string;
-      price: string;
+  timeperiod: string; // 17.2. - 23.2.
+  mealdates: Array<{
+    date: string; // "Monday"
+    courses: {
+      [n: string]: {
+        title_fi: string;
+        title_en: string;
+        properties: string;
+      };
     };
-  };
+  }>;
 }
 
-const parser = {
+const parser: Parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {
-    const days = Array(8)
-      .fill(0)
-      .map((_, i) => moment().add({ days: i }));
-    const menus = [];
-    const parseWithDate = async date => {
-      const response: Response = await json(formatUrl(url, date));
-      if (response.courses) {
-        menus.push({
-          day: date.format("YYYY-MM-DD"),
-          courses: Object.values(response.courses).map(course => ({
-            title: lang === "fi" ? course.title_fi : course.title_en,
-            properties: course.properties
-              ? normalizeProperties(course.properties.split(", "))
-              : []
-          }))
-        });
-      }
-    };
-    await Promise.all(days.map(parseWithDate));
-    return menus;
+    const response: Response = await json(url);
+    const firstDate = moment().startOf("isoWeek");
+    return response.mealdates.map(day => {
+      return {
+        day: moment(firstDate)
+          .day(day.date)
+          .format("YYYY-MM-DD"),
+        courses: Object.values(day.courses).map(course => ({
+          title: lang == "fi" ? course.title_fi : course.title_en,
+          properties: normalizeProperties(course.properties.split(", "))
+        }))
+      };
+    });
   }
 };
 
