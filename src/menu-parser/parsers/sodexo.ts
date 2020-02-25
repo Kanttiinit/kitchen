@@ -14,7 +14,7 @@ const normalizeProperties = createPropertyNormalizer(propertyMap);
 interface Response {
   timeperiod: string; // 17.2. - 23.2.
   mealdates: Array<{
-    date: string; // "Monday"
+    date: string; // "Monday" or "Maanantai"
     courses: {
       [n: string]: {
         title_fi: string;
@@ -25,6 +25,27 @@ interface Response {
   }>;
 }
 
+const normaliseWeekday = (weekday: string) => {
+  switch (weekday.toLowerCase()) {
+    case "maanantai":
+      return "monday";
+    case "tiistai":
+      return "tuesday";
+    case "keskiviikko":
+      return "wednesday";
+    case "torstai":
+      return "thursday";
+    case "perjantai":
+      return "friday";
+    case "lauantai":
+      return "saturday";
+    case "sunnuntai":
+      return "sunday";
+    default:
+      return weekday;
+  }
+};
+
 const parser: Parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {
@@ -33,7 +54,7 @@ const parser: Parser = {
     return response.mealdates.map(day => {
       return {
         day: moment(firstDate)
-          .day(day.date)
+          .day(normaliseWeekday(day.date))
           .format("YYYY-MM-DD"),
         courses: Object.values(day.courses).map(course => ({
           title: lang == "fi" ? course.title_fi : course.title_en,
