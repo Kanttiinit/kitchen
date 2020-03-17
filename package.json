@@ -22,7 +22,7 @@
     "isomorphic-fetch": "^2.2.1",
     "jsdom": "^13.0.0",
     "jsonschema": "^1.1.0",
-    "lodash": "^4.14.0",
+    "lodash": "^4.17.13",
     "moment": "^2.12.0",
     "node-fetch": "^2.1.2",
     "pg": "^7.1.0",
