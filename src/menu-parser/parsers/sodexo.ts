@@ -1,6 +1,6 @@
-import { json, Property, createPropertyNormalizer } from "../utils";
-import { Parser } from "..";
-import * as moment from "moment";
+import { json, Property, createPropertyNormalizer } from '../utils';
+import { Parser } from '..';
+import * as moment from 'moment';
 
 const propertyMap = {
   G: Property.GLUTEN_FREE,
@@ -27,20 +27,20 @@ interface Response {
 
 const normaliseWeekday = (weekday: string) => {
   switch (weekday.toLowerCase()) {
-    case "maanantai":
-      return "monday";
-    case "tiistai":
-      return "tuesday";
-    case "keskiviikko":
-      return "wednesday";
-    case "torstai":
-      return "thursday";
-    case "perjantai":
-      return "friday";
-    case "lauantai":
-      return "saturday";
-    case "sunnuntai":
-      return "sunday";
+    case 'maanantai':
+      return 'monday';
+    case 'tiistai':
+      return 'tuesday';
+    case 'keskiviikko':
+      return 'wednesday';
+    case 'torstai':
+      return 'thursday';
+    case 'perjantai':
+      return 'friday';
+    case 'lauantai':
+      return 'saturday';
+    case 'sunnuntai':
+      return 'sunday';
     default:
       return weekday;
   }
@@ -50,15 +50,15 @@ const parser: Parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {
     const response: Response = await json(url);
-    const firstDate = moment().startOf("isoWeek");
+    const firstDate = moment().startOf('isoWeek');
     return response.mealdates.map(day => {
       return {
         day: moment(firstDate)
           .day(normaliseWeekday(day.date))
-          .format("YYYY-MM-DD"),
+          .format('YYYY-MM-DD'),
         courses: Object.values(day.courses).map(course => ({
-          title: lang == "fi" ? course.title_fi : course.title_en,
-          properties: normalizeProperties(course.properties.split(", "))
+          title: lang == 'fi' ? course.title_fi : course.title_en,
+          properties: normalizeProperties(course.properties.split(', '))
         }))
       };
     });

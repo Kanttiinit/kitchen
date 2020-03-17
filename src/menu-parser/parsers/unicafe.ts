@@ -49,15 +49,15 @@ const parser: Parser = {
     const restaurant = restaurants.find(r => r.id === Number(id));
     if (restaurant) {
       return restaurant.menuData.menus
-      .filter(m => m.data.length > 0)
-      .map(menu => {
-        const day = moment(menu.date, 'DD.MM.').format('YYYY-MM-DD');
-        const courses = menu.data.map(course => ({
-          title: course.name,
-          properties: normalizeProperties(course.meta[0])
-        }));
-        return { day, courses };
-      });
+        .filter(m => m.data.length > 0)
+        .map(menu => {
+          const day = moment(menu.date, 'DD.MM.').format('YYYY-MM-DD');
+          const courses = menu.data.map(course => ({
+            title: course.name,
+            properties: normalizeProperties(course.meta[0])
+          }));
+          return { day, courses };
+        });
     } else {
       throw new Error('Restaurant not found in Unicafe data.');
     }

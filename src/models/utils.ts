@@ -4,14 +4,14 @@ export default {
   parsePublicParams: (model, params, lang) => {
     const basicAttrs = pick(model.dataValues, params);
     const langAttrs = Object.keys(model.rawAttributes)
-    .filter(v => v.endsWith('_i18n'))
-    .reduce((output, key) => {
-      const field = model.getDataValue(key);
-      const normalizedKey = key.replace('_i18n', '');
-      const value =
+      .filter(v => v.endsWith('_i18n'))
+      .reduce((output, key) => {
+        const field = model.getDataValue(key);
+        const normalizedKey = key.replace('_i18n', '');
+        const value =
           lang in field ? field[lang] : field[Object.keys(field)[0]];
-      return { ...output, [normalizedKey]: value };
-    }, {});
+        return { ...output, [normalizedKey]: value };
+      }, {});
     return { ...basicAttrs, ...langAttrs };
   }
 };

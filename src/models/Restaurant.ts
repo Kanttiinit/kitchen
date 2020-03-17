@@ -42,7 +42,11 @@ export default (sequelize, DataTypes) => {
       longitude: DataTypes.DOUBLE,
       address: DataTypes.STRING,
       openingHours: DataTypes.JSON,
-      hidden: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false }
+      hidden: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      }
     },
     {
       tableName: 'restaurants',
@@ -119,16 +123,16 @@ export default (sequelize, DataTypes) => {
     let formattedChange = '';
     if (change.openingHours) {
       formattedChange += change.openingHours
-      .map((nextHours, i) => {
-        const previousHours = this.openingHours[i];
-        const weekday = moment()
-        .set({ isoWeekday: i + 1 })
-        .format('ddd');
-        return [weekday, formatHours(previousHours), formatHours(nextHours)];
-      })
-      .filter(([, prev, next]) => prev !== next)
-      .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
-      .join('\n');
+        .map((nextHours, i) => {
+          const previousHours = this.openingHours[i];
+          const weekday = moment()
+            .set({ isoWeekday: i + 1 })
+            .format('ddd');
+          return [weekday, formatHours(previousHours), formatHours(nextHours)];
+        })
+        .filter(([, prev, next]) => prev !== next)
+        .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
+        .join('\n');
     }
 
     if (change.address) {
@@ -142,9 +146,7 @@ export default (sequelize, DataTypes) => {
       )} -> ${latLngLink(change.latitude, change.longitude)}`;
     }
 
-    return `Restaurant name: ${this.name_i18n.fi}\nHomepage: ${
-      this.url
-    }\n\n${formattedChange}`;
+    return `Restaurant name: ${this.name_i18n.fi}\nHomepage: ${this.url}\n\n${formattedChange}`;
   };
 
   return Restaurant;

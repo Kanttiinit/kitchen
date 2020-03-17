@@ -24,9 +24,7 @@ async function importFromFile(filename) {
     output: process.stdout
   });
   rl.question(
-    `About to import ${data.areas.length} areas, ${
-      data.restaurants.length
-    } restaurants, and ${data.favorites.length} favorites, continue? `,
+    `About to import ${data.areas.length} areas, ${data.restaurants.length} restaurants, and ${data.favorites.length} favorites, continue? `,
     async answer => {
       if (answer === 'Y' || answer === 'y') {
         console.log('Importing...');

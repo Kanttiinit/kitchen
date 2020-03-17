@@ -75,9 +75,9 @@ function getRestaurantsForQuery(query) {
   }
 
   const ids = (query.ids || '')
-  .split(',')
-  .filter(id => id && !isNaN(id))
-  .map(id => Number(id));
+    .split(',')
+    .filter(id => id && !isNaN(id))
+    .map(id => Number(id));
   return getRestaurantsByIds(ids);
 }
 

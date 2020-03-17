@@ -13,9 +13,9 @@ const parser: Parser = {
       return {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
-        .split('<br />')
-        .filter(c => c.trim().length)
-        .map(title => ({ title: title.trim(), properties: [] }))
+          .split('<br />')
+          .filter(c => c.trim().length)
+          .map(title => ({ title: title.trim(), properties: [] }))
       };
     });
   }

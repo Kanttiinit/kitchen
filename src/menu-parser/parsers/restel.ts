@@ -46,9 +46,9 @@ const parser: Parser = {
         day: date.format('YYYY-MM-DD'),
         courses: courses.items.map(course => ({
           title: course.dish_name
-          .trim()
-          .replace(/\([^\)]+\)/, '')
-          .trim(),
+            .trim()
+            .replace(/\([^\)]+\)/, '')
+            .trim(),
           properties: normalizeProperties(course.dish_name.match(propertyRegex))
         }))
       };

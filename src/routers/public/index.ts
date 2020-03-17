@@ -53,15 +53,15 @@ export const getUpdates = async (req, res) => {
 };
 
 export default express
-.Router()
-.use(parseLanguage)
-.use('/changes', handleRouteErrors(changeRouter))
-.get('/menus', handleRouteErrors(getMenus))
-.get(
-  '/restaurants/:restaurantId/menu(.:ext)?',
-  handleRouteErrors(getRestaurantMenus)
-)
-.get('/favorites', handleRouteErrors(getFavorites))
-.get('/areas', handleRouteErrors(getAreas))
-.get('/restaurants', handleRouteErrors(getRestaurants))
-.get('/updates', handleRouteErrors(getUpdates));
+  .Router()
+  .use(parseLanguage)
+  .use('/changes', handleRouteErrors(changeRouter))
+  .get('/menus', handleRouteErrors(getMenus))
+  .get(
+    '/restaurants/:restaurantId/menu(.:ext)?',
+    handleRouteErrors(getRestaurantMenus)
+  )
+  .get('/favorites', handleRouteErrors(getFavorites))
+  .get('/areas', handleRouteErrors(getAreas))
+  .get('/restaurants', handleRouteErrors(getRestaurants))
+  .get('/updates', handleRouteErrors(getUpdates));

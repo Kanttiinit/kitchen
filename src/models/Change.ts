@@ -81,9 +81,7 @@ export default (sequelize, DataTypes) => {
   Change.prototype.apply = async function(appliedBy: string) {
     if (this.appliedAt) {
       throw new Error(
-        `This change has already been applied at ${this.appliedAt} by ${
-          this.appliedBy
-        }`
+        `This change has already been applied at ${this.appliedAt} by ${this.appliedBy}`
       );
     }
 

@@ -38,52 +38,52 @@ app.locals.sessionStore = sessionStore;
 Sentry.init({ dsn: environment.sentryDSN });
 
 export default app
-.use(Sentry.Handlers.requestHandler())
-.use(
-  cors({
-    credentials: true,
-    origin: environment.origins,
-    unset: 'destroy'
+  .use(Sentry.Handlers.requestHandler())
+  .use(
+    cors({
+      credentials: true,
+      origin: environment.origins,
+      unset: 'destroy'
+    })
+  )
+  .use(
+    session({
+      secret: environment.sessionSecret,
+      saveUninitialized: false,
+      resave: false,
+      store: sessionStore,
+      cookie: {
+        maxAge: cookieMaxAge
+      }
+    })
+  )
+  .use(ua.middleware(environment.universalAnalyticsId))
+  .use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+      const duration = Date.now() - start;
+      (req as any).visitor
+        .timing('Request finished', req.url, duration)
+        .pageview(req.url)
+        .send();
+    });
+    next();
   })
-)
-.use(
-  session({
-    secret: environment.sessionSecret,
-    saveUninitialized: false,
-    resave: false,
-    store: sessionStore,
-    cookie: {
-      maxAge: cookieMaxAge
+  .use(bodyParser.json())
+  .use(bodyParser.urlencoded({ extended: false }))
+  .use(routers)
+  .use((err, req, res, next) => {
+    if (err.code && err.code !== 500) {
+      res.status(err.code).json(err);
+    } else {
+      next(err);
     }
   })
-)
-.use(ua.middleware(environment.universalAnalyticsId))
-.use((req, res, next) => {
-  const start = Date.now();
-  res.on('finish', () => {
-    const duration = Date.now() - start;
-    (req as any).visitor
-    .timing('Request finished', req.url, duration)
-    .pageview(req.url)
-    .send();
+  .use(Sentry.Handlers.errorHandler())
+  .use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).json({ code: 500, message: 'Server error.' });
   });
-  next();
-})
-.use(bodyParser.json())
-.use(bodyParser.urlencoded({ extended: false }))
-.use(routers)
-.use((err, req, res, next) => {
-  if (err.code && err.code !== 500) {
-    res.status(err.code).json(err);
-  } else {
-    next(err);
-  }
-})
-.use(Sentry.Handlers.errorHandler())
-.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ code: 500, message: 'Server error.' });
-});
 
 if (!module.parent) {
   app.locals.adminPassword = environment.adminPassword;

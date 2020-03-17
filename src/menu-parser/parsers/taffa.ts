@@ -41,17 +41,17 @@ const parser: Parser = {
       return {
         day: date.format('YYYY-MM-DD'),
         courses: Array.from(p.nextElementSibling.querySelectorAll('li'))
-        .map((course: any) => {
-          const properties = course.textContent.match(regexp);
-          // return course
-          return {
-            title: course.textContent.replace(regexp, '').trim(),
-            properties: properties
-              ? normalizeProperties(properties[0].match(propertyRegex))
-              : []
-          };
-        })
-        .filter(course => course.title) // filter out empty-titled courses
+          .map((course: any) => {
+            const properties = course.textContent.match(regexp);
+            // return course
+            return {
+              title: course.textContent.replace(regexp, '').trim(),
+              properties: properties
+                ? normalizeProperties(properties[0].match(propertyRegex))
+                : []
+            };
+          })
+          .filter(course => course.title) // filter out empty-titled courses
       };
     });
   }

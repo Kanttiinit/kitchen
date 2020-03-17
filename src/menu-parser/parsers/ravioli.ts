@@ -30,8 +30,8 @@ const parseMenu = async (id: string) => {
         );
         return {
           title: `${meal.MealType}: ${meal.Name.replace(regExp, '')
-          .replace('♥', '')
-          .trim()}`,
+            .replace('♥', '')
+            .trim()}`,
           properties: normalizeProperties(cleanedProperties)
         };
       })

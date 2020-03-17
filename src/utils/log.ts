@@ -21,9 +21,7 @@ if (isProduction) {
         colorize(),
         printf(
           info =>
-            `${info.timestamp} [${info.level}] ${info.task}: ${info.message} (${
-              info.value
-            })`
+            `${info.timestamp} [${info.level}] ${info.task}: ${info.message} (${info.value})`
         )
       )
     })
