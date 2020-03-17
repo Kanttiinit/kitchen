@@ -9,7 +9,8 @@ const publicAttrs = [
   'image',
   'latitude',
   'longitude',
-  'address'
+  'address',
+  'priceCategory'
 ];
 
 function formatHour(hour) {
@@ -42,6 +43,11 @@ export default (sequelize, DataTypes) => {
       longitude: DataTypes.DOUBLE,
       address: DataTypes.STRING,
       openingHours: DataTypes.JSON,
+      priceCategory: {
+        type: DataTypes.ENUM(['regular', 'student', 'studentPremium']),
+        defaultValue: 'student',
+        allowNull: false
+      },
       hidden: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

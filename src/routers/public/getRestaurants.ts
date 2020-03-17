@@ -53,10 +53,18 @@ export async function getRestaurantsByLocation(
   );
 }
 
-async function getRestaurantsByIds(ids: Array<string>) {
-  const where: { id?: any; hidden: boolean } = { hidden: false };
+async function getRestaurantsByIds(
+  ids: Array<string>,
+  priceCategories: Array<string>
+) {
+  const where: { id?: any; hidden: boolean; priceCategory?: any } = {
+    hidden: false
+  };
   if (ids.length) {
     where.id = { [Op.in]: ids };
+  }
+  if (priceCategories.length) {
+    where.priceCategory = { [Op.in]: priceCategories };
   }
   return models.Restaurant.findAll({ where });
 }
@@ -78,7 +86,10 @@ function getRestaurantsForQuery(query) {
     .split(',')
     .filter(id => id && !isNaN(id))
     .map(id => Number(id));
-  return getRestaurantsByIds(ids);
+  const priceCategories = (query.priceCategories || '')
+    .split(',')
+    .filter(c => ['regular', 'student', 'studentPremium'].includes(c));
+  return getRestaurantsByIds(ids, priceCategories);
 }
 
 export default async function getRestaurants(req, res) {
