@@ -88,10 +88,14 @@ export default app
 if (!module.parent) {
   app.locals.adminPassword = environment.adminPassword;
   (async () => {
-    await sequelize.sync();
-    const server = app.listen(environment.port, () => {
-      const address: any = server.address();
-      console.log('Listening at http://%s:%s', address.address, address.port);
-    });
+    try {
+      await sequelize.sync();
+      const server = app.listen(environment.port, () => {
+        const address: any = server.address();
+        console.log('Listening at http://%s:%s', address.address, address.port);
+      });
+    } catch (e) {
+      console.error(e);
+    }
   })();
 }
