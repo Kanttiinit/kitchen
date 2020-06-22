@@ -44,7 +44,7 @@
     "supertest": "^4.0.2"
   },
   "engines": {
-    "node": "^10.1.0"
+    "node": "^12.9.0"
   },
   "scripts": {
     "test": "jest --runInBand --setupFilesAfterEnv '<rootDir>/test/setup.js'",
