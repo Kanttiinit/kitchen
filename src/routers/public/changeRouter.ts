@@ -8,7 +8,7 @@ import * as moment from 'moment';
 
 import * as environment from '../../environment';
 
-const chatId = environment.telegramChatId;
+const chatId = environment.telegramModeratorChatId;
 const botToken = environment.telegramBotToken;
 
 export let telegram;
@@ -17,6 +17,7 @@ export let bot;
 if ((chatId && botToken) || environment.isTest) {
   telegram = new Telegram(botToken);
   bot = new Telegraf(botToken);
+  bot.on('text', async ctx => console.log(ctx));
   bot.on('callback_query', async ctx => {
     const user = ctx.callbackQuery.from;
     try {
