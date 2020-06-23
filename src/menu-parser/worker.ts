@@ -2,9 +2,11 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import * as models from '../models';
 import parse from './index';
-import { log } from '../utils/log';
+import { createLogger } from '../utils/log';
 
 const langs = ['fi', 'en'];
+
+const log = createLogger('menu-parser');
 
 async function createOrUpdateMenu(menu, restaurant) {
   const existingMenu = await models.Menu.findOne({
@@ -49,34 +51,29 @@ export async function updateRestaurantMenus(restaurant) {
   for (const menu of menus) {
     await createOrUpdateMenu(menu, restaurant);
   }
-  log(
-    'info',
-    'Menu parser',
-    'menu updated for ' + restaurant.name_i18n.fi,
-    menus.length
-  );
 }
 
 export async function updateAllRestaurants() {
+  log(`Starting to update menus...`);
   const restaurants = await models.Restaurant.findAll();
   const start = Date.now();
+  let updatedRestaurants = 0;
   for (const restaurant of restaurants) {
     try {
       await updateRestaurantMenus(restaurant);
+      updatedRestaurants++;
     } catch (e) {
       log(
-        'error',
-        'Menu parser',
-        'menu update failed: ' + e.message,
-        restaurant.name_i18n.fi
+        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`,
+        true
       );
     }
   }
   log(
-    'info',
-    'Menu parser',
-    'all menus updated',
-    `${((Date.now() - start) / 1000).toFixed(2)}s`
+    `${updatedRestaurants} / ${restaurants.length} menus updated in ${(
+      (Date.now() - start) /
+      1000
+    ).toFixed(2)}s`
   );
 }
 
