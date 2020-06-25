@@ -6,13 +6,14 @@ import * as models from '../models';
 import 'isomorphic-fetch';
 
 import * as environment from '../environment';
+import { createLogger } from './log';
 
 if (!environment.dropboxToken) {
   throw new Error('DROPBOX_TOKEN is required.');
 }
 
 const dropbox = new Dropbox({ accessToken: environment.dropboxToken });
-
+const log = createLogger('backup', 50);
 const compress = (promisify as any)(zlib.deflate);
 
 const backup = async () => {
@@ -30,6 +31,12 @@ const backup = async () => {
 };
 
 models.sequelize.sync().then(async () => {
-  await backup();
-  process.exit();
+  try {
+    log('Starting backup...');
+    await backup();
+    log('Backup completed.');
+    process.exit();
+  } catch (e) {
+    log(e.message, true);
+  }
 });
