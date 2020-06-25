@@ -1,20 +1,18 @@
 import * as moment from 'moment';
-import * as fs from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 
-const maxLines = 1000;
-let loggedRows = [];
+export const createLogger = (type: string, maxLines: number = 1000) => {
+  const filename = `${type}.log`;
+  let loggedRows = readFileSync(filename)
+    .toString()
+    .split('\n');
 
-export const log = (type: string, message: string, error: boolean = false) => {
-  const str = `${error ? 'ERROR ' : ''}[${moment().format(
-    'DD.MM.YYYY HH:mm:ss'
-  )}] ${type}: ${message}`;
-  console.log(str);
-  loggedRows.push(str);
-  loggedRows = loggedRows.slice(-maxLines);
-  fs.writeFileSync(`${type}.log`, loggedRows.join('\n'));
+  return (message: string, error: boolean = false) => {
+    const timestamp = moment().format('DD.MM.YYYY HH:mm:ss');
+    const str = `[${timestamp}]${error ? ' ERROR' : ''}: ${message}`;
+    console.log(str);
+    loggedRows.push(str);
+    loggedRows = loggedRows.slice(-maxLines);
+    writeFileSync(filename, loggedRows.join('\n'));
+  };
 };
-
-export const createLogger = (type: string) => (
-  message: string,
-  error: boolean = false
-) => log(type, message, error);
