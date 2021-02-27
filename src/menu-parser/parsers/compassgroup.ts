@@ -39,6 +39,11 @@ const parseToCourse = (possiblyCourse: string): Course | null => {
     return null;
   }
   const [rawTitle, rawProperties] = possiblyCourse.split(' (');
+
+  if (!rawTitle || !rawProperties) {
+      return null;
+  }
+
   return {
     title: rawTitle.trim(),
     properties: normalizeProperties(rawProperties.match(propertyRegex))
