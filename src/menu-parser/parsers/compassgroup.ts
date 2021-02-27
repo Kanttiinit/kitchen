@@ -51,7 +51,7 @@ const parseToCourse = (possiblyCourse: string): Course | null => {
 };
 
 const parser: Parser = {
-  pattern: /compassgroup/,
+  pattern: /(?=.*compassgroup)(?=.*Lounaslista)/,
   async parse(url, lang) {
     const html = await text(url);
     const document = new JSDOM(html).window.document;
