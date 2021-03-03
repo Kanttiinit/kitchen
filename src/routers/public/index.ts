@@ -55,7 +55,7 @@ export const getUpdates = async (req, res) => {
 export default express
   .Router()
   .use(parseLanguage)
-  .use('/changes', handleRouteErrors(changeRouter))
+  .use('/changes', handleRouteErrors(changeRouter as any))
   .get('/menus', handleRouteErrors(getMenus))
   .get(
     '/restaurants/:restaurantId/menu(.:ext)?',
