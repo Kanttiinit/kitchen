@@ -72,7 +72,7 @@ const parser: Parser = {
         }];
       }
       const rowAsCourse = parseToCourse(curr.textContent);
-      if (rowAsCourse) {
+      if (rowAsCourse && acc[acc.length - 1]?.courses) {
         acc[acc.length - 1].courses.push(rowAsCourse);
       }
       return acc;
