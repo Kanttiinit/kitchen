@@ -38,15 +38,13 @@ const parseToCourse = (possiblyCourse: string): Course | null => {
   if (possiblyCourse.trim() === '') {
     return null;
   }
-  const [rawTitle, rawProperties] = possiblyCourse.split(' (');
-
-  if (!rawTitle || !rawProperties) {
-      return null;
-  }
+  const [rawTitle, rawProperties] = possiblyCourse.split('(');
 
   return {
     title: rawTitle.trim(),
-    properties: normalizeProperties(rawProperties.match(propertyRegex))
+    properties: rawProperties
+        ? normalizeProperties(rawProperties.match(propertyRegex))
+        : []
   };
 };
 
@@ -74,7 +72,7 @@ const parser: Parser = {
         }];
       }
       const rowAsCourse = parseToCourse(curr.textContent);
-      if (rowAsCourse) {
+      if (rowAsCourse && acc[acc.length - 1]?.courses) {
         acc[acc.length - 1].courses.push(rowAsCourse);
       }
       return acc;
