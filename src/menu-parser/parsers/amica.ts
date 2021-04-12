@@ -54,7 +54,7 @@ async function parseWithDate(url, date) {
 }
 
 const parser: Parser = {
-  pattern: /www\.amica\.fi|www\.fazerfoodco\.fi\/modules/,
+  pattern: /www\.amica\.fi|www\.foodandco\.fi\/modules/,
   async parse(url, lang) {
     url = url.replace('language=fi', 'language=' + lang);
     if (url.match('amica')) {
