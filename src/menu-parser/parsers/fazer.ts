@@ -29,7 +29,7 @@ const normalizeProperties = createPropertyNormalizer({
 });
 
 const parser: Parser = {
-  pattern: /www\.fazerfoodco\.fi\/api/,
+  pattern: /www\.foodandco\.fi\/api/,
   async parse(url, lang) {
     url = url.replace('language=fi', 'language=' + lang);
     const data: MenuFormat = await json(formatUrl(url, moment()));
