@@ -17,7 +17,8 @@ const propertyMap = {
   M: Property.MILK_FREE,
   S: Property.SOY_FREE,
   T: Property.HEALTHIER_CHOICE,
-  VL: Property.LOW_IN_LACTOSE
+  VL: Property.LOW_IN_LACTOSE,
+  Veg: Property.VEGAN
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
