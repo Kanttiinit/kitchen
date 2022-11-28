@@ -35,7 +35,7 @@ const parser: Parser = {
     const data: MenuFormat = await json(formatUrl(url, moment()));
 
     return data.LunchMenus.map(menu => ({
-      day: moment(menu.Date, 'D.M.YYYY').format('YYYY-MM-DD'),
+      day: moment(menu.Date, menu.Date.includes('/') ? 'M/D/YYYY' : 'D.M.YYYY').format('YYYY-MM-DD'),
       courses: flatten(
         menu.SetMenus.map(m => {
           let unknownGroup = 1;
