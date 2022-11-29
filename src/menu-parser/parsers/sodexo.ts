@@ -56,10 +56,12 @@ const parser: Parser = {
         day: moment(firstDate)
           .day(normaliseWeekday(day.date))
           .format('YYYY-MM-DD'),
-        courses: Object.values(day.courses).map(course => ({
-          title: lang == 'fi' ? course.title_fi : course.title_en,
-          properties: course.properties ? normalizeProperties(course.properties.split(', ')) : []
-        }))
+        courses: Object.values(day.courses)
+          .map(course => ({
+            title: lang == 'fi' ? course.title_fi : course.title_en,
+            properties: course.properties ? normalizeProperties(course.properties.split(', ')) : []
+          }))
+          .filter(course => !!course.title)
       };
     });
   }
