@@ -21,11 +21,26 @@ const propertyMap = {
 // Swedish FI -> SV
 const parser: Parser = {
   pattern: /menu\.hus\.fi/,
-  async parse(url) {
+  async parse(url, lang) {
+    if (lang != 'fi') {
+      url = url.replace('/FI/', '/' + lang.toUpperCase() + '/')
+    }
+    console.log(lang)
+    console.log(url)
     const xml = await utils.text(url);
     const json = await utils.parseXml(xml);
     return json.rss.channel[0].item.map(item => {
-      const date = moment(item.title[0].split(' ')[1], 'DD.MM');
+      var date = null
+      if (lang === 'fi') {
+        date = moment(item.title[0].split(' ')[1], 'DD.MM');
+      } if (lang === 'en') {
+        date = moment(item.title[0].split(' ')[1], 'MM/DD/YYYY')
+      } /*if (lang === 'sv') {
+        date = moment(item.title[0].split(' ')[1], 'YYYY-MM-DD')
+      }*/
+      console.log(date)
+      console.log(item.title[0].split(' ')[1])
+      
       return {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
