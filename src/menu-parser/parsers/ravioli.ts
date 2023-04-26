@@ -1,8 +1,12 @@
-import { Property} from '../utils';
 import * as moment from 'moment';
 import * as utils from '../utils';
 
 import { Parser } from '../index';
+import {
+  propertyRegex,
+  Property,
+  createPropertyNormalizer
+} from '../utils';
 
 const propertyMap = {
   G: Property.GLUTEN_FREE,
@@ -10,9 +14,11 @@ const propertyMap = {
   L: Property.LACTOSE_FREE,
   M: Property.MILK_FREE,
   O: Property.IGNORE,
-  VL: Property.LOW_IN_LACTOSE
+  VL: Property.LOW_IN_LACTOSE,
+  VEGA: Property.VEGAN
 };
 
+const normalizeProperties = createPropertyNormalizer(propertyMap);
 
 // Today: https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=0
 // This week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=1
@@ -25,27 +31,40 @@ const parser: Parser = {
     }
     const xml = await utils.text(url);
     const json = await utils.parseXml(xml);
-    return json.rss.channel[0].item.map(item => {
+    return (json.rss.channel[0] ? json.rss.channel[0].item.map(item => {
       var date = null
       if (lang === 'fi') {
         date = moment(item.title[0].split(' ')[1], 'DD.MM');
       } if (lang === 'en') {
         date = moment(item.title[0].split(' ')[1], 'MM/DD/YYYY')
-      } /*if (lang === 'sv') {
-        date = moment(item.title[0].split(' ')[1], 'YYYY-MM-DD')
-      }*/
-      
+      }
       return {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
           .split('<br>')
-          .filter(c => c.trim().length)
-          .map(title => ({ 
-            title: title, 
-            properties: []}))
+          .map(x => ({
+            name: x.split(': ').length > 1 ? x.split(': ')[0] : '',
+            components: x.split(': ')[x.split(': ').length - 1].split(') ').map(z => z.endsWith(')') ? z : z + ')')
+          }))
+          .map(x => 
+            x.components.map(y => (x.name ? x.name + ': ' : '') + y)
+          )
+          .reduce((a,x) => a.concat(x), [])
+          .map(course => {
+            const regex = /\s\(.*\)$/;
+            const properties = course.match(regex);
+            return {
+              title: course.replace(regex, ''),
+              properties: properties
+              ? normalizeProperties(
+                  properties[0].match(propertyRegex) || []
+                ) : []
+            }
+          })
       };
-    });
-  }
+    }) : []
+    ).filter(day => day.courses.length)
+    }
 };
 
 export default parser;
