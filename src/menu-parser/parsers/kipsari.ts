@@ -11,9 +11,21 @@ const normalizeProperties = createPropertyNormalizer({
   G: Property.GLUTEN_FREE
 });
 
+// 👼👼👼👼👼
+const handleKipsariLang = (url, lang) => {
+  if (lang === 'en') {
+    if (url.includes('rss-studio')) {
+      return url.replace('rss-studio', 'rss-studio-english');
+    } else if (url.includes('rss-vare')) {
+      return url.replace('rss-vare', 'rss-vare-english');
+    }
+  }
+};
+
 const parser: Parser = {
   pattern: /^https?:\/\/www.kipsari.com/,
-  async parse(url, lang) {
+  async parse(raw_url, lang) {
+    let url = handleKipsariLang(raw_url, lang);
     const xml = await parseXml(await text(url));
     const items = xml.rss.channel[0].item;
     return items.map(({ title, description }) => {
