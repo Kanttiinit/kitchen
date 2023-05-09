@@ -46,17 +46,17 @@ const parser: Parser = {
             name: x.split(': ').length > 1 ? x.split(': ')[0] : '',
             components: x.split(': ')[x.split(': ').length - 1].split(') ').map(z => z.endsWith(')') ? z : z + ')')
           }))
-          .map(x => 
+          .map(x =>
             x.components.map(y => (x.name ? x.name + ': ' : '') + y)
           )
-          .reduce((a,x) => a.concat(x), [])
+          .reduce((a, x) => a.concat(x), [])
           .map(course => {
             const regex = /\s\(.*\)$/;
             const properties = course.match(regex);
             return {
               title: course.replace(regex, ''),
               properties: properties
-              ? normalizeProperties(
+                ? normalizeProperties(
                   properties[0].match(propertyRegex) || []
                 ) : []
             }
@@ -64,7 +64,7 @@ const parser: Parser = {
       };
     }) : []
     ).filter(day => day.courses.length)
-    }
+  }
 };
 
 export default parser;
