@@ -2,7 +2,7 @@ const xml2js = require('xml2js').parseString;
 import * as moment from 'moment';
 import fetch from 'node-fetch';
 
-export const propertyRegex = /\b([A-Z]{1,2}|veg)\b/gi;
+export const propertyRegex = /\b([A-Z]{1,2}|veg|vega)\b/gi;
 
 export const days = {
   fi: ['maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai', 'sunnuntai'],
