@@ -20,6 +20,7 @@ const handleKipsariLang = (url, lang) => {
       return url.replace('rss-vare', 'rss-vare-english');
     }
   }
+  return url;
 };
 
 const parser: Parser = {
