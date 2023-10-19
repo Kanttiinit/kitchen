@@ -31,9 +31,6 @@ const parser: Parser = {
     }
     const xml = await utils.text(url);
     const json = await utils.parseXml(xml);
-    //console.log(json.rss.channel)
-    console.log(xml)
-    console.log(json.rss.channel[0].item)
     return (json.rss.channel[0] ? json.rss.channel[0].item.map(item => {
       var date = null
       if (lang === 'fi') {
@@ -45,19 +42,15 @@ const parser: Parser = {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
           .split('<br>')
-          .map(x => {
-
-            return {
+          .map(x => ({
               name: x.split(':').length > 1 ? x.split(':')[0] : '',
               components: x.split(':')[x.split(':').length - 1].split('),').filter(k => k.length > 0).map(z => z.endsWith(')') ? z : z + ')')
-            }
-          })
+          }))
           .map(x => 
             x.components.map(y => (x.name ? x.name + ': ' : '') + y)
           )
           .reduce((a,x) => a.concat(x), [])
           .map(course => {
-            console.log(course)
             const regex = /\s\(.*\)$/;
             const properties = course.match(regex);
             return {
