@@ -20,9 +20,9 @@ const propertyMap = {
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-// Today: https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=0
-// This week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=1
-// Next week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=2
+// Today: https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=0
+// This week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=1
+// Next week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=2
 const parser: Parser = {
   pattern: /menu\.hus\.fi/,
   async parse(url, lang) {
@@ -31,6 +31,9 @@ const parser: Parser = {
     }
     const xml = await utils.text(url);
     const json = await utils.parseXml(xml);
+    //console.log(json.rss.channel)
+    console.log(xml)
+    console.log(json.rss.channel[0].item)
     return (json.rss.channel[0] ? json.rss.channel[0].item.map(item => {
       var date = null
       if (lang === 'fi') {
@@ -42,15 +45,19 @@ const parser: Parser = {
         day: date.format('YYYY-MM-DD'),
         courses: item.description[0]
           .split('<br>')
-          .map(x => ({
-            name: x.split(': ').length > 1 ? x.split(': ')[0] : '',
-            components: x.split(': ')[x.split(': ').length - 1].split(') ').map(z => z.endsWith(')') ? z : z + ')')
-          }))
+          .map(x => {
+
+            return {
+              name: x.split(':').length > 1 ? x.split(':')[0] : '',
+              components: x.split(':')[x.split(':').length - 1].split('),').filter(k => k.length > 0).map(z => z.endsWith(')') ? z : z + ')')
+            }
+          })
           .map(x => 
             x.components.map(y => (x.name ? x.name + ': ' : '') + y)
           )
           .reduce((a,x) => a.concat(x), [])
           .map(course => {
+            console.log(course)
             const regex = /\s\(.*\)$/;
             const properties = course.match(regex);
             return {
