@@ -20,9 +20,9 @@ const propertyMap = {
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-// Today: https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=0
-// This week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=1
-// Next week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/MeikkuLo/Rss.aspx?Id=a54fb2d4-a7f4-4a58-b23a-a223516cd42c&DateMode=2
+// Today: https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=0
+// This week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=1
+// Next week https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Rss.aspx?Id=e60502ff-6156-4198-b0b9-a33fab86d572&DateMode=2
 const parser: Parser = {
   pattern: /menu\.hus\.fi/,
   async parse(url, lang) {
