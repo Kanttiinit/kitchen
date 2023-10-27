@@ -43,8 +43,8 @@ const parser: Parser = {
         courses: item.description[0]
           .split('<br>')
           .map(x => ({
-              name: x.split(':').length > 1 ? x.split(':')[0] : '',
-              components: x.split(':')[x.split(':').length - 1].split('),').filter(k => k.length > 0).map(z => z.endsWith(')') ? z : z + ')')
+              name: x.split(/:\s?/).length > 1 ? x.split(':')[0] : '',
+              components: x.split(/:\s?/)[x.split(/:\s?/).length - 1].split(/\)[,|\s]/).filter(k => k.length > 0).map(z => z.endsWith(')') ? z : z + ')')
           }))
           .map(x => 
             x.components.map(y => (x.name ? x.name + ': ' : '') + y)
