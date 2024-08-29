@@ -32,8 +32,21 @@ const cachedJSONFetch = async url => {
 };
 
 export const json = url => cachedJSONFetch(url);
-export const text = (url, fetchParams = {}) =>
-  fetch(url, fetchParams).then(r => r.text());
+export const text = (url, setCookie = false) =>
+  fetch(url)
+    .then(r => {
+      if (setCookie) {
+        const cookie = r.headers.get('set-cookie');
+        return fetch(url, {
+          headers: {
+            Cookie: cookie
+          }
+        });
+      } else {
+        return r;
+      }
+    })
+    .then(r => r.text());
 
 export enum Property {
   CONTAINS_ALLERGENS = 'A+',
