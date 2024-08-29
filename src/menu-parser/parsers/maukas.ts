@@ -21,12 +21,7 @@ const parser: Parser = {
     if (lang === 'en') {
       url = url.replace('.fi/', '.fi/en/');
     }
-    const html = await utils.text(url, {
-      headers: {
-        Cookie:
-          'www.mau-kas.fi-SECUREWEBSTAGE11SESSION=YxxOFXf5iw0yn3fADLB7pBMNB6dmaTWPNLfR5JwNij81ITQo'
-      }
-    });
+    const html = await utils.text(url, true);
     const document = new JSDOM(html).window.document;
     let currentNode: any = Array.from(document.querySelectorAll('*')).find((n: any) => n.textContent.trim().toLowerCase() === days[lang][0]);
     const date = moment().startOf('isoWeek');
