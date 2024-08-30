@@ -19,7 +19,10 @@ const parser: Parser = {
   pattern: /mau-kas\.fi/,
   async parse(url, lang) {
     if (lang === 'en') {
-      url = url.replace('.fi/', '.fi/en/');
+      url = url.replace(
+        'redirect_url=https://www.mau-kas.fi/',
+        'redirect_url=https://www.mau-kas.fi/en/'
+      );
     }
     const html = await utils.text(url, true);
     const document = new JSDOM(html).window.document;
