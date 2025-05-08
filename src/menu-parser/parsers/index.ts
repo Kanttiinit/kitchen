@@ -8,6 +8,7 @@ import ravioli from './ravioli';
 import fazer from './fazer';
 import kipsari from './kipsari';
 import restel from './restel';
+import menssa from './menssa';
 
 import { Parser } from '../index';
 
@@ -21,7 +22,8 @@ const parsers: Array<Parser> = [
   ravioli,
   fazer,
   kipsari,
-  restel
+  restel,
+  menssa
 ];
 
 export default parsers;
