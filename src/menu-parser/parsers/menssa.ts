@@ -31,7 +31,7 @@ const parser: Parser = {
   pattern: /menssa.fi/,
   async parse(url, lang) {
     // no english menu available
-    if (lang === 'en') {
+    if (lang !== 'fi') {
       return [];
     }
 
