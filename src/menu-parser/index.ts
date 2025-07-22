@@ -2,7 +2,7 @@ import { inspect } from 'util';
 import parsers from './parsers';
 import { Property } from './utils';
 
-interface MenuItem {
+export interface MenuItem {
   day: string;
   courses: Array<{
     title: string;
