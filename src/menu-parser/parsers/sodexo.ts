@@ -59,7 +59,9 @@ const parser: Parser = {
         courses: Object.values(day.courses)
           .map(course => ({
             title: lang == 'fi' ? course.title_fi : course.title_en,
-            properties: course.properties ? normalizeProperties(course.properties.split(', ')) : []
+            properties: course.properties
+              ? normalizeProperties(course.properties.split(', '))
+              : []
           }))
           .filter(course => !!course.title)
       };

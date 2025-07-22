@@ -5,9 +5,25 @@ import fetch from 'node-fetch';
 export const propertyRegex = /\b([A-Z]{1,2}|veg|vega)\b/gi;
 
 export const days = {
-  fi: ['maanantai', 'tiistai', 'keskiviikko', 'torstai', 'perjantai', 'lauantai', 'sunnuntai'],
-  en: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-}
+  fi: [
+    'maanantai',
+    'tiistai',
+    'keskiviikko',
+    'torstai',
+    'perjantai',
+    'lauantai',
+    'sunnuntai'
+  ],
+  en: [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday'
+  ]
+};
 
 export const getWeeks = () =>
   [moment(), moment().add({ weeks: 1 })].map(d =>
@@ -102,8 +118,10 @@ export function parseCourse(input: string, propertyNormalizer: Function) {
       property = input[i] + property;
     }
 
-    if (property.trim().length > 3)
-      break;
+    if (property.trim().length > 3) break;
   }
-  return { title: input.substring(0, i + 4), properties: propertyNormalizer(properties) };
+  return {
+    title: input.substring(0, i + 4),
+    properties: propertyNormalizer(properties)
+  };
 }
