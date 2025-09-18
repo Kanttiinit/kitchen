@@ -32,14 +32,14 @@ async function parseWithDate(url, date) {
         return {
           day: date.format('YYYY-MM-DD'),
           courses: day.SetMenus.map(x =>
-            x.Components.map(y => (x.Name ? x.Name + ': ' : '') + y)
+            x.Components.map(y => [x.Name ? x.Name + ': ' : '', y])
           )
             .reduce((a, x) => a.concat(x), [])
-            .map(course => {
+            .map(([groupName, course]) => {
               const regex = /\s\(.*\)$/;
               const properties = course.match(regex);
               return {
-                title: course.replace(regex, ''),
+                title: groupName + course.replace(regex, ''),
                 properties: properties
                   ? normalizeProperties(
                       properties[0].match(propertyRegex) || []
