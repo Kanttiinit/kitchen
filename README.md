@@ -8,8 +8,7 @@ Run `yarn install` to install dependencies.
 
 See the table below and make sure that all required environment variables are available. Then run `yarn develop` to start the development server.
 
-Use `docker compose up db` to run a local database. This will run an host a database in `postgresql://postgres:postgres@localhost:5432/kitchen_test`
-
+Use `docker compose up db` to run a local database. This will run and host a database in `postgresql://postgres:postgres@localhost:5432/kitchen_test`
 
 ### Environment variables
 
