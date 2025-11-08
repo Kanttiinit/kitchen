@@ -57,8 +57,8 @@ describe('/change', () => {
 
     it('registers callback_query listener', () => {
       const { calls } = bot.on.mock;
-      expect(calls[0][0]).toEqual('callback_query');
-      expect(typeof calls[0][1]).toEqual('function');
+      expect(calls[1][0]).toEqual('callback_query');
+      expect(typeof calls[1][1]).toEqual('function');
     });
 
     it('adds username to appliedBy when applying', async () => {
