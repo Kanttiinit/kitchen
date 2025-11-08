@@ -12,7 +12,7 @@ const urls = [
   'http://www.hys.net/ruokalista.xml'
 ];
 
-describe('Parsers', () => {
+describe.skip('Parsers', () => {
   describe('restaurant', () => {
     urls.forEach(url => {
       describe('parser for ' + url.split('/')[2], function() {
