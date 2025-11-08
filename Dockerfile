@@ -6,16 +6,17 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 
 # Install dependencies
-RUN yarn install
+RUN yarn global add tsc 
+RUN yarn install --ignore-scripts
 
 # Copy source code
 COPY . .
 
 # Build TypeScript
-RUN yarn run build
+RUN yarn build
 
 # Expose port
 EXPOSE 3000
 
 # Start application
-CMD ["yarn", "run", "start"]
+CMD ["yarn", "start"]
