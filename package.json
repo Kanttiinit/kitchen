@@ -30,7 +30,7 @@
     "sequelize": "^5.8.7",
     "sequelize-decorators": "^1.0.1",
     "telegraf": "^3.23.0",
-    "typescript": "^4.2.2",
+    "typescript": "^4.9.5",
     "universal-analytics": "^0.4.15",
     "xml2js": "^0.4.16"
   },

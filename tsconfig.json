@@ -5,6 +5,7 @@
     "lib": ["es6", "esnext.asynciterable"],
     "outDir": "dist",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true
   }
 }
