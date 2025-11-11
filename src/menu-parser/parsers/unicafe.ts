@@ -39,15 +39,13 @@ interface Restaurant {
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-
 // Using slug instead of id because apparantly unicafe has different id for different languages
 // Example URL: https://unicafe.fi/wp-json/swiss/v1/restaurants/?lang=language#terkko
 const parser: Parser = {
   pattern: /unicafe\.fi/,
   async parse(url, lang) {
-    console.log(lang)
     const restaurants: Array<Restaurant> = await json(
-      url.replace('language', lang)
+      url.replace('%lang%', lang)
     );
     const [, slug] = url.split('#');
     const restaurant = restaurants.find(r => r.slug === slug);
