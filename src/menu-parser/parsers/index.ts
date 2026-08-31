@@ -9,6 +9,7 @@ import fazer from './fazer';
 import kipsari from './kipsari';
 import restel from './restel';
 import menssa from './menssa';
+import jamix from './jamix';
 
 import { Parser } from '../index';
 
@@ -23,7 +24,8 @@ const parsers: Array<Parser> = [
   fazer,
   kipsari,
   restel,
-  menssa
+  menssa,
+  jamix
 ];
 
 export default parsers;
