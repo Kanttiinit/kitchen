@@ -13,9 +13,9 @@ export default async (req, res, next) => {
       {
         model: models.Menu,
         required: false,
-        where: { day }
-      }
-    ]
+        where: { day },
+      },
+    ],
   });
 
   if (!restaurant) {
@@ -24,8 +24,8 @@ export default async (req, res, next) => {
     res.json(
       await restaurant.getPublicAttributes(
         req.lang,
-        !!req.query.newOpeningHours
-      )
+        !!req.query.newOpeningHours,
+      ),
     );
   }
 };

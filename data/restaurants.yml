@@ -1,0 +1,779 @@
+- openingHours:
+    - null
+    - '10:45 - 13:30'
+    - '10:45 - 13:30'
+    - '10:45 - 13:30'
+    - '10:45 - 13:30'
+    - null
+    - null
+  id: 39
+  url: 'https://unicafe.fi/restaurants/tahka/'
+  latitude: 60.223026
+  longitude: 25.019243
+  address: 'Koetilantie 7, 00790 Helsinki'
+  priceCategory: student
+  name: Tähkä
+- openingHours:
+    - null
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - null
+    - null
+  id: 37
+  url: 'https://unicafe.fi/restaurants/viikuna/'
+  latitude: 60.229297
+  longitude: 25.021813
+  address: 'Agnes Sjöbergin katu 2, 00790 Helsinki'
+  priceCategory: student
+  name: Viikuna
+- openingHours:
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - null
+    - null
+  id: 16
+  url: 'https://unicafe.fi/restaurants/metsatalo/'
+  latitude: 60.172295
+  longitude: 24.949066
+  address: 'Fabianinkatu 39, 00170 Helsinki'
+  priceCategory: student
+  name: Metsätalo
+- openingHours:
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - null
+    - null
+  id: 47
+  url: 'https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Page/Restaurant'
+  latitude: 60.1891829
+  longitude: 24.9054397
+  address: 'Haartmaninkatu 8, 00029, Helsinki'
+  priceCategory: student
+  name: ' Biomedicum'
+- openingHours:
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - null
+    - null
+  id: 17
+  url: 'https://unicafe.fi/restaurants/olivia/'
+  latitude: 60.175101
+  longitude: 24.952958
+  address: 'Siltavuorenpenger 5 A, 00170 Helsinki'
+  priceCategory: student
+  name: Olivia
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 25
+  url: 'https://unicafe.fi/restaurants/sockom/'
+  latitude: 60.17308
+  longitude: 24.952512
+  address: 'Yrjö-Koskisen katu 3, 00170 Helsinki'
+  priceCategory: student
+  name: Soc&Kom
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 24
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/hanken/
+  latitude: 60.171257
+  longitude: 24.924383
+  address: 'Arkadiankatu 22, 00100 Helsinki'
+  priceCategory: student
+  name: Hanken
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - null
+    - null
+  id: 41
+  url: 'https://www.mau-kas.fi/'
+  latitude: 60.182906971866664
+  longitude: 24.828007221221924
+  address: 'Vuorimiehentie 5, 02150 Espoo'
+  priceCategory: studentPremium
+  name: Mau-kas
+- openingHours:
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - null
+    - null
+  id: 42
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/kookos/
+  latitude: 60.181096
+  longitude: 24.958848
+  address: 'Haapaniemenkatu 6, 00530 Helsinki'
+  priceCategory: student
+  name: Kookos
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 13:45'
+    - null
+    - null
+  id: 56
+  url: 'https://unicafe.fi/restaurants/ruskeasuo/'
+  latitude: 60.205884
+  longitude: 24.897528
+  address: Kytösuontie 9  00300 Helsinki
+  priceCategory: student
+  name: Unicafe Ruskeasuo
+- openingHours:
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+  id: 62
+  url: 'https://unicafe.fi/restaurants/ravintola-oliver/'
+  latitude: 60.1751186
+  longitude: 24.9513197
+  address: 'Siltavuorenpenger 5 A, 00170 Helsinki'
+  priceCategory: student
+  name: Ravintola Oliver
+- openingHours:
+    - '7:30 - 17:00'
+    - '7:30 - 17:00'
+    - '7:30 - 17:00'
+    - '7:30 - 17:00'
+    - '7:30 - 15:00'
+    - null
+    - null
+  id: 54
+  url: 'https://www.sodexo.fi/ravintolat/helsinki/metropolia-leiritie'
+  latitude: 60.2586166
+  longitude: 24.845661
+  address: 'Leiritie 1, 01600 Vantaa'
+  priceCategory: student
+  name: Metropolia Leiritie
+- openingHours:
+    - '8:30 - 14:00'
+    - '8:30 - 14:00'
+    - '8:30 - 14:00'
+    - '8:30 - 14:00'
+    - '8:30 - 14:00'
+    - null
+    - null
+  id: 13
+  url: 'https://unicafe.fi/restaurants/cafe-portaali/'
+  latitude: 60.169955
+  longitude: 24.948389
+  address: 'Vuorikatu 3, 00170 Helsinki'
+  priceCategory: student
+  name: Cafe Portaali
+- openingHours:
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - null
+    - null
+  id: 3
+  url: 'https://www.teknologforeningen.fi'
+  latitude: 60.186034690045396
+  longitude: 24.832755909262062
+  address: 'Otakaari 22, 02150 Espoo'
+  priceCategory: student
+  name: Täffä
+- openingHours:
+    - '11:00 - 19:45'
+    - '11:00 - 19:45'
+    - '11:00 - 19:45'
+    - '11:00 - 19:45'
+    - '11:00 - 19:45'
+    - '11:30 - 17:00'
+    - null
+  id: 12
+  url: 'https://unicafe.fi/restaurants/kaivopiha/'
+  latitude: 60.168859
+  longitude: 24.940881
+  address: 'Mannerheimintie 3 B, 00100 Helsinki'
+  priceCategory: student
+  name: Kaivopiha
+- openingHours:
+    - '9:00 - 14:30'
+    - '9:00 - 14:30'
+    - '9:00 - 14:30'
+    - '9:00 - 14:30'
+    - '9:00 - 14:30'
+    - null
+    - null
+  id: 1
+  url: 'https://www.sodexo.fi/ravintolat/espoo/aalto-kvarkki'
+  latitude: 60.188348
+  longitude: 24.829876
+  address: 'Otakaari 3, 02150 Espoo'
+  priceCategory: student
+  name: Kvarkki
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 33
+  url: 'https://unicafe.fi/restaurants/exactum/'
+  latitude: 60.205001
+  longitude: 24.96301
+  address: 'Gustaf Hällströmin katu 2b, 00560 Helsinki'
+  priceCategory: student
+  name: Exactum
+- openingHours:
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - null
+    - null
+  id: 32
+  url: 'https://unicafe.fi/restaurants/chemicum/'
+  latitude: 60.206038
+  longitude: 24.963432
+  address: 'A.I. Virtasen aukio 1, 00560 Helsinki'
+  priceCategory: student
+  name: Chemicum
+- openingHours:
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - null
+    - null
+  id: 55
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/diak-kalasatama/
+  latitude: 60.199107
+  longitude: 24.969255
+  address: 'Kyläsaarenkuja 2, 00580 Helsinki'
+  priceCategory: student
+  name: DIAK-Kalasatama
+- openingHours:
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - null
+    - null
+  id: 61
+  url: 'https://unicafe.fi/restaurants/pesco-vege-topelias/'
+  latitude: 60.1717323
+  longitude: 24.9483131
+  address: 'Unioninkatu 38, 00101 Helsinki'
+  priceCategory: student
+  name: Pesco & Vege Topelias
+- openingHours:
+    - '11:00 - 13:30'
+    - '11:00 - 13:30'
+    - '11:00 - 13:30'
+    - '11:00 - 13:30'
+    - '11:00 - 13:30'
+    - null
+    - null
+  id: 63
+  url: 'https://unicafe.fi/restaurants/rotunda/'
+  latitude: 60.1703345
+  longitude: 24.9483184
+  address: 'Unioninkatu 36, 00101 Helsinki'
+  priceCategory: student
+  name: Rotunda
+- openingHours:
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - null
+    - null
+  id: 57
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/agora/
+  latitude: 60.204094
+  longitude: 24.899562
+  address: 'Mannerheimintie 103 b, 00280 Helsinki'
+  priceCategory: regular
+  name: Ravintola Agora
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 53
+  url: >-
+    https://www.foodandco.fi/ravintolat/Ravintolat-kaupungeittain/helsinki/musiikkitalon-ravintolat/klubiravintola/
+  latitude: 60.17368221130315
+  longitude: 24.934795944774578
+  address: 'Kansalaistori 2G, 00100 Helsinki'
+  priceCategory: student
+  name: Musiikkitalon Klubi
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - null
+    - null
+  id: 38
+  url: 'https://www.sodexo.fi/ravintolat/helsinki/ladonlukko'
+  latitude: 60.229063
+  longitude: 25.018578
+  address: 'Latokartanonkaari 9 A, 00790 Helsinki'
+  priceCategory: student
+  name: Ladonlukko
+- openingHours:
+    - '11:00 - 13:15'
+    - '11:00 - 13:15'
+    - '11:00 - 13:15'
+    - '11:00 - 13:15'
+    - '11:00 - 13:15'
+    - null
+    - null
+  id: 66
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/luova/
+  latitude: 60.20996209152856
+  longitude: 24.977054345406742
+  address: 'Hämeentie 135 D, 00560 Helsinki'
+  priceCategory: student
+  name: Luova
+- openingHours:
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - null
+    - null
+  id: 5
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/espoo/alvari/
+  latitude: 60.185952
+  longitude: 24.827041
+  address: 'Otakaari 1 D, 02150 Espoo'
+  priceCategory: student
+  name: Alvari
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 59
+  url: 'https://www.sodexo.fi/ravintolat/espoo/arvo'
+  latitude: 60.1860704863956
+  longitude: 24.822219446945127
+  address: 'Ekonominaukio 1, 02150 Espoo'
+  priceCategory: studentPremium
+  name: Arvo
+- openingHours:
+    - '8:00 - 16:30'
+    - '8:00 - 16:00'
+    - '8:00 - 16:30'
+    - '8:00 - 16:30'
+    - '8:00 - 15:00'
+    - null
+    - null
+  id: 34
+  url: 'https://unicafe.fi/restaurants/physicum/'
+  latitude: 60.204975
+  longitude: 24.963471
+  address: 'Gustaf Hällströmin katu 2, 00560 Helsinki'
+  priceCategory: student
+  name: Physicum
+- openingHours:
+    - '11:00 - 17:00'
+    - '11:00 - 17:00'
+    - '11:00 - 17:00'
+    - '11:00 - 17:00'
+    - '11:00 - 17:00'
+    - '11:00 - 16:00'
+    - null
+  id: 81
+  url: 'https://unicafe.fi/restaurants/biokeskus/'
+  latitude: 60.2271066
+  longitude: 25.014461
+  address: 'Viikinkaari 9, 00710 Helsinki'
+  priceCategory: student
+  name: Biokeskus
+- openingHours:
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - null
+    - null
+  id: 50
+  url: 'http://kipsari.com/'
+  latitude: 60.18575627120793
+  longitude: 24.82440688095093
+  address: 'Otaniementie 14, 02150 Espoo'
+  priceCategory: student
+  name: Kipsari Väre
+- openingHours:
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 18:00'
+    - '11:00 - 16:00'
+    - '11:00 - 16:00'
+  id: 52
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/espoo/a-bloc/
+  latitude: 60.1856008
+  longitude: 24.8234719
+  address: 'Otaniementie 12, 02150 Espoo'
+  priceCategory: student
+  name: A Bloc
+- openingHours:
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+  id: 27
+  url: 'https://unicafe.fi/restaurants/porthania/'
+  latitude: 60.169953
+  longitude: 24.948442
+  address: 'Yliopistonkatu 3, 00170 Helsinki'
+  priceCategory: student
+  name: Porthania
+- openingHours:
+    - '10:30 - 15:00'
+    - '10:30 - 14:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - null
+    - null
+  id: 49
+  url: 'https://unicafe.fi/restaurants/meilahti/'
+  latitude: 60.1909488
+  longitude: 24.9070572
+  address: 'Haartmaninkatu 3, 00290 Helsinki'
+  priceCategory: student
+  name: UniCafe Meilahti
+- openingHours:
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - null
+    - null
+  id: 69
+  url: 'https://www.sodexo.fi/ravintolat/helsingin-yliopisto-paarakennus'
+  latitude: 60.1691084
+  longitude: 24.9479599
+  address: 'Aleksanterinkatu 5, 00170 Helsinki'
+  priceCategory: student
+  name: Helsingin yliopisto Päärakennus
+- openingHours:
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - '10:30 - 15:00'
+    - null
+    - null
+  id: 72
+  url: 'https://unicafe.fi/restaurants/chemicum-opettajien-ravintola/'
+  latitude: 60.205720485466856
+  longitude: 24.96354716579012
+  address: A.I.Virtasenaukio 1
+  priceCategory: regular
+  name: Chemicum Opettajien ravintola
+- openingHours:
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - '10:30 - 13:30'
+    - null
+    - null
+  id: 68
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/arabianranta/
+  latitude: 60.2093431209008
+  longitude: 24.9768483990148
+  address: 'Hämeentie 135 A, 00560 Helsinki'
+  priceCategory: student
+  name: Arabianranta
+- openingHours:
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - '10:30 - 14:30'
+    - null
+    - null
+  id: 75
+  url: 'https://unicafe.fi/restaurants/infokeskus-alakerta/'
+  latitude: 60.227191
+  longitude: 25.012324
+  address: 'Viikinkaari 11, 00790 Helsinki'
+  priceCategory: student
+  name: Infokeskus alakerta
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - null
+    - null
+  id: 73
+  url: 'https://www.mau-kas.fi/nova'
+  latitude: 60.1847257
+  longitude: 24.8171495
+  address: 'Tietotie 3, 02150 Espoo'
+  priceCategory: studentPremium
+  name: Mau-kas Nova
+- openingHours:
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 14:30'
+    - null
+    - null
+  id: 26
+  url: 'https://hys.net/osakuntabaari/'
+  latitude: 60.168799
+  longitude: 24.933418
+  address: 'Urho Kekkosen katu 4-6 D, 00100 Helsinki'
+  priceCategory: student
+  name: Hämäläis-Osakunta
+- openingHours:
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - null
+    - null
+  id: 67
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/muut-avoimet-ravintolat/kaupungit/helsinki/toolo-37/
+  latitude: 60.182149
+  longitude: 24.9226542
+  address: 'Töölönkatu 37, 00260 Helsinki'
+  priceCategory: student
+  name: Töölö 37
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 80
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/tempo/
+  latitude: 60.17263105037024
+  longitude: 24.930256141303516
+  address: 'Nervanderinkatu, 00100 Helsinki'
+  priceCategory: student
+  name: Tempo
+- openingHours:
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - '10:45 - 13:00'
+    - null
+    - null
+  id: 82
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/arcada/
+  latitude: 60.201567836551256
+  longitude: 24.965468836046966
+  address: 'Jan-Magnus Janssonin aukio 1, 00560 Helsinki'
+  priceCategory: student
+  name: Arcada
+- openingHours:
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - '11:00 - 14:30'
+    - null
+    - null
+  id: 83
+  url: 'https://unicafe.fi/restaurants/terkko/'
+  latitude: 60.18897181319097
+  longitude: 24.905728925153742
+  address: 'Haartmaninkatu 4, 00290'
+  priceCategory: student
+  name: Terkko
+- openingHours:
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - '11:00 - 14:00'
+    - null
+    - null
+  id: 71
+  url: 'https://unicafe.fi/myoha/'
+  latitude: 60.16905242513056
+  longitude: 24.94084239006043
+  address: 'Mannerheimintie 3, Helsinki'
+  priceCategory: student
+  name: Myöhä Café & Bar
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 13:30'
+    - null
+    - null
+  id: 7
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/espoo/tuas-aalto-yliopisto/
+  latitude: 60.186832
+  longitude: 24.819056
+  address: 'Maarintie 8, 02150 Espoo'
+  priceCategory: student
+  name: TUAS
+- openingHours:
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - '10:30 - 14:00'
+    - null
+    - null
+  id: 65
+  url: 'https://www.sodexo.fi/ravintolat/metropolia-myllypuro'
+  latitude: 60.223763
+  longitude: 25.078732
+  address: 'Myllypurontie 1, 00920 Helsinki'
+  priceCategory: student
+  name: Metropolia Myllypuro
+- openingHours:
+    - '11:00 - 19:00'
+    - '11:00 - 19:00'
+    - '11:00 - 19:00'
+    - '11:00 - 19:00'
+    - '11:00 - 19:00'
+    - '11:00 - 19:00'
+    - null
+  id: 84
+  url: 'https://menssa.fi/'
+  latitude: 60.1889744
+  longitude: 24.8309369
+  address: Otakaari 7 B
+  priceCategory: studentPremium
+  name: Menssa
+- openingHours:
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - null
+    - null
+  id: 2
+  url: 'https://www.sodexo.fi/ravintolat/espoo/aalto-tietotekniikantalo'
+  latitude: 60.18685835829907
+  longitude: 24.821813922615036
+  address: 'Konemiehentie 2, 02150 Espoo'
+  priceCategory: student
+  name: Tietotekniikantalo
+- openingHours:
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+    - null
+  id: 74
+  url: 'https://unicafe.fi/restaurants/well-kaisa-talo/'
+  latitude: 60.1711237
+  longitude: 24.9478039
+  address: Vuorikatu 7
+  priceCategory: student
+  name: Kaisa-talo
+- openingHours:
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '10:30 - 18:00'
+    - '11:00 - 15:00'
+    - null
+  id: 85
+  url: 'https://juvenes.fi/kamu/'
+  latitude: 60.2007628
+  longitude: 24.9298789
+  address: 'Höyrykatu 1, 00520 Helsinki'
+  priceCategory: student
+  name: Kamu
+- openingHours:
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - '11:00 - 15:00'
+    - null
+    - null
+  id: 45
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/espoo/dipoli-ravintolat/
+  latitude: 60.18501071389388
+  longitude: 24.832212638236996
+  address: 'Otakaari 24, 02150 Espoo'
+  priceCategory: student
+  name: Dipoli Ravintolat

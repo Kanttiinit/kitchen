@@ -26,7 +26,7 @@ const backup = async () => {
 
   await dropbox.filesUpload({
     path,
-    contents: compressedData.toString('base64')
+    contents: compressedData.toString('base64'),
   });
 };
 

@@ -10,7 +10,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       name_i18n: DataTypes.JSON,
       locationRadius: DataTypes.INTEGER,
@@ -19,20 +19,20 @@ export default (sequelize, DataTypes) => {
       hidden: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
-      }
+        defaultValue: false,
+      },
     },
     {
-      tableName: 'areas'
-    }
+      tableName: 'areas',
+    },
   );
 
-  Area.prototype.getPublicAttributes = async function(lang) {
+  Area.prototype.getPublicAttributes = async function (lang) {
     const output = utils.parsePublicParams(this, publicAttrs, lang);
 
     if (this.Restaurants) {
       output.restaurants = await Promise.all(
-        this.Restaurants.map(r => r.getPublicAttributes(lang))
+        this.Restaurants.map((r) => r.getPublicAttributes(lang)),
       );
     }
 

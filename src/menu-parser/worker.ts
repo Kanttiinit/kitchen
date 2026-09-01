@@ -12,8 +12,8 @@ async function createOrUpdateMenu(menu, restaurant) {
   const existingMenu = await models.Menu.findOne({
     where: {
       day: menu.day,
-      RestaurantId: restaurant.id
-    }
+      RestaurantId: restaurant.id,
+    },
   });
 
   if (existingMenu) {
@@ -23,21 +23,21 @@ async function createOrUpdateMenu(menu, restaurant) {
   return models.Menu.create({
     day: menu.day,
     RestaurantId: restaurant.id,
-    courses_i18n: menu.courses_i18n
+    courses_i18n: menu.courses_i18n,
   });
 }
 
 function joinLangMenus(langMenus) {
-  return langMenus[0].map(menu => {
+  return langMenus[0].map((menu) => {
     return {
       day: menu.day,
       courses_i18n: langs.reduce((carry, lang, j) => {
-        const langMenu = langMenus[j].find(m => m.day === menu.day);
+        const langMenu = langMenus[j].find((m) => m.day === menu.day);
         if (langMenu) {
           carry[lang] = langMenu.courses;
         }
         return carry;
-      }, {})
+      }, {}),
     };
   });
 }
@@ -65,15 +65,17 @@ export async function updateAllRestaurants() {
     } catch (e) {
       log(
         `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`,
-        true
+        true,
       );
     }
   }
   log(
-    `${updatedRestaurants} / ${restaurants.length} menus updated in ${(
-      (Date.now() - start) /
-      1000
-    ).toFixed(2)}s`
+    `${updatedRestaurants} / ${restaurants.length} menus updated in ${
+      (
+        (Date.now() - start) /
+        1000
+      ).toFixed(2)
+    }s`,
   );
 }
 

@@ -2,7 +2,9 @@
 
 ## Development
 
-After you have installed everything with `yarn install` you can start watching for changes with `yarn watch:ts`. The compiled JavaScript will end up in the `dist` folder. To test a parser for a certain URL just run `node dist/menu-parser http://restaurant.com/menu`. The output will be printed to the console.
+After you have installed everything with `yarn install` you can start watching for changes with `yarn watch:ts`. The
+compiled JavaScript will end up in the `dist` folder. To test a parser for a certain URL just run
+`node dist/menu-parser http://restaurant.com/menu`. The output will be printed to the console.
 
 ## Normalizing properties
 

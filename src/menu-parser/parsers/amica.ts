@@ -2,14 +2,7 @@ import * as moment from 'moment';
 import { flatten } from 'lodash';
 
 import { Parser } from '../index';
-import {
-  json,
-  formatUrl,
-  propertyRegex,
-  getWeeks,
-  Property,
-  createPropertyNormalizer
-} from '../utils';
+import { createPropertyNormalizer, formatUrl, getWeeks, json, Property, propertyRegex } from '../utils';
 
 const propertyMap = {
   '*': Property.HEALTHIER_CHOICE,
@@ -19,7 +12,7 @@ const propertyMap = {
   M: Property.MILK_FREE,
   Veg: Property.VEGAN,
   VL: Property.LOW_IN_LACTOSE,
-  VS: Property.CONTAINS_GARLIC
+  VS: Property.CONTAINS_GARLIC,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
@@ -27,30 +20,27 @@ const normalizeProperties = createPropertyNormalizer(propertyMap);
 async function parseWithDate(url, date) {
   const data = await json(formatUrl(url, date));
   return (data.MenusForDays
-    ? data.MenusForDays.map(day => {
-        const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
-        return {
-          day: date.format('YYYY-MM-DD'),
-          courses: day.SetMenus.map(x =>
-            x.Components.map(y => [x.Name ? x.Name + ': ' : '', y])
-          )
-            .reduce((a, x) => a.concat(x), [])
-            .map(([groupName, course]) => {
-              const regex = /\s\(.*\)$/;
-              const properties = course.match(regex);
-              return {
-                title: groupName + course.replace(regex, ''),
-                properties: properties
-                  ? normalizeProperties(
-                      properties[0].match(propertyRegex) || []
-                    )
-                  : []
-              };
-            })
-        };
-      })
-    : []
-  ).filter(day => day.courses.length);
+    ? data.MenusForDays.map((day) => {
+      const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
+      return {
+        day: date.format('YYYY-MM-DD'),
+        courses: day.SetMenus.map((x) => x.Components.map((y) => [x.Name ? x.Name + ': ' : '', y]))
+          .reduce((a, x) => a.concat(x), [])
+          .map(([groupName, course]) => {
+            const regex = /\s\(.*\)$/;
+            const properties = course.match(regex);
+            return {
+              title: groupName + course.replace(regex, ''),
+              properties: properties
+                ? normalizeProperties(
+                  properties[0].match(propertyRegex) || [],
+                )
+                : [],
+            };
+          }),
+      };
+    })
+    : []).filter((day) => day.courses.length);
 }
 
 const parser: Parser = {
@@ -59,13 +49,13 @@ const parser: Parser = {
     url = url.replace('language=fi', 'language=' + lang);
     if (url.match('amica')) {
       const menusPerWeek = await Promise.all(
-        getWeeks().map(date => parseWithDate(url, date))
+        getWeeks().map((date) => parseWithDate(url, date)),
       );
       return flatten(menusPerWeek);
     } else {
       return parseWithDate(url, moment());
     }
-  }
+  },
 };
 
 export default parser;

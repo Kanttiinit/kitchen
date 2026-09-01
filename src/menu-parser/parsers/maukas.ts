@@ -12,7 +12,7 @@ const propertyNormalizer = utils.createPropertyNormalizer({
   SE: Property.CONTAINS_CELERY,
   PÄ: Property.CONTAINS_NUTS,
   SO: Property.CONTAINS_SOY,
-  VS: Property.CONTAINS_GARLIC
+  VS: Property.CONTAINS_GARLIC,
 });
 
 const parser: Parser = {
@@ -21,13 +21,13 @@ const parser: Parser = {
     if (lang === 'en') {
       url = url.replace(
         'redirect_url=https://www.mau-kas.fi/',
-        'redirect_url=https://www.mau-kas.fi/en/'
+        'redirect_url=https://www.mau-kas.fi/en/',
       );
     }
     const html = await utils.text(url, true);
     const document = new JSDOM(html).window.document;
     let currentNode: any = Array.from(document.querySelectorAll('*')).find(
-      (n: any) => n.textContent.trim().toLowerCase() === days[lang][0]
+      (n: any) => n.textContent.trim().toLowerCase() === days[lang][0],
     );
     const date = moment().startOf('isoWeek');
     let menuItems = [];
@@ -46,7 +46,7 @@ const parser: Parser = {
     }
     menuItems.push({ day: date.format('YYYY-MM-DD'), courses });
     return menuItems;
-  }
+  },
 };
 
 export default parser;

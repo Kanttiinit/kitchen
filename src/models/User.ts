@@ -6,10 +6,10 @@ export default (sequelize, DataTypes) => {
       email: { type: DataTypes.STRING, allowNull: false, primaryKey: true },
       preferences: { type: DataTypes.JSON, allowNull: false, defaultValue: {} },
       photo: DataTypes.STRING,
-      admin: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false }
+      admin: { type: DataTypes.BOOLEAN, defaultValue: false, allowNull: false },
     },
     {
-      tableName: 'users'
-    }
+      tableName: 'users',
+    },
   );
 };

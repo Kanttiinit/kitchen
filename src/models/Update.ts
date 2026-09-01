@@ -8,21 +8,21 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       type: DataTypes.STRING,
       title: DataTypes.STRING,
-      description: DataTypes.TEXT
+      description: DataTypes.TEXT,
     },
     {
-      tableName: 'updates'
-    }
+      tableName: 'updates',
+    },
   );
-  Update.prototype.getPublicAttributes = function(lang) {
+  Update.prototype.getPublicAttributes = function (lang) {
     return utils.parsePublicParams(
       this,
       ['id', 'type', 'title', 'description', 'createdAt'],
-      lang
+      lang,
     );
   };
   return Update;

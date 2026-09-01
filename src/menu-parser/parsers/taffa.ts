@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { Property, createPropertyNormalizer, json } from '../utils';
+import { createPropertyNormalizer, json, Property } from '../utils';
 import { Parser } from '..';
 
 const propertyMap = {
@@ -11,7 +11,7 @@ const propertyMap = {
   Soijaton: Property.SOY_FREE,
   T: Property.HEALTHIER_CHOICE,
   VL: Property.LOW_IN_LACTOSE,
-  Veg: Property.VEGAN
+  Veg: Property.VEGAN,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
@@ -23,26 +23,24 @@ const parser: Parser = {
   async parse(url: string, lang: string): Promise<any[]> {
     let formattedUrl = url.replace('/fi/', '/' + lang + '/');
     const data = await json(formattedUrl);
-    return data.map(day => {
+    return data.map((day) => {
       const courses = Object.keys(day)
-        .filter(k => !ignoredKeys.includes(k))
-        .map(key => {
+        .filter((k) => !ignoredKeys.includes(k))
+        .map((key) => {
           const match = day[key].match(/\(([A-Za-z,\s]+)\)/);
-          const properties = match
-            ? match[1].split(',').map((p: string) => p.trim())
-            : [];
+          const properties = match ? match[1].split(',').map((p: string) => p.trim()) : [];
           return {
             title: day[key].replace(/\s*\([A-Za-z,\s]+\)\s*$/, '').trim(),
-            properties: normalizeProperties(properties)
+            properties: normalizeProperties(properties),
           };
         })
-        .filter(course => course.title);
+        .filter((course) => course.title);
       return {
         day: moment(day.day, 'YYYY-MM-DD').format('YYYY-MM-DD'),
-        courses
+        courses,
       };
     });
-  }
+  },
 };
 
 export default parser;

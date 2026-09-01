@@ -21,7 +21,7 @@ export default async function parse(url, lang) {
   }
 
   // find a suitable parser
-  const parser = parsers.find(p => url.match(p.pattern));
+  const parser = parsers.find((p) => url.match(p.pattern));
 
   if (parser) {
     return parser.parse(url, lang);

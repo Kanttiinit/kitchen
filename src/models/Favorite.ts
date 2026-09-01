@@ -8,21 +8,21 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       name_i18n: DataTypes.JSON,
       regexp: DataTypes.STRING,
-      icon: DataTypes.STRING
+      icon: DataTypes.STRING,
     },
     {
-      tableName: 'favorites'
-    }
+      tableName: 'favorites',
+    },
   );
-  Favorite.prototype.getPublicAttributes = function(lang) {
+  Favorite.prototype.getPublicAttributes = function (lang) {
     return utils.parsePublicParams(
       this,
       ['id', 'name', 'regexp', 'icon'],
-      lang
+      lang,
     );
   };
   return Favorite;

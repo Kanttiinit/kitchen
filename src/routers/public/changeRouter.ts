@@ -17,8 +17,8 @@ export let bot;
 if ((chatId && botToken) || environment.isTest) {
   telegram = new Telegram(botToken);
   bot = new Telegraf(botToken);
-  bot.on('text', async ctx => console.log(ctx));
-  bot.on('callback_query', async ctx => {
+  bot.on('text', async (ctx) => console.log(ctx));
+  bot.on('callback_query', async (ctx) => {
     const user = ctx.callbackQuery.from;
     try {
       const [action, uuid] = ctx.callbackQuery.data.split(':');
@@ -30,11 +30,11 @@ if ((chatId && botToken) || environment.isTest) {
           await ctx.editMessageText(
             ctx.callbackQuery.message.text.replace(
               '📝 Change requested',
-              `✅ Change accepted by [${user.username}](tg://user?id=${user.id}) ${time}`
+              `✅ Change accepted by [${user.username}](tg://user?id=${user.id}) ${time}`,
             ),
             Extra.markdown()
               .webPreview(false)
-              .markup(m => m.inlineKeyboard([]))
+              .markup((m) => m.inlineKeyboard([])),
           );
           break;
         case 'reject':
@@ -42,11 +42,11 @@ if ((chatId && botToken) || environment.isTest) {
           await ctx.editMessageText(
             ctx.callbackQuery.message.text.replace(
               '📝 Change requested',
-              `🚫 Change rejected by [${user.username}](tg://user?id=${user.id}) ${time}`
+              `🚫 Change rejected by [${user.username}](tg://user?id=${user.id}) ${time}`,
             ),
             Extra.markdown()
               .webPreview(false)
-              .markup(m => m.inlineKeyboard([]))
+              .markup((m) => m.inlineKeyboard([])),
           );
           break;
       }
@@ -54,7 +54,7 @@ if ((chatId && botToken) || environment.isTest) {
       console.log(e);
       ctx.reply(
         `[${user.username}](tg://user?id=${user.id}), Error: ${e.message}`,
-        Extra.markdown()
+        Extra.markdown(),
       );
     }
   });
@@ -68,11 +68,11 @@ export default express
     const changes = await Change.findAll({
       where: {
         uuid: {
-          [Op.in]: req.params.uuids.split(',')
-        }
-      }
+          [Op.in]: req.params.uuids.split(','),
+        },
+      },
     });
-    res.json(changes.map(change => change.getPublicAttributes()));
+    res.json(changes.map((change) => change.getPublicAttributes()));
   })
   .post('/', async (req, res, next) => {
     try {
@@ -83,12 +83,12 @@ export default express
         `📝 Change requested\n${await change.prettyPrint()}`,
         Extra.markdown()
           .webPreview(false)
-          .markup(m =>
+          .markup((m) =>
             m.inlineKeyboard([
               m.callbackButton('Accept', `accept:${change.uuid}`),
-              m.callbackButton('Reject', `reject:${change.uuid}`)
+              m.callbackButton('Reject', `reject:${change.uuid}`),
             ])
-          )
+          ),
       );
 
       res.json({ uuid: change.uuid });

@@ -10,7 +10,7 @@ import createChange from './Change';
 import * as environment from '../environment';
 
 export const sequelize = new Sequelize(environment.databaseURL, {
-  logging: environment.sequelizeLogging ? console.log : false
+  logging: environment.sequelizeLogging ? console.log : false,
 });
 
 export const Area = createArea(sequelize, Sequelize);

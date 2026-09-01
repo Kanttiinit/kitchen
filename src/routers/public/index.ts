@@ -1,67 +1,54 @@
-import * as express from 'express';
-import * as models from '../../models';
-import { sortBy } from 'lodash';
+import { Hono } from 'hono';
+import { parse } from "@std/yaml";
+import { createMiddleware } from 'hono/factory';
 
-const getPublics = (items, lang) =>
-  items.map(item => item.getPublicAttributes(lang));
+const restaurants = parse(Deno.readTextFileSync('data/restaurants.yml'));
+const areas = parse(Deno.readTextFileSync('data/areas.yml'));
+const favorites = parse(Deno.readTextFileSync('data/favorites.yml'));
 
-import changeRouter from './changeRouter';
-import getMenus from './getMenus';
-import getRestaurantMenus from './getRestaurantMenus';
-import getRestaurants from './getRestaurants';
-import handleRouteErrors from '../../utils/handleRouteErrors';
+// import { sortBy } from 'lodash';
 
-export const parseLanguage = (req, res, next) => {
-  if (['fi', 'en'].indexOf(req.query.lang) > -1) {
-    req.lang = req.query.lang;
+// import changeRouter from './changeRouter';
+// import getMenus from './getMenus';
+// import getRestaurantMenus from './getRestaurantMenus';
+// import getRestaurants from './getRestaurants';
+
+export const parseLanguage = createMiddleware<{ Variables: { lang: 'fi' | 'en' } }>(async (c, next) => {
+  const lang = c.req.query('lang') ?? 'fi';
+  if (lang === 'fi' || lang === 'en') {
+    c.set('lang', lang);
   } else {
-    req.lang = 'fi';
+    c.set('lang', 'fi');
   }
-  next();
-};
+  await next();
+});
 
-export const getFavorites = async (req, res) => {
-  const favorites = await models.Favorite.findAll();
-  res.json(getPublics(favorites, req.lang));
-};
+// export const getAreas = async (req, res) => {
+//   const areas = await models.Area.findAll({
+//     where: { hidden: false },
+//     include: [{ model: models.Restaurant }],
+//   });
+//   const data: any = await Promise.all(
+//     areas.map((area) => area.getPublicAttributes(req.lang)),
+//   );
+//   if (req.query.idsOnly) {
+//     const ids = data.map((area) => ({
+//       ...area,
+//       restaurants: sortBy(area.restaurants.map((r) => r.id)),
+//     }));
+//     res.json(ids);
+//   } else {
+//     res.json(data);
+//   }
+// };
 
-export const getAreas = async (req, res) => {
-  const areas = await models.Area.findAll({
-    where: { hidden: false },
-    include: [{ model: models.Restaurant }]
-  });
-  const data: any = await Promise.all(
-    areas.map(area => area.getPublicAttributes(req.lang))
-  );
-  if (req.query.idsOnly) {
-    const ids = data.map(area => ({
-      ...area,
-      restaurants: sortBy(area.restaurants.map(r => r.id))
-    }));
-    res.json(ids);
-  } else {
-    res.json(data);
-  }
-};
-
-export const getUpdates = async (req, res) => {
-  const updates = await models.Update.findAll({
-    order: [['createdAt', 'DESC']],
-    limit: 10
-  });
-  res.json(getPublics(updates, req.lang));
-};
-
-export default express
-  .Router()
+export default new Hono()
   .use(parseLanguage)
-  .use('/changes', handleRouteErrors(changeRouter as any))
-  .get('/menus', handleRouteErrors(getMenus))
-  .get(
-    '/restaurants/:restaurantId/menu(.:ext)?',
-    handleRouteErrors(getRestaurantMenus)
-  )
-  .get('/favorites', handleRouteErrors(getFavorites))
-  .get('/areas', handleRouteErrors(getAreas))
-  .get('/restaurants', handleRouteErrors(getRestaurants))
-  .get('/updates', handleRouteErrors(getUpdates));
+  // .get('/menus', handleRouteErrors(getMenus))
+  // .get(
+  //   '/restaurants/:restaurantId/menu(.:ext)?',
+  //   handleRouteErrors(getRestaurantMenus),
+  // )
+  .get('/favorites', c => c.json(favorites))
+  // .get('/areas', handleRouteErrors(getAreas))
+  // .get('/restaurants', handleRouteErrors(getRestaurants));

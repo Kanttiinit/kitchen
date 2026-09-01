@@ -5,14 +5,14 @@ export async function getRestaurantsByQuery(query: string) {
   const options = {
     model: models.Restaurant,
     mapToModel: true,
-    replacements: { query: `%${query}%` }
+    replacements: { query: `%${query}%` },
   };
   const restaurants = await models.sequelize.query(
     `
     SELECT * FROM restaurants
     WHERE hidden = false AND (name_i18n->>'fi' ILIKE :query OR name_i18n->>'en' ILIKE :query)
   `,
-    options
+    options,
   );
   if (restaurants.length) {
     return restaurants;
@@ -25,14 +25,14 @@ export async function getRestaurantsByQuery(query: string) {
       ) as areas
       WHERE areas.id = restaurants."AreaId" AND restaurants.hidden = false;
     `,
-    options
+    options,
   );
 }
 
 export async function getRestaurantsByLocation(
   latitude: number,
   longitude: number,
-  distance: number
+  distance: number,
 ) {
   return models.sequelize.query(
     `
@@ -48,17 +48,17 @@ export async function getRestaurantsByLocation(
     {
       model: models.Restaurant,
       mapToModel: true,
-      replacements: { latitude, longitude, distance: distance / 1000 }
-    }
+      replacements: { latitude, longitude, distance: distance / 1000 },
+    },
   );
 }
 
 async function getRestaurantsByIds(
   ids: Array<string>,
-  priceCategories: Array<string>
+  priceCategories: Array<string>,
 ) {
   const where: { id?: any; hidden: boolean; priceCategory?: any } = {
-    hidden: false
+    hidden: false,
   };
   if (ids.length) {
     where.id = { [Op.in]: ids };
@@ -84,18 +84,18 @@ function getRestaurantsForQuery(query) {
 
   const ids = (query.ids || '')
     .split(',')
-    .filter(id => id && !isNaN(id))
-    .map(id => Number(id));
+    .filter((id) => id && !isNaN(id))
+    .map((id) => Number(id));
   const priceCategories = (query.priceCategories || '')
     .split(',')
-    .filter(c => ['regular', 'student', 'studentPremium'].includes(c));
+    .filter((c) => ['regular', 'student', 'studentPremium'].includes(c));
   return getRestaurantsByIds(ids, priceCategories);
 }
 
 export default async function getRestaurants(req, res) {
   const restaurants = await getRestaurantsForQuery(req.query);
   const response = await Promise.all(
-    restaurants.map(restaurant => restaurant.getPublicAttributes(req.lang))
+    restaurants.map((restaurant) => restaurant.getPublicAttributes(req.lang)),
   );
   res.json(response);
 }

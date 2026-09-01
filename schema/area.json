@@ -29,8 +29,7 @@
       "type": "number"
     },
     "locationRadius": {
-      "description":
-        "The radius (in kilometers) that the area covers around the center in a circle.",
+      "description": "The radius (in kilometers) that the area covers around the center in a circle.",
       "type": "integer"
     },
     "restaurants": {

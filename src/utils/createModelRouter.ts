@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-export default model => {
+export default (model) => {
   const modelName = model.name.toLowerCase();
 
   const basePath = '/' + modelName + 's';
@@ -28,7 +28,7 @@ export default model => {
       } catch (e) {
         next({
           code: 401,
-          message: e.message
+          message: e.message,
         });
       }
     })
@@ -43,7 +43,7 @@ export default model => {
       } catch (e) {
         next({
           code: 401,
-          message: e.message
+          message: e.message,
         });
       }
     });

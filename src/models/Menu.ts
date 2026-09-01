@@ -9,7 +9,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       day: { type: DataTypes.DATEONLY, allowNull: false },
       courses_i18n: {
@@ -18,23 +18,23 @@ export default (sequelize, DataTypes) => {
         validate: {
           isCorrectFormat(value) {
             const langs = Object.keys(value);
-            if (langs.some(lang => lang !== 'fi' && lang !== 'en')) {
+            if (langs.some((lang) => lang !== 'fi' && lang !== 'en')) {
               throw new Error('The only allowed languages are fi and en.');
             }
-          }
-        }
-      }
+          },
+        },
+      },
     },
     {
-      tableName: 'menus'
-    }
+      tableName: 'menus',
+    },
   );
 
-  Menu.prototype.getPublicAttributes = function(lang) {
+  Menu.prototype.getPublicAttributes = function (lang) {
     const publicParams = utils.parsePublicParams(
       this,
       ['day', 'courses'],
-      lang
+      lang,
     );
     publicParams.day = moment(publicParams.day).format('YYYY-MM-DD');
     return publicParams;

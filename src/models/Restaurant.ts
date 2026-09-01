@@ -10,7 +10,7 @@ const publicAttrs = [
   'latitude',
   'longitude',
   'address',
-  'priceCategory'
+  'priceCategory',
 ];
 
 function formatHour(hour) {
@@ -33,7 +33,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
       },
       name_i18n: DataTypes.JSON,
       type: DataTypes.STRING,
@@ -46,13 +46,13 @@ export default (sequelize, DataTypes) => {
       priceCategory: {
         type: DataTypes.ENUM(['regular', 'student', 'studentPremium']),
         defaultValue: 'student',
-        allowNull: false
+        allowNull: false,
       },
       hidden: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: false
-      }
+        defaultValue: false,
+      },
     },
     {
       tableName: 'restaurants',
@@ -75,39 +75,38 @@ export default (sequelize, DataTypes) => {
             const closeMoment = moment(formatHour(close), 'HH:mm');
             if (!openMoment.isValid() || !closeMoment.isValid()) {
               throw new Error(
-                `One or both of the following are not valid opening hours: ${open}, ${close}.`
+                `One or both of the following are not valid opening hours: ${open}, ${close}.`,
               );
             }
             if (openMoment.isSameOrAfter(closeMoment)) {
               throw new Error(
-                `Opening time cannot be after closing time: ${open}, ${close}.`
+                `Opening time cannot be after closing time: ${open}, ${close}.`,
               );
             }
           }
-        }
-      }
-    }
+        },
+      },
+    },
   );
 
-  Restaurant.prototype.getPublicAttributes = async function(lang) {
+  Restaurant.prototype.getPublicAttributes = async function (lang) {
     const openingHours = this.getPrettyOpeningHours();
 
     const output = {
       openingHours,
-      distance:
-        this.dataValues.distance && Math.round(this.dataValues.distance * 1000),
-      ...utils.parsePublicParams(this, publicAttrs, lang)
+      distance: this.dataValues.distance && Math.round(this.dataValues.distance * 1000),
+      ...utils.parsePublicParams(this, publicAttrs, lang),
     };
 
     if (this.Menus) {
-      output.menus = this.Menus.map(m => m.getPublicAttributes(lang));
+      output.menus = this.Menus.map((m) => m.getPublicAttributes(lang));
     }
 
     return output;
   };
 
-  Restaurant.prototype.getPrettyOpeningHours = function() {
-    return this.openingHours.map(curr => {
+  Restaurant.prototype.getPrettyOpeningHours = function () {
+    return this.openingHours.map((curr) => {
       if (curr) {
         return formatHours(curr);
       }
@@ -119,13 +118,12 @@ export default (sequelize, DataTypes) => {
     'openingHours',
     'address',
     'latitude',
-    'longitude'
+    'longitude',
   ];
 
-  const latLngLink = (lat, lon) =>
-    `[${lat}, ${lon}](http://www.google.com/maps/place/${lat},${lon})`;
+  const latLngLink = (lat, lon) => `[${lat}, ${lon}](http://www.google.com/maps/place/${lat},${lon})`;
 
-  Restaurant.prototype.formatChange = function(change) {
+  Restaurant.prototype.formatChange = function (change) {
     let formattedChange = '';
     if (change.openingHours) {
       formattedChange += change.openingHours
@@ -146,10 +144,12 @@ export default (sequelize, DataTypes) => {
     }
 
     if (change.latitude || change.longitude) {
-      formattedChange += `\nLocation: ${latLngLink(
-        this.latitude,
-        this.longitude
-      )} -> ${latLngLink(change.latitude, change.longitude)}`;
+      formattedChange += `\nLocation: ${
+        latLngLink(
+          this.latitude,
+          this.longitude,
+        )
+      } -> ${latLngLink(change.latitude, change.longitude)}`;
     }
 
     return `Restaurant name: ${this.name_i18n.fi}\nHomepage: ${this.url}\n\n${formattedChange}`;

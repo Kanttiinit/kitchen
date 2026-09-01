@@ -25,7 +25,7 @@ const parsers: Array<Parser> = [
   kipsari,
   restel,
   menssa,
-  jamix
+  jamix,
 ];
 
 export default parsers;

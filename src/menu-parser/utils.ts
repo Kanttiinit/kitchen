@@ -12,7 +12,7 @@ export const days = {
     'torstai',
     'perjantai',
     'lauantai',
-    'sunnuntai'
+    'sunnuntai',
   ],
   en: [
     'monday',
@@ -21,14 +21,11 @@ export const days = {
     'thursday',
     'friday',
     'saturday',
-    'sunday'
-  ]
+    'sunday',
+  ],
 };
 
-export const getWeeks = () =>
-  [moment(), moment().add({ weeks: 1 })].map(d =>
-    d.startOf('week').add({ days: 1 })
-  );
+export const getWeeks = () => [moment(), moment().add({ weeks: 1 })].map((d) => d.startOf('week').add({ days: 1 }));
 
 export const formatUrl = (url, date = moment()) =>
   url
@@ -38,7 +35,7 @@ export const formatUrl = (url, date = moment()) =>
     .replace('%week%', date.format('w'));
 
 const cache = {};
-const cachedJSONFetch = async url => {
+const cachedJSONFetch = async (url) => {
   if (!(url in cache)) {
     const response = await fetch(url);
     cache[url] = response.json();
@@ -47,22 +44,22 @@ const cachedJSONFetch = async url => {
   return cache[url];
 };
 
-export const json = url => cachedJSONFetch(url);
+export const json = (url) => cachedJSONFetch(url);
 export const text = (url, setCookie = false) =>
   fetch(url)
-    .then(r => {
+    .then((r) => {
       if (setCookie) {
         const cookie = r.headers.get('set-cookie');
         return fetch(url, {
           headers: {
-            Cookie: cookie
-          }
+            Cookie: cookie,
+          },
         });
       } else {
         return r;
       }
     })
-    .then(r => r.text());
+    .then((r) => r.text());
 
 export enum Property {
   CONTAINS_ALLERGENS = 'A+',
@@ -79,23 +76,24 @@ export enum Property {
   CONTAINS_SOY = 'S+',
   VEGETARIAN = 'V',
   VEGAN = 'VV',
-  IGNORE = '?'
+  IGNORE = '?',
 }
 
 export const createPropertyNormalizer = (map: {
   [source: string]: Property;
-}) => (properties: Array<string>) =>
+}) =>
+(properties: Array<string>) =>
   properties
-    .map(p => {
+    .map((p) => {
       const mapped = map[p];
       return mapped ? mapped : Property.IGNORE;
     })
-    .filter(p => p !== Property.IGNORE)
+    .filter((p) => p !== Property.IGNORE)
     .sort();
 
 export function parseXml(xml): Promise<any> {
   return new Promise((resolve, reject) => {
-    xml2js(xml, function(err, data) {
+    xml2js(xml, function (err, data) {
       if (err) {
         reject(err);
       } else {
@@ -118,10 +116,10 @@ export function parseCourse(input: string, propertyNormalizer: Function) {
       property = input[i] + property;
     }
 
-    if (property.trim().length > 3) break;
+    if (property.trim().length > 3) { break; }
   }
   return {
     title: input.substring(0, i + 4),
-    properties: propertyNormalizer(properties)
+    properties: propertyNormalizer(properties),
   };
 }

@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 
 import { Parser } from '..';
-import { json, Property, createPropertyNormalizer } from '../utils';
+import { createPropertyNormalizer, json, Property } from '../utils';
 
 const normalizeProperties = createPropertyNormalizer({
   G: Property.GLUTEN_FREE,
@@ -9,7 +9,7 @@ const normalizeProperties = createPropertyNormalizer({
   M: Property.MILK_FREE,
   Mu: Property.EGG_FREE,
   VEG: Property.VEGAN,
-  '*': Property.HEALTHIER_CHOICE
+  '*': Property.HEALTHIER_CHOICE,
 });
 
 interface MenuItem {
@@ -58,14 +58,14 @@ const parser: Parser = {
               for (const item of mealoption.menuItems) {
                 const title = item.name.trim();
                 // Items without a translation come back with an empty name.
-                if (!title || courses.some(c => c.title === title)) {
+                if (!title || courses.some((c) => c.title === title)) {
                   continue;
                 }
                 courses.push({
                   title,
                   properties: normalizeProperties(
-                    (item.diets || '').split(',').map(d => d.trim())
-                  )
+                    (item.diets || '').split(',').map((d) => d.trim()),
+                  ),
                 });
               }
             }
@@ -79,9 +79,9 @@ const parser: Parser = {
       .filter(([, courses]) => courses.length)
       .map(([date, courses]) => ({
         day: moment(String(date), 'YYYYMMDD').format('YYYY-MM-DD'),
-        courses
+        courses,
       }));
-  }
+  },
 };
 
 export default parser;

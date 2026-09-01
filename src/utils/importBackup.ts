@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 import * as readline from 'readline';
 import { promisify } from 'util';
 import { unzip } from 'zlib';
-import { sequelize, Area, Restaurant, Favorite } from '../models';
+import { Area, Favorite, Restaurant, sequelize } from '../models';
 
 const decompress = (promisify as any)(unzip);
 
@@ -13,7 +13,7 @@ async function importFromFile(filename) {
   let data;
   try {
     const jsonString = await decompress(
-      Buffer.from(fileContents.toString(), 'base64')
+      Buffer.from(fileContents.toString(), 'base64'),
     );
     data = JSON.parse(jsonString.toString());
   } catch (e) {
@@ -21,11 +21,11 @@ async function importFromFile(filename) {
   }
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
   rl.question(
     `About to import ${data.areas.length} areas, ${data.restaurants.length} restaurants, and ${data.favorites.length} favorites, continue? `,
-    async answer => {
+    async (answer) => {
       if (answer === 'Y' || answer === 'y') {
         console.log('Importing...');
         await importData(data);
@@ -33,7 +33,7 @@ async function importFromFile(filename) {
         console.log('Aborted.');
       }
       rl.close();
-    }
+    },
   );
 }
 

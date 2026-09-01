@@ -6,13 +6,16 @@ Kitchen is the backend powering Kanttiinit. It's built with Express and uses a P
 
 Run `yarn install` to install dependencies.
 
-See the table below and make sure that all required environment variables are available. Then run `yarn develop` to start the development server.
+See the table below and make sure that all required environment variables are available. Then run `yarn develop` to
+start the development server.
 
-Use `docker compose up db` to run a local database. This will run and host a database in `postgresql://postgres:postgres@localhost:5432/kitchen_test`
+Use `docker compose up db` to run a local database. This will run and host a database in
+`postgresql://postgres:postgres@localhost:5432/kitchen_test`
 
 ### Environment variables
 
-This project uses [dotenv](https://github.com/motdotla/dotenv), which means that you can just place the environment variables in a `.env` file at the root of the project.
+This project uses [dotenv](https://github.com/motdotla/dotenv), which means that you can just place the environment
+variables in a `.env` file at the root of the project.
 
 | Key               | Description                                                           | Required                                                        |
 | ----------------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
@@ -28,4 +31,5 @@ To test the menu parser on a certain URL, run `node dist/menu-parser "http://res
 
 ### ESLint
 
-This code base uses ESLint for linting JavaScript in order to keep the style uniform. ESLint has integrations for all major IDE's and we highly recommend installing it. We won't accept contributions that don't pass the linter rules!
+This code base uses ESLint for linting JavaScript in order to keep the style uniform. ESLint has integrations for all
+major IDE's and we highly recommend installing it. We won't accept contributions that don't pass the linter rules!
