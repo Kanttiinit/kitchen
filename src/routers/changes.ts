@@ -32,10 +32,9 @@ const models = {
       openingHours: openingHoursSchema,
     }),
     filterSchema: z.object({
-      id: z.number().int()
+      id: z.number().int(),
     }),
     async applyChange(filter, change) {
-      // TODO: implement
     },
     formatChangeMessage(filter, change) {
       const latLngLink = (lat: number, lon: number) =>
@@ -78,8 +77,8 @@ const models = {
   }),
 };
 
-export let telegram: Telegraf.Telegram;
-export let bot: Telegraf.Telegraf<Telegraf.Context>;
+let telegram: Telegraf.Telegram;
+let bot: Telegraf.Telegraf<Telegraf.Context>;
 
 if ((chatId && botToken) || environment.isTest) {
   telegram = new Telegraf.Telegram(botToken);
@@ -102,7 +101,7 @@ if ((chatId && botToken) || environment.isTest) {
           const modelChange = model.changeSchema.parse(change.change);
           const modelFilter = model.filterSchema.parse(change.filter);
           await model.applyChange(modelFilter, modelChange);
-          
+
           // await change.apply(user.username);
           await ctx.editMessageText(
             originalText.replace(

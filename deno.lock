@@ -7,7 +7,6 @@
     "jsr:@std/yaml@*": "1.2.0",
     "npm:@electric-sql/pglite@~0.5.8": "0.5.8",
     "npm:jsdom@^30.0.1": "30.0.1",
-    "npm:lodash@^4.18.1": "4.18.1",
     "npm:moment@^2.30.1": "2.30.1",
     "npm:postgres@^3.4.9": "3.4.9",
     "npm:telegraf@^3.23.0": "3.40.0",
@@ -164,9 +163,6 @@
         "whatwg-url@17.1.0",
         "xml-name-validator"
       ]
-    },
-    "lodash@4.18.1": {
-      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q=="
     },
     "lru-cache@11.5.2": {
       "integrity": "sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g=="
@@ -333,7 +329,6 @@
       "jsr:@std/yaml@*",
       "npm:@electric-sql/pglite@~0.5.8",
       "npm:jsdom@^30.0.1",
-      "npm:lodash@^4.18.1",
       "npm:moment@^2.30.1",
       "npm:postgres@^3.4.9",
       "npm:telegraf@^3.23.0",

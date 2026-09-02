@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
-import { getRestaurantsForQuery } from './getRestaurants.ts';
-import changeRouter from './changeRouter.ts';
+import { getRestaurantsForQuery } from './restaurant-queries.ts';
+import changeRouter from './changes.ts';
 import { areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
 import { db, Menu } from '../db.ts';
 import moment from 'moment';

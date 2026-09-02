@@ -24,6 +24,18 @@ export const days = {
   ],
 };
 
+export function flatten<T>(array: (T | T[])[]): T[] {
+  const result: T[] = [];
+  for (const item of array) {
+    if (Array.isArray(item)) {
+      result.push(...item);
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
 export const getWeeks = () => [moment(), moment().add({ weeks: 1 })].map((d) => d.startOf('week').add({ days: 1 }));
 
 export const formatUrl = (url: string, date = moment()) =>
