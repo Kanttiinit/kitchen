@@ -86,7 +86,6 @@ export default new Hono()
         allRestaurantIds,
       ]);
     }
-    console.log(menus);
 
     const response = allRestaurantIds.reduce((carry, restaurantId) => {
       const menuList = menus.filter((m) => m[0] === restaurantId);
@@ -102,7 +101,6 @@ export default new Hono()
     '/restaurants/:restaurantId/menu',
     async (c) => {
       const restaurantId = Number(c.req.param('restaurantId'));
-      console.log(restaurantId);
 
       const day = moment(c.req.query('day')).format('YYYY-MM-DD');
 
