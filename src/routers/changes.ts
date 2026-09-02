@@ -1,15 +1,13 @@
+import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import Telegraf from 'telegraf';
 import moment from 'moment';
 import { parse, stringify } from '@std/yaml';
 import z from 'zod';
 
 import * as environment from '../environment.ts';
-import { Hono } from 'hono';
 import { Change, db } from '../db.ts';
-import { HTTPException } from 'hono/http-exception';
 import { openingHoursSchema, restaurants, restaurantSchema } from '../../data/data.ts';
-import './git.ts';
-import { commitRestaurantsFile, getLatestRestaurantsFile } from './git.ts';
 import { formatHours } from '../utils.ts';
 
 const chatId = environment.telegramModeratorChatId ?? '';
@@ -38,6 +36,7 @@ const models = {
       id: z.number().int(),
     }),
     async applyChange(filter, change) {
+      const { commitRestaurantsFile, getLatestRestaurantsFile } = await import('./git.ts');
       const restaurantsClone = z.array(restaurantSchema).parse(parse(await getLatestRestaurantsFile()));
       const idx = restaurantsClone.findIndex((r) => r.id === filter.id);
       if (idx > -1) {

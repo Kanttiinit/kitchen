@@ -35,7 +35,10 @@ export function getRestaurantsByIds(
   ids: Array<number>,
   priceCategories: Array<string>,
 ) {
-  return restaurants.filter((r) => ids.includes(r.id) && priceCategories.includes(r.priceCategory));
+  return restaurants.filter((r) =>
+    (ids.length === 0 || ids.includes(r.id)) &&
+    (priceCategories.length === 0 || priceCategories.includes(r.priceCategory))
+  );
 }
 
 export function getRestaurantsForQuery(query: Record<string, string>): Restaurant[] {

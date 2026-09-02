@@ -71,10 +71,12 @@ export default new Hono()
       ]);
       return c.json(formatFields({
         ...restaurant,
-        menu: {
-          day: moment(menu.day).format('YYYY-MM-DD'),
-          courses_i18n: menu.courses_i18n,
-        },
+        menu: menu
+          ? {
+            day: moment(menu.day).format('YYYY-MM-DD'),
+            courses_i18n: menu.courses_i18n,
+          }
+          : null,
       }, c.var.lang));
     },
   )

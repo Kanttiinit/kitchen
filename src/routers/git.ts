@@ -7,8 +7,12 @@ const REPO = 'kitchen';
 const RESTAURANTS_PATH = 'data/restaurants.yml';
 const BRANCH = 'deno-static-site';
 
-const pem = new TextDecoder().decode(decodeBase64(githubPrivateKey || ''));
-const app = new App({ appId: githubAppId || '', privateKey: pem });
+if (!githubPrivateKey || !githubAppId) {
+  throw new Error('Github private key and app ID need to be defined.');
+}
+
+const pem = new TextDecoder().decode(decodeBase64(githubPrivateKey));
+const app = new App({ appId: githubAppId, privateKey: pem });
 const { data: installation } = await app.octokit.rest.apps.getRepoInstallation({
   owner: OWNER,
   repo: REPO,
