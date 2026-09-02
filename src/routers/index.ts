@@ -2,12 +2,11 @@ import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
 import { getRestaurantsForQuery } from './getRestaurants.ts';
-import { areasWithRestaurants, favorites, restaurants } from '../../../data/data.ts';
-import { db } from '../../db.ts';
+import { areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
+import { db } from '../db.ts';
 import moment from 'moment';
 import { HTTPException } from 'hono/http-exception';
 // import changeRouter from './changeRouter';
-// import getRestaurantMenus from './getRestaurantMenus';
 
 function formatIds(idString: string) {
   return (
