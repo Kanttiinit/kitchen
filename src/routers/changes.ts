@@ -8,9 +8,9 @@ import { Hono } from 'hono';
 import { Change, db } from '../db.ts';
 import { HTTPException } from 'hono/http-exception';
 import { openingHoursSchema, restaurants, restaurantSchema } from '../../data/data.ts';
-import { formatHours } from './index.ts';
 import './git.ts';
 import { commitRestaurantsFile, getLatestRestaurantsFile } from './git.ts';
+import { formatHours } from '../utils.ts';
 
 const chatId = environment.telegramModeratorChatId ?? '';
 const botToken = environment.telegramBotToken ?? '';

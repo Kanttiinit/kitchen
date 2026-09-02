@@ -5,7 +5,7 @@ import { HTTPException } from 'hono/http-exception';
 import * as environment from './environment.ts';
 import denoJSON from '../deno.json' with { type: 'json' };
 
-import dataRouter from './routers/index.ts';
+import router from './routers/index.ts';
 
 if (environment.isProduction) {
   if (!environment.origins) {
@@ -23,7 +23,7 @@ app
       origin: environment.origins,
     }),
   )
-  .route('/', dataRouter)
+  .route('/', router)
   .get('/', (c) => c.json({ version: denoJSON.version }))
   .onError((err, c) => {
     if (err instanceof HTTPException) {
