@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
 import { getRestaurantsForQuery } from './getRestaurants.ts';
-import { areasWithRestaurants, favorites, restaurants } from './data.ts';
+import { areasWithRestaurants, favorites, restaurants } from '../../../data/data.ts';
 import { db } from '../../db.ts';
 import moment from 'moment';
 // import changeRouter from './changeRouter';
@@ -19,15 +19,35 @@ function formatIds(idString: string) {
   );
 }
 
-function replacei18nFields(obj: any, lang: 'fi' | 'en') {
-  const output: any = {};
+function replacei18nFields(node: unknown, lang: 'fi' | 'en'): unknown {
+  if (Array.isArray(node)) {
+    return node.map((item) => replacei18nFields(item, lang));
+  }
+
+  if (typeof node !== 'object' || node === null) {
+    return node;
+  }
+
+  const obj = node as { [key: string]: unknown };
+  const output: { [key: string]: unknown } = {};
   for (const key of Object.keys(obj)) {
     const value = obj[key];
-    if (key.endsWith('_i18n')) {
-      const normalizedKey = key.replace('_i18n', '');
-      output[normalizedKey] = lang in value ? value[lang] : value[Object.keys(value)[0]];
+
+    const isI18nObj = key.endsWith('_i18n')
+      && typeof value === 'object'
+      && value !== null
+      && !Array.isArray(value);
+
+    if (isI18nObj) {
+      const map = value as { [key: string]: unknown };
+      const normalizedKey = key.slice(0, -'_i18n'.length);
+      const fallbackKey = Object.keys(map)[0];
+      const picked = lang in map
+        ? map[lang]
+        : (fallbackKey !== undefined ? map[fallbackKey] : null);
+      output[normalizedKey] = replacei18nFields(picked, lang);
     } else {
-      output[key] = value;
+      output[key] = replacei18nFields(value, lang);
     }
   }
   return output;
@@ -64,12 +84,14 @@ export default new Hono()
         days,
       ]);
     } else {
-      menus = await db.queryArray('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day >= CURRENT_DATE', [allRestaurantIds]);
+      menus = await db.queryArray('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day >= CURRENT_DATE', [
+        allRestaurantIds,
+      ]);
     }
     console.log(menus);
 
     const response = allRestaurantIds.reduce((carry, restaurantId) => {
-      const menuList = menus.filter(m => m[0] === restaurantId);
+      const menuList = menus.filter((m) => m[0] === restaurantId);
       carry[restaurantId] = menuList.reduce((menus, menu) => {
         menus[moment(menu[1]).format('YYYY-MM-DD')] = menu[2][c.var.lang];
         return menus;
@@ -82,9 +104,9 @@ export default new Hono()
   //   '/restaurants/:restaurantId/menu(.:ext)?',
   //   handleRouteErrors(getRestaurantMenus),
   // )
-  .get('/favorites', (c) => c.json(favorites.map((f) => replacei18nFields(f, c.var.lang))))
-  .get('/areas', (c) => c.json(areasWithRestaurants))
+  .get('/favorites', (c) => c.json(replacei18nFields(favorites, c.var.lang)))
+  .get('/areas', (c) => c.json(replacei18nFields(areasWithRestaurants, c.var.lang)))
   .get('/restaurants', (c) => {
     const restaurants = getRestaurantsForQuery(c.req.query());
-    return c.json(restaurants.map((f) => replacei18nFields(f, c.var.lang)));
+    return c.json(replacei18nFields(restaurants, c.var.lang));
   });

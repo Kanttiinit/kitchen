@@ -1,17 +1,17 @@
 import { HTTPException } from 'hono/http-exception';
 import Haversine from '@neabyte/haversine';
-import { areas, Restaurant, restaurants } from './data.ts';
+import { areas, Restaurant, restaurants } from '../../../data/data.ts';
 
 export function getRestaurantsByQuery(query: string) {
   query = query.toLowerCase();
   const results = restaurants.filter((r) =>
-    r.name.en.toLowerCase().includes(query) || r.name.fi.toLowerCase().includes(query)
+    r.name_i18n.en.toLowerCase().includes(query) || r.name_i18n.fi.toLowerCase().includes(query)
   );
   if (results.length > 0) {
     return results;
   }
   const areaResults = areas.filter((a) =>
-    a.name.en.toLowerCase().includes(query) || a.name.fi.toLowerCase().includes(query)
+    a.name_i18n.en.toLowerCase().includes(query) || a.name_i18n.fi.toLowerCase().includes(query)
   );
   const areaRestaurants = [];
   for (const area of areaResults) {

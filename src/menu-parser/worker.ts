@@ -1,7 +1,7 @@
 import parse, { MenuItem } from './index.ts';
-import { Restaurant, restaurants } from '../routers/data/data.ts';
 import { db } from '../db.ts';
 import { Property } from './utils.ts';
+import { Restaurant, restaurants } from '../../data/data.ts';
 
 const langs: ('fi' | 'en')[] = ['fi', 'en'];
 
@@ -59,7 +59,7 @@ export async function updateAllRestaurants() {
       updatedRestaurants++;
     } catch (e: any) {
       console.log(
-        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`
+        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`,
       );
     }
   }

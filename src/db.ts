@@ -34,14 +34,18 @@ class ProductionDb implements Db {
   constructor(url: string) {
     this.instance = postgres(url);
   }
-  exec(query: string): void {
-    throw new Error('Method not implemented.');
+
+  async exec(query: string) {
+    await this.instance.unsafe(query).simple();
   }
-  queryArray(query: string, params: any[]): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async queryArray(query: string, params: any[]) {
+    return await this.instance.unsafe(query, params).values();
   }
-  queryObject(query: string, params: any[]): Promise<any> {
-    throw new Error('Method not implemented.');
+
+  async queryObject(query: string, params: any[]) {
+    const rows = await this.instance.unsafe(query, params);
+    return rows[0];
   }
 }
 
