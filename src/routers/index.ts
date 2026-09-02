@@ -5,7 +5,7 @@ import changeRouter from './changes.ts';
 import contactRouter from './contact.ts';
 
 import { getRestaurantsForQuery } from './restaurant-queries.ts';
-import { areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
+import { areasWithRestaurantIds, areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
 import { db, Menu } from '../db.ts';
 import { HTTPException } from 'hono/http-exception';
 import { formatFields, formatIds, parseLanguage } from '../utils.ts';
@@ -21,7 +21,8 @@ export default new Hono()
     const days = (c.req.query('days') ?? '')
       .split(',')
       .map((day) => moment(day))
-      .filter((m) => m.isValid());
+      .filter((m) => m.isValid())
+      .map((d) => d.format('YYYY-MM-DD'));
 
     const allRestaurantIds = restaurants.filter((r) => restaurantIds?.includes(r.id) || areaIds?.includes(r.areaId))
       .map((r) => r.id);
@@ -71,17 +72,20 @@ export default new Hono()
       ]);
       return c.json(formatFields({
         ...restaurant,
-        menu: menu
-          ? {
+        menus: menu
+          ? [{
             day: moment(menu.day).format('YYYY-MM-DD'),
             courses_i18n: menu.courses_i18n,
-          }
-          : null,
+          }]
+          : [],
       }, c.var.lang));
     },
   )
   .get('/favorites', (c) => c.json(formatFields(favorites, c.var.lang)))
-  .get('/areas', (c) => c.json(formatFields(areasWithRestaurants, c.var.lang)))
+  .get(
+    '/areas',
+    (c) => c.json(formatFields(c.req.query('idsOnly') ? areasWithRestaurantIds : areasWithRestaurants, c.var.lang)),
+  )
   .get('/restaurants', (c) => {
     const restaurants = getRestaurantsForQuery(c.req.query());
     return c.json(formatFields(restaurants, c.var.lang));

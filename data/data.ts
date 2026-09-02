@@ -46,3 +46,9 @@ export const areasWithRestaurants = areas.map((area) => {
     restaurants: restaurants.filter((r) => r.areaId === area.id),
   };
 });
+export const areasWithRestaurantIds = areas.map((area) => {
+  return {
+    ...area,
+    restaurants: restaurants.filter((r) => r.areaId === area.id).map((r) => r.id),
+  };
+});

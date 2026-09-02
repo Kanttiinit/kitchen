@@ -43,30 +43,6 @@
   name_i18n:
     fi: Viikuna
   priceCategory: student
-- id: 36
-  url: 'https://unicafe.fi/restaurants/korona/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants/?lang=%lang%#slug'
-  latitude: 60.227191
-  longitude: 25.012324
-  openingHours:
-    - - 1100
-      - 1500
-    - - 1100
-      - 1500
-    - - 1100
-      - 1500
-    - - 1100
-      - 1500
-    - - 1100
-      - 1500
-    - null
-    - null
-  areaId: 8
-  address: 'Viikinkaari 11, 00790 Helsinki'
-  name_i18n:
-    fi: Korona
-  hidden: true
-  priceCategory: student
 - id: 16
   name: UniCafe Metsätalo
   url: 'https://unicafe.fi/restaurants/metsatalo/'
@@ -90,30 +66,6 @@
   address: 'Fabianinkatu 39, 00170 Helsinki'
   name_i18n:
     fi: Metsätalo
-  priceCategory: student
-- id: 35
-  url: 'https://unicafe.fi/restaurants/biokeskus-3/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#biokeskus-3'
-  latitude: 60.225496
-  longitude: 25.016908
-  openingHours:
-    - - 1030
-      - 1430
-    - - 1030
-      - 1430
-    - - 1030
-      - 1430
-    - - 1030
-      - 1430
-    - - 1030
-      - 1430
-    - null
-    - null
-  areaId: 8
-  address: 'Viikinkaari 1, 00790 Helsinki'
-  name_i18n:
-    fi: Biokeskus 2
-  hidden: true
   priceCategory: student
 - id: 47
   url: 'https://menu.hus.fi/HUSAromieMenus/FI/Default/HUS/Biomedicum/Page/Restaurant'
@@ -163,51 +115,6 @@
   address: 'Siltavuorenpenger 5 A, 00170 Helsinki'
   name_i18n:
     fi: Olivia
-  priceCategory: student
-- id: 19
-  name: UniCafe Päärakennus
-  url: 'https://unicafe.fi/restaurants/paarakennus/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1361'
-  latitude: 60.169444
-  longitude: 24.949409
-  openingHours:
-    - - 1030
-      - 1600
-    - - 1030
-      - 1600
-    - - 1030
-      - 1600
-    - - 1030
-      - 1600
-    - - 1030
-      - 1530
-    - null
-    - null
-  areaId: 2
-  address: 'Fabianinkatu 33, 00170 Helsinki'
-  name_i18n:
-    fi: UniCafe Päärakennus
-  hidden: true
-  priceCategory: student
-- id: 8
-  name: Aalto Valimo
-  url: 'https://www.sodexo.fi/ravintolat/espoo/aalto-valimo'
-  menuUrl: 'https://www.sodexo.fi/ruokalistat/output/weekly_json/86'
-  latitude: 60.183473037518844
-  longitude: 24.82837452513121
-  openingHours:
-    - null
-    - null
-    - null
-    - null
-    - null
-    - null
-    - null
-  areaId: 1
-  address: 'Metallimiehenkuja 2, 02150 Espoo'
-  name_i18n:
-    fi: Aalto Valimo
-  hidden: true
   priceCategory: student
 - id: 25
   name: Soc&Kom
@@ -519,31 +426,6 @@
     fi: Chemicum
     en: Chemicum
   priceCategory: student
-- id: 20
-  name: Ravintola Fredrika Päärakennus
-  url: 'https://unicafe.fi/restaurants/ravintola-fredrika-paarakennus/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1367'
-  latitude: 60.169446
-  longitude: 24.949596
-  openingHours:
-    - - 1100
-      - 1400
-    - - 1100
-      - 1400
-    - - 1100
-      - 1400
-    - - 1100
-      - 1400
-    - null
-    - null
-    - null
-  areaId: 2
-  address: 'Fabianinkatu 33 ( 2.krs ), 00170 Helsinki'
-  name_i18n:
-    fi: Ravintola Fredrika Päärakennus
-    en: Restaurant Fredrika Päärakennus
-  hidden: true
-  priceCategory: student
 - id: 55
   url: >-
     https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/diak-kalasatama/
@@ -667,31 +549,6 @@
   name_i18n:
     fi: Musiikkitalon Klubi
     en: Musiikkitalo Klubi
-  priceCategory: student
-- id: 18
-  name: Ravintola Serpens
-  url: 'https://unicafe.fi/restaurants/ravintola-serpens/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1369'
-  latitude: 60.182054
-  longitude: 24.922986
-  openingHours:
-    - - 1045
-      - 1330
-    - - 1045
-      - 1330
-    - - 1045
-      - 1330
-    - - 1045
-      - 1330
-    - - 1045
-      - 1330
-    - null
-    - null
-  areaId: 3
-  address: 'Töölönkatu 37 A, 00260 Helsinki'
-  name_i18n:
-    fi: Ravintola Serpens
-  hidden: true
   priceCategory: student
 - id: 38
   url: 'https://www.sodexo.fi/ravintolat/helsinki/ladonlukko'
