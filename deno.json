@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "start": "deno run --env-file --allow-all src/main.ts",
     "dev": "deno run --watch --env-file --allow-all src/main.ts",
     "worker": "deno run --env-file --allow-all src/menu-parser/worker.ts"
   },
