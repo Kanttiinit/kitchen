@@ -12,6 +12,72 @@ import { formatHours } from './index.ts';
 const chatId = environment.telegramModeratorChatId ?? '';
 const botToken = environment.telegramBotToken ?? '';
 
+interface ChangeModel<T, F> {
+  schema: z.ZodType<T>;
+  filterSchema: z.ZodType<F>;
+  applyChange(filter: F, change: T): Promise<void>;
+  formatChangeMessage(filter: F, change: T): string;
+}
+
+function defineChangeModel<T, F>(model: ChangeModel<T, F>): ChangeModel<T, F> {
+  return model;
+}
+
+const models = {
+  restaurant: defineChangeModel({
+    schema: z.object({
+      address: z.string().optional(),
+      latitude: z.number().optional(),
+      longitude: z.number().optional(),
+      openingHours: openingHoursSchema,
+    }),
+    filterSchema: z.object({
+      id: z.number().int()
+    }),
+    async applyChange(filter, change) {
+      // TODO: implement
+    },
+    formatChangeMessage(filter, change) {
+      const latLngLink = (lat: number, lon: number) =>
+        `[${lat}, ${lon}](http://www.google.com/maps/place/${lat},${lon})`;
+
+      const restaurant = restaurants.find((r) => r.id === filter.id);
+      if (!restaurant) {
+        throw new Error('Restaurant not found.');
+      }
+      let formattedChange = '';
+      if (change.openingHours) {
+        formattedChange += change.openingHours
+          .map((nextHours, i) => {
+            const previousHours = restaurant.openingHours[i];
+            const weekday = moment()
+              .set({ isoWeekday: i + 1 })
+              .format('ddd');
+            return [weekday, formatHours(previousHours), formatHours(nextHours)];
+          })
+          .filter(([, prev, next]) => prev !== next)
+          .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
+          .join('\n');
+      }
+
+      if (change.address) {
+        formattedChange += `\nAddress: ${restaurant.address} -> ${change.address}`;
+      }
+
+      if (change.latitude && change.longitude) {
+        formattedChange += `\nLocation: ${
+          latLngLink(
+            restaurant.latitude,
+            restaurant.longitude,
+          )
+        } -> ${latLngLink(change.latitude, change.longitude)}`;
+      }
+
+      return `Restaurant name: ${restaurant.name_i18n.fi}\nHomepage: ${restaurant.url}\n\n${formattedChange}`;
+    },
+  }),
+};
+
 export let telegram: Telegraf.Telegram;
 export let bot: Telegraf.Telegraf<Telegraf.Context>;
 
@@ -30,8 +96,13 @@ if ((chatId && botToken) || environment.isTest) {
       const message = ctx.callbackQuery.message;
       const originalText = message && 'text' in message ? message.text : '';
       switch (action) {
-        case 'accept':
-          // TODO:
+        case 'accept': {
+          const change = await db.queryObject<Change>('SELECT * FROM changes WHERE uuid = $1', [uuid]);
+          const model = models[change.data_type];
+          const modelChange = model.schema.parse(change.change);
+          const modelFilter = model.filterSchema.parse(change.filter);
+          await model.applyChange(modelFilter, modelChange);
+          
           // await change.apply(user.username);
           await ctx.editMessageText(
             originalText.replace(
@@ -43,7 +114,8 @@ if ((chatId && botToken) || environment.isTest) {
               .markup((m) => m.inlineKeyboard([])),
           );
           break;
-        case 'reject':
+        }
+        case 'reject': {
           await db.queryObject('DELETE FROM changes WHERE uuid = $1', [uuid]);
           await ctx.editMessageText(
             originalText.replace(
@@ -55,8 +127,9 @@ if ((chatId && botToken) || environment.isTest) {
               .markup((m) => m.inlineKeyboard([])),
           );
           break;
+        }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log(e);
       ctx.reply(
         `[${user.username}](tg://user?id=${user.id}), Error: ${e.message}`,
@@ -68,66 +141,19 @@ if ((chatId && botToken) || environment.isTest) {
   bot.startPolling();
 }
 
-const latLngLink = (lat: number, lon: number) => `[${lat}, ${lon}](http://www.google.com/maps/place/${lat},${lon})`;
-
-const restaurantChangeSchema = z.object({
-  address: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  openingHours: openingHoursSchema,
-});
-
-type RestaurantChange = z.infer<typeof restaurantChangeSchema>;
-
-function formatRestaurantChange(filter: Record<string, any>, change: RestaurantChange) {
-  const filterKeys = Object.keys(filter);
-  const restaurant = restaurants.find((r) => filterKeys.every((k) => filter[k] === (r as any)[k] || null));
-  if (!restaurant) {
-    throw new Error('Restaurant not found.');
+async function createChange(dataType: 'restaurant', filter: Record<string, any>, change: unknown) {
+  const model = models[dataType];
+  if (!model) {
+    throw new Error('Change model does not exist.');
   }
-  let formattedChange = '';
-  if (change.openingHours) {
-    formattedChange += change.openingHours
-      .map((nextHours, i) => {
-        const previousHours = restaurant.openingHours[i];
-        const weekday = moment()
-          .set({ isoWeekday: i + 1 })
-          .format('ddd');
-        return [weekday, formatHours(previousHours), formatHours(nextHours)];
-      })
-      .filter(([, prev, next]) => prev !== next)
-      .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
-      .join('\n');
-  }
-
-  if (change.address) {
-    formattedChange += `\nAddress: ${restaurant.address} -> ${change.address}`;
-  }
-
-  if (change.latitude && change.longitude) {
-    formattedChange += `\nLocation: ${
-      latLngLink(
-        restaurant.latitude,
-        restaurant.longitude,
-      )
-    } -> ${latLngLink(change.latitude, change.longitude)}`;
-  }
-
-  return `Restaurant name: ${restaurant.name_i18n.fi}\nHomepage: ${restaurant.url}\n\n${formattedChange}`;
-}
-
-async function createChange(dataType: 'restaurant', filter: Record<string, any>, change: RestaurantChange) {
-  if (dataType === 'restaurant') {
-    change = restaurantChangeSchema.parse(change);
-  }
+  const modelChange = model.schema.parse(change);
+  const modelFilter = model.filterSchema.parse(change);
   await db.queryObject('INSERT INTO changes (data_type, filter, change) VALUES ($1, $2, $3)', [
     dataType,
     JSON.stringify(filter),
     JSON.stringify(change),
   ]);
-  if (dataType === 'restaurant') {
-    return formatRestaurantChange(filter, change);
-  }
+  return model.formatChangeMessage(modelFilter, modelChange);
 }
 
 export default new Hono()
