@@ -5,6 +5,7 @@ import { getRestaurantsForQuery } from './getRestaurants.ts';
 import { areasWithRestaurants, favorites, restaurants } from '../../../data/data.ts';
 import { db } from '../../db.ts';
 import moment from 'moment';
+import { HTTPException } from 'hono/http-exception';
 // import changeRouter from './changeRouter';
 // import getRestaurantMenus from './getRestaurantMenus';
 
@@ -33,18 +34,16 @@ function replacei18nFields(node: unknown, lang: 'fi' | 'en'): unknown {
   for (const key of Object.keys(obj)) {
     const value = obj[key];
 
-    const isI18nObj = key.endsWith('_i18n')
-      && typeof value === 'object'
-      && value !== null
-      && !Array.isArray(value);
+    const isI18nObj = key.endsWith('_i18n') &&
+      typeof value === 'object' &&
+      value !== null &&
+      !Array.isArray(value);
 
     if (isI18nObj) {
       const map = value as { [key: string]: unknown };
       const normalizedKey = key.slice(0, -'_i18n'.length);
       const fallbackKey = Object.keys(map)[0];
-      const picked = lang in map
-        ? map[lang]
-        : (fallbackKey !== undefined ? map[fallbackKey] : null);
+      const picked = lang in map ? map[lang] : (fallbackKey !== undefined ? map[fallbackKey] : null);
       output[normalizedKey] = replacei18nFields(picked, lang);
     } else {
       output[key] = replacei18nFields(value, lang);
@@ -100,10 +99,30 @@ export default new Hono()
     }, {} as Record<number, any>);
     return c.json(response);
   })
-  // .get(
-  //   '/restaurants/:restaurantId/menu(.:ext)?',
-  //   handleRouteErrors(getRestaurantMenus),
-  // )
+  .get(
+    '/restaurants/:restaurantId/menu',
+    async (c) => {
+      const restaurantId = Number(c.req.param('restaurantId'));
+      console.log(restaurantId);
+
+      const day = moment(c.req.query('day')).format('YYYY-MM-DD');
+
+      const restaurant = restaurants.find(r => r.id === restaurantId);
+
+      if (!restaurant) {
+        throw new HTTPException(404, { message: 'Restaurant not found.' });
+      }
+
+      const menu = await db.queryObject('SELECT * FROM menus WHERE restaurant_id = $1 AND day = $2', [restaurant?.id, day]);
+      return c.json(replacei18nFields({
+        ...restaurant,
+        menu: {
+          day: moment(menu.day).format('YYYY-MM-DD'),
+          courses_i18n: menu.courses_i18n
+        }
+      }, c.var.lang));
+    },
+  )
   .get('/favorites', (c) => c.json(replacei18nFields(favorites, c.var.lang)))
   .get('/areas', (c) => c.json(replacei18nFields(areasWithRestaurants, c.var.lang)))
   .get('/restaurants', (c) => {
