@@ -19,9 +19,21 @@ function formatIds(idString: string) {
   );
 }
 
-function replacei18nFields(node: unknown, lang: 'fi' | 'en'): unknown {
+function formatHour(hour: number) {
+  return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
+}
+
+function formatHours(hours: any) {
+  if (!hours) {
+    return null;
+  }
+
+  return `${formatHour(hours[0])} - ${formatHour(hours[1])}`;
+}
+
+function formatFields(node: unknown, lang: 'fi' | 'en'): unknown {
   if (Array.isArray(node)) {
-    return node.map((item) => replacei18nFields(item, lang));
+    return node.map((item) => formatFields(item, lang));
   }
 
   if (typeof node !== 'object' || node === null) {
@@ -43,15 +55,17 @@ function replacei18nFields(node: unknown, lang: 'fi' | 'en'): unknown {
       const normalizedKey = key.slice(0, -'_i18n'.length);
       const fallbackKey = Object.keys(map)[0];
       const picked = lang in map ? map[lang] : (fallbackKey !== undefined ? map[fallbackKey] : null);
-      output[normalizedKey] = replacei18nFields(picked, lang);
+      output[normalizedKey] = formatFields(picked, lang);
+    } else if (key === 'openingHours') {
+      output[key] = (value as any).map(formatHours);
     } else {
-      output[key] = replacei18nFields(value, lang);
+      output[key] = formatFields(value, lang);
     }
   }
   return output;
 }
 
-export const parseLanguage = createMiddleware<{ Variables: { lang: 'fi' | 'en' } }>(async (c, next) => {
+const parseLanguage = createMiddleware<{ Variables: { lang: 'fi' | 'en' } }>(async (c, next) => {
   const lang = c.req.query('lang') ?? 'fi';
   if (lang === 'fi' || lang === 'en') {
     c.set('lang', lang);
@@ -111,7 +125,7 @@ export default new Hono()
       }
 
       const menu = await db.queryObject('SELECT * FROM menus WHERE restaurant_id = $1 AND day = $2', [restaurant?.id, day]);
-      return c.json(replacei18nFields({
+      return c.json(formatFields({
         ...restaurant,
         menu: {
           day: moment(menu.day).format('YYYY-MM-DD'),
@@ -120,9 +134,9 @@ export default new Hono()
       }, c.var.lang));
     },
   )
-  .get('/favorites', (c) => c.json(replacei18nFields(favorites, c.var.lang)))
-  .get('/areas', (c) => c.json(replacei18nFields(areasWithRestaurants, c.var.lang)))
+  .get('/favorites', (c) => c.json(formatFields(favorites, c.var.lang)))
+  .get('/areas', (c) => c.json(formatFields(areasWithRestaurants, c.var.lang)))
   .get('/restaurants', (c) => {
     const restaurants = getRestaurantsForQuery(c.req.query());
-    return c.json(replacei18nFields(restaurants, c.var.lang));
+    return c.json(formatFields(restaurants, c.var.lang));
   });
