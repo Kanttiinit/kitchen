@@ -1,3 +1,4 @@
 .env*
 *.log
 local.db
+.DS_Store
