@@ -1,7 +1,7 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { Parser } from '..';
-import { createPropertyNormalizer, json, Property } from '../utils';
+import { Parser } from '../index.ts';
+import { createPropertyNormalizer, json, Property } from '../utils.ts';
 
 const normalizeProperties = createPropertyNormalizer({
   G: Property.GLUTEN_FREE,

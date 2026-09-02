@@ -1,7 +1,7 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { createPropertyNormalizer, formatUrl, json, Property, propertyRegex } from '../utils';
-import { Parser } from '..';
+import { createPropertyNormalizer, formatUrl, json, Property, propertyRegex } from '../utils.ts';
+import { Parser } from '../index.ts';
 
 const normalizeProperties = createPropertyNormalizer({
   G: Property.GLUTEN_FREE,
@@ -43,7 +43,7 @@ const parser: Parser = {
             .trim()
             .replace(/\([^\)]+\)/, '')
             .trim(),
-          properties: normalizeProperties(course.dish_name.match(propertyRegex)),
+          properties: normalizeProperties(course.dish_name.match(propertyRegex) ?? []),
         })),
       };
     });

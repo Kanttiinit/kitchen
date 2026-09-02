@@ -1,8 +1,8 @@
-import { inspect } from 'util';
-import parsers from './parsers';
-import { Property } from './utils';
+import { inspect } from 'node:util';
+import parsers from './parsers/index.ts';
+import { Property } from './utils.ts';
 
-interface MenuItem {
+export interface MenuItem {
   day: string;
   courses: Array<{
     title: string;
@@ -15,7 +15,7 @@ export interface Parser {
   parse: (url: string, lang: 'fi' | 'en') => Promise<Array<MenuItem>>;
 }
 
-export default async function parse(url, lang) {
+export default function parse(url: string, lang: 'fi' | 'en') {
   if (!lang) {
     throw new Error('The second argument (lang) is required!');
   }
@@ -30,11 +30,8 @@ export default async function parse(url, lang) {
   throw new Error('No parser found for: ' + url);
 }
 
-async function startFromCommandLine() {
-  const menu = await parse(process.argv[2], process.argv[3] || 'fi');
-  console.log(inspect(menu, null, null));
-}
-
-if (!module.parent) {
-  startFromCommandLine();
+if (import.meta.main) {
+  const lang = process.argv[3];
+  const menu = await parse(process.argv[2], lang === 'fi' || lang === 'en' ? lang : 'fi');
+  console.log(inspect(menu, false, null));
 }

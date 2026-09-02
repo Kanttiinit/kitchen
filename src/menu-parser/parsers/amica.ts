@@ -1,8 +1,8 @@
-import * as moment from 'moment';
-import { flatten } from 'lodash';
+import moment from 'moment';
+import lodash from 'lodash';
 
-import { Parser } from '../index';
-import { createPropertyNormalizer, formatUrl, getWeeks, json, Property, propertyRegex } from '../utils';
+import { Parser } from '../index.ts';
+import { createPropertyNormalizer, formatUrl, getWeeks, json, Property, propertyRegex } from '../utils.ts';
 
 const propertyMap = {
   '*': Property.HEALTHIER_CHOICE,
@@ -17,10 +17,10 @@ const propertyMap = {
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-async function parseWithDate(url, date) {
+async function parseWithDate(url: string, date: moment.Moment) {
   const data = await json(formatUrl(url, date));
   return (data.MenusForDays
-    ? data.MenusForDays.map((day) => {
+    ? data.MenusForDays.map((day: any) => {
       const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
       return {
         day: date.format('YYYY-MM-DD'),
@@ -51,7 +51,7 @@ const parser: Parser = {
       const menusPerWeek = await Promise.all(
         getWeeks().map((date) => parseWithDate(url, date)),
       );
-      return flatten(menusPerWeek);
+      return lodash.flatten(menusPerWeek);
     } else {
       return parseWithDate(url, moment());
     }

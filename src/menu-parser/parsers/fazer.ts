@@ -1,8 +1,8 @@
-import * as moment from 'moment';
-import { flatten } from 'lodash';
-import { Parser } from '../index';
+import moment from 'moment';
+import * as lodash from 'lodash';
+import { Parser } from '../index.ts';
 
-import { createPropertyNormalizer, formatUrl, json, Property } from '../utils';
+import { createPropertyNormalizer, formatUrl, json, Property } from '../utils.ts';
 
 type MenuFormat = {
   LunchMenus: Array<{

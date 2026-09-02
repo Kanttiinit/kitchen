@@ -1,6 +1,5 @@
-const xml2js = require('xml2js').parseString;
-import * as moment from 'moment';
-import fetch from 'node-fetch';
+import xml2js from 'xml2js';
+import moment from 'moment';
 
 export const propertyRegex = /\b([A-Z]{1,2}|veg|vega)\b/gi;
 
@@ -27,15 +26,15 @@ export const days = {
 
 export const getWeeks = () => [moment(), moment().add({ weeks: 1 })].map((d) => d.startOf('week').add({ days: 1 }));
 
-export const formatUrl = (url, date = moment()) =>
+export const formatUrl = (url: string, date = moment()) =>
   url
     .replace('%year%', date.format('YYYY'))
     .replace('%month%', date.format('MM'))
     .replace('%day%', date.format('DD'))
     .replace('%week%', date.format('w'));
 
-const cache = {};
-const cachedJSONFetch = async (url) => {
+const cache: Record<string, Promise<any>> = {};
+const cachedJSONFetch = async (url: string) => {
   if (!(url in cache)) {
     const response = await fetch(url);
     cache[url] = response.json();
@@ -44,15 +43,15 @@ const cachedJSONFetch = async (url) => {
   return cache[url];
 };
 
-export const json = (url) => cachedJSONFetch(url);
-export const text = (url, setCookie = false) =>
+export const json = (url: string) => cachedJSONFetch(url);
+export const text = (url: string, setCookie = false) =>
   fetch(url)
     .then((r) => {
       if (setCookie) {
-        const cookie = r.headers.get('set-cookie');
+        const cookie = r.headers.get('set-cookie') ?? '';
         return fetch(url, {
           headers: {
-            Cookie: cookie,
+            'Cookie': cookie,
           },
         });
       } else {
@@ -91,9 +90,9 @@ export const createPropertyNormalizer = (map: {
     .filter((p) => p !== Property.IGNORE)
     .sort();
 
-export function parseXml(xml): Promise<any> {
+export function parseXml(xml: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    xml2js(xml, function (err, data) {
+    xml2js.parseString(xml, function (err: any, data: any) {
       if (err) {
         reject(err);
       } else {
@@ -103,8 +102,8 @@ export function parseXml(xml): Promise<any> {
   });
 }
 
-export function parseCourse(input: string, propertyNormalizer: Function) {
-  let properties = [];
+export function parseCourse(input: string, propertyNormalizer: (p: string[]) => string[]) {
+  const properties = [];
   let property = '';
   let i;
   for (i = input.length - 1; i > -1; i--) {

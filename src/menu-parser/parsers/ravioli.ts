@@ -1,8 +1,8 @@
-import * as moment from 'moment';
-import * as utils from '../utils';
+import moment from 'moment';
+import * as utils from '../utils.ts';
 
-import { Parser } from '../index';
-import { createPropertyNormalizer, Property, propertyRegex } from '../utils';
+import { Parser } from '../index.ts';
+import { createPropertyNormalizer, Property, propertyRegex } from '../utils.ts';
 
 const propertyMap = {
   G: Property.GLUTEN_FREE,
@@ -37,7 +37,7 @@ const parser: Parser = {
           date = moment(item.title[0].split(' ')[1], 'MM/DD/YYYY');
         }
         return {
-          day: date.format('YYYY-MM-DD'),
+          day: date?.format('YYYY-MM-DD'),
           courses: item.description[0]
             .split('<br>')
             .map((x) => ({

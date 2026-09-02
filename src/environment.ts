@@ -1,4 +1,3 @@
-
 export const sessionSecret = process.env.SESSION_SECRET;
 export const origins = process.env.ORIGINS ? process.env.ORIGINS.split(',') : [];
 export const isProduction = process.env.NODE_ENV === 'production';

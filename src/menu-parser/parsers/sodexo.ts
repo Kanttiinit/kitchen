@@ -1,6 +1,6 @@
-import { createPropertyNormalizer, json, Property } from '../utils';
-import { Parser } from '..';
-import * as moment from 'moment';
+import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { Parser } from '../index.ts';
+import moment from 'moment';
 
 const propertyMap = {
   G: Property.GLUTEN_FREE,

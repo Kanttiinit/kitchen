@@ -1,33 +1,29 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
-import * as models from '../models';
-import parse from './index';
-import { createLogger } from '../utils/log';
+import parse, { MenuItem } from './index.ts';
+import { Restaurant, restaurants } from '../routers/data/data.ts';
+import { db } from '../db.ts';
+import { Property } from './utils.ts';
 
-const langs = ['fi', 'en'];
+const langs: ('fi' | 'en')[] = ['fi', 'en'];
 
-const log = createLogger('menu-parser');
-
-async function createOrUpdateMenu(menu, restaurant) {
-  const existingMenu = await models.Menu.findOne({
-    where: {
-      day: menu.day,
-      RestaurantId: restaurant.id,
-    },
-  });
-
-  if (existingMenu) {
-    return existingMenu.update({ courses_i18n: menu.courses_i18n });
-  }
-
-  return models.Menu.create({
-    day: menu.day,
-    RestaurantId: restaurant.id,
-    courses_i18n: menu.courses_i18n,
-  });
+async function createOrUpdateMenu(menu: {
+  day: string;
+  courses_i18n: Record<'fi' | 'en', {
+    title: string;
+    properties: Array<Property>;
+  }[]>;
+}, restaurant: Restaurant) {
+  await db.queryObject(
+    `
+    INSERT INTO menus (restaurant_id, day, courses_i18n)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (restaurant_id, day)
+    DO UPDATE SET courses_i18n = excluded.courses_i18n;
+  `,
+    [restaurant.id, menu.day, menu.courses_i18n],
+  );
 }
 
-function joinLangMenus(langMenus) {
+function joinLangMenus(langMenus: MenuItem[][]) {
   return langMenus[0].map((menu) => {
     return {
       day: menu.day,
@@ -37,12 +33,12 @@ function joinLangMenus(langMenus) {
           carry[lang] = langMenu.courses;
         }
         return carry;
-      }, {}),
+      }, {} as Record<'fi' | 'en', MenuItem['courses']>),
     };
   });
 }
 
-export async function updateRestaurantMenus(restaurant) {
+export async function updateRestaurantMenus(restaurant: Restaurant) {
   const langMenus = [];
   for (const lang of langs) {
     langMenus.push(await parse(restaurant.menuUrl, lang));
@@ -54,22 +50,20 @@ export async function updateRestaurantMenus(restaurant) {
 }
 
 export async function updateAllRestaurants() {
-  log(`Starting to update menus...`);
-  const restaurants = await models.Restaurant.findAll();
+  console.log(`Starting to update menus...`);
   const start = Date.now();
   let updatedRestaurants = 0;
   for (const restaurant of restaurants) {
     try {
       await updateRestaurantMenus(restaurant);
       updatedRestaurants++;
-    } catch (e) {
-      log(
-        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`,
-        true,
+    } catch (e: any) {
+      console.log(
+        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`
       );
     }
   }
-  log(
+  console.log(
     `${updatedRestaurants} / ${restaurants.length} menus updated in ${
       (
         (Date.now() - start) /
@@ -79,9 +73,7 @@ export async function updateAllRestaurants() {
   );
 }
 
-if (!module.parent) {
-  (async () => {
-    await updateAllRestaurants();
-    process.exit();
-  })();
+if (import.meta.main) {
+  await updateAllRestaurants();
+  process.exit();
 }

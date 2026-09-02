@@ -5,7 +5,7 @@ import { HTTPException } from 'hono/http-exception';
 import * as environment from './environment.ts';
 import denoJSON from '../deno.json' with { type: 'json' };
 
-import dataRouter from './routers/public/index.ts';
+import dataRouter from './routers/data/index.ts';
 import contactRouter from './routers/contact.ts';
 
 if (environment.isProduction) {

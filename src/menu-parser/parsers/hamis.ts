@@ -1,7 +1,7 @@
-import * as utils from '../utils';
-import * as moment from 'moment';
+import moment from 'moment';
+import * as utils from '../utils.ts';
 
-import { Parser } from '../index';
+import { Parser } from '../index.ts';
 
 const parser: Parser = {
   pattern: /hys\.net/,

@@ -1,90 +1,177 @@
 - regexp: bolognese
-  name: bolognese
+  name_i18n:
+    fi: bolognese
 - regexp: tofu
-  name: tofu
+  name_i18n:
+    fi: tofu
 - regexp: spagh?etti
-  name: spagetti
+  name_i18n:
+    fi: spagetti
+    en: spaghetti
 - regexp: lohi|salmon
-  name: lohi
+  name_i18n:
+    fi: lohi
+    en: salmon
 - regexp: herkkusieni
-  name: herkkusieni
+  name_i18n:
+    fi: herkkusieni
+    en: champignon
 - regexp: soija|soy
-  name: soija
+  name_i18n:
+    fi: soija
+    en: soy
 - regexp: pekoni|bacon
-  name: pekoni
+  name_i18n:
+    fi: pekoni
+    en: bacon
 - regexp: bbq
-  name: BBQ
+  name_i18n:
+    fi: BBQ
+    en: BBQ
 - regexp: grill
-  name: grilli
+  name_i18n:
+    fi: grilli
+    en: grill
 - regexp: feta
-  name: feta
+  name_i18n:
+    fi: feta
+    en: feta
 - regexp: pytti\s?pannu|hash
-  name: pyttipannu
+  name_i18n:
+    fi: pyttipannu
+    en: hash
 - regexp: thai
-  name: thai
+  name_i18n:
+    fi: thai
+    en: thai
 - regexp: luomu|organic
-  name: luomu
+  name_i18n:
+    fi: luomu
+    en: organic
 - regexp: chili
-  name: chili
+  name_i18n:
+    fi: chili
+    en: chili
 - regexp: sieni|mushroom
-  name: sieni
+  name_i18n:
+    fi: sieni
+    en: mushroom
 - regexp: (ham)?purilainen
-  name: hampurilainen
+  name_i18n:
+    fi: hampurilainen
+    en: hamburger
 - regexp: jauheliha|minced meat
-  name: jauheliha
+  name_i18n:
+    fi: jauheliha
+    en: minced meat
 - regexp: kasvis|vegetarian
-  name: kasvis
+  name_i18n:
+    fi: kasvis
+    en: vegetarian
 - regexp: makaroni\s?laatikko|macaroni\s?cass?erole
-  name: makaronilaatikko
+  name_i18n:
+    fi: makaronilaatikko
+    en: macaroni casserole
 - regexp: pihvi|steak
-  name: pihvi
+  name_i18n:
+    fi: pihvi
+    en: steak
 - regexp: leike|cutlet
-  name: leike
+  name_i18n:
+    fi: leike
+    en: cutlet
 - regexp: salaatti|salad
-  name: salaatti
+  name_i18n:
+    fi: salaatti
+    en: salad
 - regexp: seiti|saithe|pollock|coal\s?fish
-  name: seiti
+  name_i18n:
+    fi: seiti
+    en: saithe
 - regexp: kebab
-  name: kebab
+  name_i18n:
+    fi: kebab
+    en: kebab
 - regexp: uuni\s?makkara|sausage.*oven|oven.*sausage
-  name: uunimakkara
+  name_i18n:
+    fi: uunimakkara
+    en: sausage baked in the oven
 - regexp: liha\s?(pulla|pyörykät|pyörykkä)|meat\s?balls?
-  name: lihapullat
+  name_i18n:
+    fi: lihapullat
+    en: meat balls
 - regexp: hernekeitto
-  name: hernekeitto
+  name_i18n:
+    fi: hernekeitto
+    en: pea soup
 - regexp: \bkana|broileri?|chicken
-  name: kana
+  name_i18n:
+    fi: kana
+    en: chicken
 - regexp: \bkala|fish
-  name: kala
+  name_i18n:
+    fi: kala
+    en: fish
 - regexp: hapan\s?imelä|sweet\s?(and|\&|.)\s?sour
-  name: hapanimelä
+  name_i18n:
+    fi: hapanimelä
+    en: sweet and sour
 - regexp: kirjoloh|rainbow trout
-  name: kirjolohi
+  name_i18n:
+    fi: kirjolohi
+    en: rainbow trout
 - regexp: keitto|soup
-  name: keitto
+  name_i18n:
+    fi: keitto
+    en: soup
 - regexp: ch?orizo|ch?ouri.o
-  name: chorizo
+  name_i18n:
+    fi: chorizo
+    en: chorizo
 - regexp: halloum
-  name: halloumi
+  name_i18n:
+    fi: halloumi
+    en: halloumi
 - regexp: kikherne|chickpea
-  name: kikherne
+  name_i18n:
+    en: chickpea
+    fi: kikherne
 - regexp: (kvi|qui)noa
-  name: kvinoa
+  name_i18n:
+    fi: kvinoa
+    en: quinoa
 - regexp: (mexica|meksikolaine)n
-  name: meksikolainen
+  name_i18n:
+    fi: meksikolainen
+    en: mexican
 - regexp: wok
-  name: wokki
+  name_i18n:
+    fi: wokki
+    en: wok
 - regexp: tortill
-  name: tortillat
+  name_i18n:
+    fi: tortillat
+    en: tortillas
 - regexp: munakoiso|eggplant
-  name: munakoiso
+  name_i18n:
+    fi: munakoiso
+    en: eggplant
 - regexp: (härk(is|äpapu)|(fava|broad|faba) bean)
-  name: härkäpapu
+  name_i18n:
+    fi: härkäpapu
+    en: fava bean
 - regexp: (intialai(set|nen)|indian)|(butter chicken)|(palak paneer)
-  name: intialainen
+  name_i18n:
+    fi: intialainen
+    en: indian
 - regexp: pasta
-  name: pasta
+  name_i18n:
+    fi: pasta
+    en: pasta
 - regexp: juusto|cheese
-  name: juusto
+  name_i18n:
+    fi: juusto
+    en: cheese
 - regexp: pizza
-  name: pizza
+  name_i18n:
+    fi: pizza

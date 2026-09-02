@@ -1,9 +1,9 @@
-import * as utils from '../utils';
+import * as utils from '../utils.ts';
 import { JSDOM } from 'jsdom';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { Parser } from '../index';
-import { days, Property } from '../utils';
+import { Parser } from '../index.ts';
+import { days, Property } from '../utils.ts';
 
 const propertyNormalizer = utils.createPropertyNormalizer({
   G: Property.GLUTEN_FREE,

@@ -1,7 +1,7 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { JSDOM } from 'jsdom';
-import { Parser } from '..';
-import { createPropertyNormalizer, parseXml, Property, text } from '../utils';
+import { Parser } from '../index.ts';
+import { createPropertyNormalizer, parseXml, Property, text } from '../utils.ts';
 
 const normalizeProperties = createPropertyNormalizer({
   '*': Property.HEALTHIER_CHOICE,
@@ -12,7 +12,7 @@ const normalizeProperties = createPropertyNormalizer({
 });
 
 // 👼👼👼👼👼
-const handleKipsariLang = (url, lang) => {
+const handleKipsariLang = (url: string, lang) => {
   if (lang === 'en') {
     if (url.includes('rss-studio')) {
       return url.replace('rss-studio', 'rss-studio-english');

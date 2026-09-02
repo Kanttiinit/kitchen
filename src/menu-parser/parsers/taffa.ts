@@ -1,6 +1,6 @@
-import * as moment from 'moment';
-import { createPropertyNormalizer, json, Property } from '../utils';
-import { Parser } from '..';
+import moment from 'moment';
+import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { Parser } from '../index.ts';
 
 const propertyMap = {
   A: Property.CONTAINS_ALLERGENS,
@@ -23,7 +23,7 @@ const parser: Parser = {
   async parse(url: string, lang: string): Promise<any[]> {
     let formattedUrl = url.replace('/fi/', '/' + lang + '/');
     const data = await json(formattedUrl);
-    return data.map((day) => {
+    return data.map((day: any) => {
       const courses = Object.keys(day)
         .filter((k) => !ignoredKeys.includes(k))
         .map((key) => {
