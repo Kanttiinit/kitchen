@@ -15,7 +15,7 @@ const { data: installation } = await app.octokit.rest.apps.getRepoInstallation({
 });
 const octokit = await app.getInstallationOctokit(installation.id);
 
-export async function getLatestRestaurantsFile() {
+export async function getLatestRestaurantsFile(): Promise<string> {
   const res = await octokit.rest.repos.getContent({
     owner: OWNER,
     repo: REPO,

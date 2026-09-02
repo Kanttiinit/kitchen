@@ -1,15 +1,16 @@
 import Telegraf from 'telegraf';
 import moment from 'moment';
-import { stringify } from '@std/yaml';
+import { parse, stringify } from '@std/yaml';
 import z from 'zod';
 
 import * as environment from '../environment.ts';
 import { Hono } from 'hono';
 import { Change, db } from '../db.ts';
 import { HTTPException } from 'hono/http-exception';
-import { openingHoursSchema, restaurants } from '../../data/data.ts';
+import { openingHoursSchema, restaurants, restaurantSchema } from '../../data/data.ts';
 import { formatHours } from './index.ts';
 import './git.ts';
+import { commitRestaurantsFile, getLatestRestaurantsFile } from './git.ts';
 
 const chatId = environment.telegramModeratorChatId ?? '';
 const botToken = environment.telegramBotToken ?? '';
@@ -37,12 +38,13 @@ const models = {
       id: z.number().int(),
     }),
     async applyChange(filter, change) {
-      const restaurantsClone = structuredClone(restaurants);
+      const restaurantsClone = z.array(restaurantSchema).parse(parse(await getLatestRestaurantsFile()));
       const idx = restaurantsClone.findIndex((r) => r.id === filter.id);
       if (idx > -1) {
         restaurantsClone[idx] = { ...restaurantsClone[idx], ...change };
       }
       const newContents = stringify(restaurantsClone);
+      await commitRestaurantsFile(newContents, 'Update restaurants.yml with user change');
     },
     formatChangeMessage(filter, change) {
       const latLngLink = (lat: number, lon: number) =>
