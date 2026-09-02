@@ -1,5 +1,5 @@
 import parse, { MenuItem } from './index.ts';
-import { db, Menu } from '../db.ts';
+import { db } from '../db.ts';
 import { Property } from './utils.ts';
 import { Restaurant, restaurants } from '../../data/data.ts';
 
@@ -57,9 +57,11 @@ export async function updateAllRestaurants() {
     try {
       await updateRestaurantMenus(restaurant);
       updatedRestaurants++;
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.log(
-        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${e.message}`,
+        `menu update failed for restaurant ${restaurant.name_i18n.fi}: ${
+          e instanceof Error ? e.message : 'unknown error'
+        }`,
       );
     }
   }

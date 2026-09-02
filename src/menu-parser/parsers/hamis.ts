@@ -7,7 +7,7 @@ const parser: Parser = {
   pattern: /hys\.net/,
   async parse(url) {
     const xml = await utils.text(url);
-    const json = await utils.parseXml(xml);
+    const json = await utils.parseXml(xml) as any;
     return json.rss.channel[0].item.map((item) => {
       const date = moment(item.title[0].split(' ')[1], 'DD.MM');
       return {

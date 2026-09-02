@@ -31,7 +31,7 @@ const parser: Parser = {
   pattern: /www\.foodandco\.fi\/api/,
   async parse(url, lang) {
     url = url.replace('language=fi', 'language=' + lang);
-    const data: MenuFormat = await json(formatUrl(url, moment()));
+    const data = await json(formatUrl(url, moment())) as MenuFormat;
 
     return data.LunchMenus.map((menu) => ({
       day: moment(

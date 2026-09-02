@@ -6,7 +6,6 @@ import * as environment from './environment.ts';
 import denoJSON from '../deno.json' with { type: 'json' };
 
 import dataRouter from './routers/index.ts';
-import contactRouter from './routers/contact.ts';
 
 if (environment.isProduction) {
   if (!environment.origins) {
@@ -24,17 +23,14 @@ app
       origin: environment.origins,
     }),
   )
-  // .use('/graphql', graphql)
   .route('/', dataRouter)
-  .get('/help', (c) => c.redirect('https://github.com/Kanttiinit/kitchen'))
-  .route('/contact', contactRouter)
   .get('/', (c) => c.json({ version: denoJSON.version }))
   .onError((err, c) => {
     if (err instanceof HTTPException) {
-      return c.json({ error: true, message: err.message, status: err.status }, err.status);
+      return c.json({ error: true, message: err.message }, err.status);
     }
     console.error(err);
-    return c.json({ error: true }, 500);
+    return c.json({ error: true, message: 'Internal server error.' }, 500);
   })
   .notFound((c) => c.json({ error: true, message: 'Not found.', status: 404 }, 404));
 

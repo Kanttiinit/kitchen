@@ -1,5 +1,6 @@
 import Telegraf from 'telegraf';
 import moment from 'moment';
+import { stringify } from '@std/yaml';
 import z from 'zod';
 
 import * as environment from '../environment.ts';
@@ -8,6 +9,7 @@ import { Change, db } from '../db.ts';
 import { HTTPException } from 'hono/http-exception';
 import { openingHoursSchema, restaurants } from '../../data/data.ts';
 import { formatHours } from './index.ts';
+import './git.ts';
 
 const chatId = environment.telegramModeratorChatId ?? '';
 const botToken = environment.telegramBotToken ?? '';
@@ -35,6 +37,12 @@ const models = {
       id: z.number().int(),
     }),
     async applyChange(filter, change) {
+      const restaurantsClone = structuredClone(restaurants);
+      const idx = restaurantsClone.findIndex((r) => r.id === filter.id);
+      if (idx > -1) {
+        restaurantsClone[idx] = { ...restaurantsClone[idx], ...change };
+      }
+      const newContents = stringify(restaurantsClone);
     },
     formatChangeMessage(filter, change) {
       const latLngLink = (lat: number, lon: number) =>

@@ -45,7 +45,7 @@ export const formatUrl = (url: string, date = moment()) =>
     .replace('%day%', date.format('DD'))
     .replace('%week%', date.format('w'));
 
-const cache: Record<string, Promise<any>> = {};
+const cache: Record<string, Promise<unknown>> = {};
 const cachedJSONFetch = async (url: string) => {
   if (!(url in cache)) {
     const response = await fetch(url);
@@ -102,9 +102,9 @@ export const createPropertyNormalizer = (map: {
     .filter((p) => p !== Property.IGNORE)
     .sort();
 
-export function parseXml(xml: string): Promise<any> {
+export function parseXml(xml: string): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    xml2js.parseString(xml, function (err: any, data: any) {
+    xml2js.parseString(xml, function (err: unknown, data: unknown) {
       if (err) {
         reject(err);
       } else {

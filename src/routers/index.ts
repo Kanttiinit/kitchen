@@ -1,11 +1,13 @@
 import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
+import moment from 'moment';
+
+import changeRouter from './changes.ts';
+import contactRouter from './contact.ts';
 
 import { getRestaurantsForQuery } from './restaurant-queries.ts';
-import changeRouter from './changes.ts';
 import { areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
 import { db, Menu } from '../db.ts';
-import moment from 'moment';
 import { HTTPException } from 'hono/http-exception';
 
 function formatIds(idString: string) {
@@ -76,6 +78,9 @@ const parseLanguage = createMiddleware<{ Variables: { lang: 'fi' | 'en' } }>(asy
 });
 
 export default new Hono()
+  .get('/help', (c) => c.redirect('https://github.com/Kanttiinit/kitchen'))
+  .route('/contact', contactRouter)
+  .route('/changes', changeRouter)
   .use(parseLanguage)
   .get('/menus', async (c) => {
     const restaurantIds = formatIds(c.req.query('restaurants') ?? '');
@@ -140,7 +145,6 @@ export default new Hono()
       }, c.var.lang));
     },
   )
-  .route('/changes', changeRouter)
   .get('/favorites', (c) => c.json(formatFields(favorites, c.var.lang)))
   .get('/areas', (c) => c.json(formatFields(areasWithRestaurants, c.var.lang)))
   .get('/restaurants', (c) => {
