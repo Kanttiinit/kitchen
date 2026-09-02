@@ -31,6 +31,7 @@ export const restaurantSchema = z.object({
 export type Restaurant = z.infer<typeof restaurantSchema>;
 
 export const favoriteSchema = z.object({
+  id: z.number().int(),
   regexp: z.string(),
   name_i18n: i18nString,
 });

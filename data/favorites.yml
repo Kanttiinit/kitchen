@@ -1,177 +1,222 @@
-- regexp: bolognese
+- id: 6
+  regexp: bolognese
   name_i18n:
     fi: bolognese
-- regexp: tofu
+- id: 16
+  regexp: tofu
   name_i18n:
     fi: tofu
-- regexp: spagh?etti
+- id: 18
+  regexp: spagh?etti
   name_i18n:
     fi: spagetti
     en: spaghetti
-- regexp: lohi|salmon
+- id: 19
+  regexp: lohi|salmon
   name_i18n:
     fi: lohi
     en: salmon
-- regexp: herkkusieni
+- id: 20
+  regexp: herkkusieni
   name_i18n:
     fi: herkkusieni
     en: champignon
-- regexp: soija|soy
+- id: 22
+  regexp: soija|soy
   name_i18n:
     fi: soija
     en: soy
-- regexp: pekoni|bacon
+- id: 24
+  regexp: pekoni|bacon
   name_i18n:
     fi: pekoni
     en: bacon
-- regexp: bbq
+- id: 25
+  regexp: bbq
   name_i18n:
     fi: BBQ
     en: BBQ
-- regexp: grill
+- id: 26
+  regexp: grill
   name_i18n:
     fi: grilli
     en: grill
-- regexp: feta
+- id: 27
+  regexp: feta
   name_i18n:
     fi: feta
     en: feta
-- regexp: pytti\s?pannu|hash
+- id: 30
+  regexp: pytti\s?pannu|hash
   name_i18n:
     fi: pyttipannu
     en: hash
-- regexp: thai
+- id: 31
+  regexp: thai
   name_i18n:
     fi: thai
     en: thai
-- regexp: luomu|organic
+- id: 32
+  regexp: luomu|organic
   name_i18n:
     fi: luomu
     en: organic
-- regexp: chili
+- id: 33
+  regexp: chili
   name_i18n:
     fi: chili
     en: chili
-- regexp: sieni|mushroom
+- id: 34
+  regexp: sieni|mushroom
   name_i18n:
     fi: sieni
     en: mushroom
-- regexp: (ham)?purilainen
+- id: 9
+  regexp: (ham)?purilainen
   name_i18n:
     fi: hampurilainen
     en: hamburger
-- regexp: jauheliha|minced meat
+- id: 29
+  regexp: jauheliha|minced meat
   name_i18n:
     fi: jauheliha
     en: minced meat
-- regexp: kasvis|vegetarian
+- id: 13
+  regexp: kasvis|vegetarian
   name_i18n:
     fi: kasvis
     en: vegetarian
-- regexp: makaroni\s?laatikko|macaroni\s?cass?erole
+- id: 4
+  regexp: makaroni\s?laatikko|macaroni\s?cass?erole
   name_i18n:
     fi: makaronilaatikko
     en: macaroni casserole
-- regexp: pihvi|steak
+- id: 12
+  regexp: pihvi|steak
   name_i18n:
     fi: pihvi
     en: steak
-- regexp: leike|cutlet
+- id: 17
+  regexp: leike|cutlet
   name_i18n:
     fi: leike
     en: cutlet
-- regexp: salaatti|salad
+- id: 7
+  regexp: salaatti|salad
   name_i18n:
     fi: salaatti
     en: salad
-- regexp: seiti|saithe|pollock|coal\s?fish
+- id: 28
+  regexp: seiti|saithe|pollock|coal\s?fish
   name_i18n:
     fi: seiti
     en: saithe
-- regexp: kebab
+- id: 2
+  regexp: kebab
   name_i18n:
     fi: kebab
     en: kebab
-- regexp: uuni\s?makkara|sausage.*oven|oven.*sausage
+- id: 11
+  regexp: uuni\s?makkara|sausage.*oven|oven.*sausage
   name_i18n:
     fi: uunimakkara
     en: sausage baked in the oven
-- regexp: liha\s?(pulla|pyörykät|pyörykkä)|meat\s?balls?
+- id: 8
+  regexp: liha\s?(pulla|pyörykät|pyörykkä)|meat\s?balls?
   name_i18n:
     fi: lihapullat
     en: meat balls
-- regexp: hernekeitto
+- id: 35
+  regexp: hernekeitto
   name_i18n:
     fi: hernekeitto
     en: pea soup
-- regexp: \bkana|broileri?|chicken
+- id: 5
+  regexp: \bkana|broileri?|chicken
   name_i18n:
     fi: kana
     en: chicken
-- regexp: \bkala|fish
+- id: 10
+  regexp: \bkala|fish
   name_i18n:
     fi: kala
     en: fish
-- regexp: hapan\s?imelä|sweet\s?(and|\&|.)\s?sour
+- id: 37
+  regexp: hapan\s?imelä|sweet\s?(and|\&|.)\s?sour
   name_i18n:
     fi: hapanimelä
     en: sweet and sour
-- regexp: kirjoloh|rainbow trout
+- id: 38
+  regexp: kirjoloh|rainbow trout
   name_i18n:
     fi: kirjolohi
     en: rainbow trout
-- regexp: keitto|soup
+- id: 39
+  regexp: keitto|soup
   name_i18n:
     fi: keitto
     en: soup
-- regexp: ch?orizo|ch?ouri.o
+- id: 40
+  regexp: ch?orizo|ch?ouri.o
   name_i18n:
     fi: chorizo
     en: chorizo
-- regexp: halloum
+- id: 41
+  regexp: halloum
   name_i18n:
     fi: halloumi
     en: halloumi
-- regexp: kikherne|chickpea
+- id: 42
+  regexp: kikherne|chickpea
   name_i18n:
     en: chickpea
     fi: kikherne
-- regexp: (kvi|qui)noa
+- id: 43
+  regexp: (kvi|qui)noa
   name_i18n:
     fi: kvinoa
     en: quinoa
-- regexp: (mexica|meksikolaine)n
+- id: 44
+  regexp: (mexica|meksikolaine)n
   name_i18n:
     fi: meksikolainen
     en: mexican
-- regexp: wok
+- id: 45
+  regexp: wok
   name_i18n:
     fi: wokki
     en: wok
-- regexp: tortill
+- id: 46
+  regexp: tortill
   name_i18n:
     fi: tortillat
     en: tortillas
-- regexp: munakoiso|eggplant
+- id: 47
+  regexp: munakoiso|eggplant
   name_i18n:
     fi: munakoiso
     en: eggplant
-- regexp: (härk(is|äpapu)|(fava|broad|faba) bean)
+- id: 48
+  regexp: (härk(is|äpapu)|(fava|broad|faba) bean)
   name_i18n:
     fi: härkäpapu
     en: fava bean
-- regexp: (intialai(set|nen)|indian)|(butter chicken)|(palak paneer)
+- id: 36
+  regexp: (intialai(set|nen)|indian)|(butter chicken)|(palak paneer)
   name_i18n:
     fi: intialainen
     en: indian
-- regexp: pasta
+- id: 49
+  regexp: pasta
   name_i18n:
     fi: pasta
     en: pasta
-- regexp: juusto|cheese
+- id: 21
+  regexp: juusto|cheese
   name_i18n:
     fi: juusto
     en: cheese
-- regexp: pizza
+- id: 1
+  regexp: pizza
   name_i18n:
     fi: pizza
