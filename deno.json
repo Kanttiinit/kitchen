@@ -27,7 +27,8 @@
     "singleQuote": true,
     "semiColons": true,
     "lineWidth": 120,
-    "useBraces": "always"
+    "useBraces": "always",
+    "quoteProps": "asNeeded"
   },
   "version": "5.0.0"
 }

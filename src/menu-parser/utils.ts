@@ -63,7 +63,7 @@ export const text = (url: string, setCookie = false) =>
         const cookie = r.headers.get('set-cookie') ?? '';
         return fetch(url, {
           headers: {
-            'Cookie': cookie,
+            Cookie: cookie,
           },
         });
       } else {
