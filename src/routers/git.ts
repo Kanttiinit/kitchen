@@ -1,6 +1,6 @@
 import { App } from 'octokit';
 import { githubAppId, githubPrivateKey } from '../environment.ts';
-import { decodeBase64 } from '@std/encoding/base64';
+import { decodeBase64, encodeBase64 } from '@std/encoding/base64';
 
 const OWNER = 'kanttiinit';
 const REPO = 'kitchen';
@@ -22,17 +22,33 @@ export async function getLatestRestaurantsFile(): Promise<string> {
     path: RESTAURANTS_PATH,
     ref: BRANCH,
     mediaType: { format: 'raw' },
-  });
+  }) as any;
   return res.data;
 }
 
 export async function commitRestaurantsFile(contents: string, commitMessage: string) {
+  let sha: string | undefined;
+  try {
+    const existing = await octokit.rest.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path: RESTAURANTS_PATH,
+      ref: BRANCH,
+    });
+    if (!Array.isArray(existing.data) && 'sha' in existing.data) {
+      sha = existing.data.sha;
+    }
+  } catch (e) {
+    if ((e as { status?: number }).status !== 404) { throw e; }
+  }
+
   await octokit.rest.repos.createOrUpdateFileContents({
     owner: OWNER,
     repo: REPO,
     path: RESTAURANTS_PATH,
     message: commitMessage,
-    content: btoa(contents),
+    content: encodeBase64(new TextEncoder().encode(contents)),
     branch: BRANCH,
+    sha,
   });
 }
