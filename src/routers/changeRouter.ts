@@ -13,7 +13,7 @@ const chatId = environment.telegramModeratorChatId ?? '';
 const botToken = environment.telegramBotToken ?? '';
 
 interface ChangeModel<T, F> {
-  schema: z.ZodType<T>;
+  changeSchema: z.ZodType<T>;
   filterSchema: z.ZodType<F>;
   applyChange(filter: F, change: T): Promise<void>;
   formatChangeMessage(filter: F, change: T): string;
@@ -25,7 +25,7 @@ function defineChangeModel<T, F>(model: ChangeModel<T, F>): ChangeModel<T, F> {
 
 const models = {
   restaurant: defineChangeModel({
-    schema: z.object({
+    changeSchema: z.object({
       address: z.string().optional(),
       latitude: z.number().optional(),
       longitude: z.number().optional(),
@@ -99,7 +99,7 @@ if ((chatId && botToken) || environment.isTest) {
         case 'accept': {
           const change = await db.queryObject<Change>('SELECT * FROM changes WHERE uuid = $1', [uuid]);
           const model = models[change.data_type];
-          const modelChange = model.schema.parse(change.change);
+          const modelChange = model.changeSchema.parse(change.change);
           const modelFilter = model.filterSchema.parse(change.filter);
           await model.applyChange(modelFilter, modelChange);
           
@@ -146,7 +146,7 @@ async function createChange(dataType: 'restaurant', filter: Record<string, any>,
   if (!model) {
     throw new Error('Change model does not exist.');
   }
-  const modelChange = model.schema.parse(change);
+  const modelChange = model.changeSchema.parse(change);
   const modelFilter = model.filterSchema.parse(change);
   await db.queryObject('INSERT INTO changes (data_type, filter, change) VALUES ($1, $2, $3)', [
     dataType,
