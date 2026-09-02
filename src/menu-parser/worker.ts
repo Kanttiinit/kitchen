@@ -1,5 +1,5 @@
 import parse, { MenuItem } from './index.ts';
-import { db } from '../db.ts';
+import { db, Menu } from '../db.ts';
 import { Property } from './utils.ts';
 import { Restaurant, restaurants } from '../../data/data.ts';
 

@@ -1,34 +1,48 @@
 import { parse } from '@std/yaml';
+import z from 'zod';
 
-export const restaurants = parse(Deno.readTextFileSync('data/restaurants.yml')) as Restaurant[];
-export const areas = parse(Deno.readTextFileSync('data/areas.yml')) as Area[];
-export const favorites = parse(Deno.readTextFileSync('data/favorites.yml')) as Favorite[];
+const i18nString = z.object({
+  fi: z.string(),
+  en: z.string().optional(),
+});
+
+export const areaSchema = z.object({
+  id: z.number().int(),
+  name_i18n: i18nString,
+});
+
+export type Area = z.infer<typeof areaSchema>;
+
+export const openingHoursSchema = z.array(z.union([z.tuple([z.number(), z.number()]), z.null()]));
+
+export const restaurantSchema = z.object({
+  id: z.number().int(),
+  name_i18n: i18nString,
+  areaId: z.number().int(),
+  priceCategory: z.enum(['student', 'studentPremium', 'regular']),
+  latitude: z.number(),
+  longitude: z.number(),
+  url: z.url(),
+  menuUrl: z.url(),
+  address: z.string(),
+  openingHours: openingHoursSchema,
+});
+
+export type Restaurant = z.infer<typeof restaurantSchema>;
+
+export const favoriteSchema = z.object({
+  regexp: z.string(),
+  name_i18n: i18nString,
+});
+
+export type Favorite = z.infer<typeof favoriteSchema>;
+
+export const restaurants = z.array(restaurantSchema).parse(parse(Deno.readTextFileSync('data/restaurants.yml')));
+export const areas = z.array(areaSchema).parse(parse(Deno.readTextFileSync('data/areas.yml')));
+export const favorites = z.array(favoriteSchema).parse(parse(Deno.readTextFileSync('data/favorites.yml')));
 export const areasWithRestaurants = areas.map((area) => {
   return {
     ...area,
     restaurants: restaurants.filter((r) => r.areaId === area.id),
   };
 });
-
-export interface i18n {
-  fi: string;
-  en: string;
-}
-
-export interface Area {
-  id: number;
-  name_i18n: i18n;
-}
-
-export interface Restaurant {
-  id: number;
-  name_i18n: i18n;
-  areaId: number;
-  priceCategory: string;
-  latitude: number;
-  longitude: number;
-  url: string;
-  menuUrl: string;
-}
-
-export interface Favorite {}

@@ -2,11 +2,11 @@ import { Hono } from 'hono';
 import { createMiddleware } from 'hono/factory';
 
 import { getRestaurantsForQuery } from './getRestaurants.ts';
+import changeRouter from './changeRouter.ts';
 import { areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
-import { db } from '../db.ts';
+import { db, Menu } from '../db.ts';
 import moment from 'moment';
 import { HTTPException } from 'hono/http-exception';
-// import changeRouter from './changeRouter';
 
 function formatIds(idString: string) {
   return (
@@ -23,7 +23,7 @@ function formatHour(hour: number) {
   return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
 }
 
-function formatHours(hours: any) {
+export function formatHours(hours: any) {
   if (!hours) {
     return null;
   }
@@ -91,22 +91,25 @@ export default new Hono()
 
     let menus;
     if (days.length) {
-      menus = await db.queryArray('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day = ANY($2)', [
+      menus = await db.queryArray<Menu>('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day = ANY($2)', [
         allRestaurantIds,
         days,
       ]);
     } else {
-      menus = await db.queryArray('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day >= CURRENT_DATE', [
-        allRestaurantIds,
-      ]);
+      menus = await db.queryArray<Menu>(
+        'SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day >= CURRENT_DATE',
+        [
+          allRestaurantIds,
+        ],
+      );
     }
 
     const response = allRestaurantIds.reduce((carry, restaurantId) => {
-      const menuList = menus.filter((m) => m[0] === restaurantId);
+      const menuList = menus.filter((m) => m.restaurant_id === restaurantId);
       carry[restaurantId] = menuList.reduce((menus, menu) => {
-        menus[moment(menu[1]).format('YYYY-MM-DD')] = menu[2][c.var.lang];
+        menus[moment(menu.day).format('YYYY-MM-DD')] = menu.courses_i18n[c.var.lang];
         return menus;
-      }, {});
+      }, {} as Record<string, any>);
       return carry;
     }, {} as Record<number, any>);
     return c.json(response);
@@ -118,22 +121,26 @@ export default new Hono()
 
       const day = moment(c.req.query('day')).format('YYYY-MM-DD');
 
-      const restaurant = restaurants.find(r => r.id === restaurantId);
+      const restaurant = restaurants.find((r) => r.id === restaurantId);
 
       if (!restaurant) {
         throw new HTTPException(404, { message: 'Restaurant not found.' });
       }
 
-      const menu = await db.queryObject('SELECT * FROM menus WHERE restaurant_id = $1 AND day = $2', [restaurant?.id, day]);
+      const menu = await db.queryObject<Menu>('SELECT * FROM menus WHERE restaurant_id = $1 AND day = $2', [
+        restaurant?.id,
+        day,
+      ]);
       return c.json(formatFields({
         ...restaurant,
         menu: {
           day: moment(menu.day).format('YYYY-MM-DD'),
-          courses_i18n: menu.courses_i18n
-        }
+          courses_i18n: menu.courses_i18n,
+        },
       }, c.var.lang));
     },
   )
+  .route('/changes', changeRouter)
   .get('/favorites', (c) => c.json(formatFields(favorites, c.var.lang)))
   .get('/areas', (c) => c.json(formatFields(areasWithRestaurants, c.var.lang)))
   .get('/restaurants', (c) => {
