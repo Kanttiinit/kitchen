@@ -2,7 +2,8 @@
   "tasks": {
     "start": "deno run --env-file --allow-all src/main.ts",
     "dev": "deno run --watch --env-file --allow-all src/main.ts",
-    "worker": "deno run --env-file --allow-all src/menu-parser/worker.ts"
+    "update-menus": "deno run --env-file --allow-all src/menu-parser/worker.ts",
+    "test-menu-parser": "deno run --allow-all src/menu-parser/index.ts"
   },
   "imports": {
     "@electric-sql/pglite": "npm:@electric-sql/pglite@^0.5.8",

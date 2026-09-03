@@ -33,4 +33,5 @@ if (import.meta.main) {
   const lang = process.argv[3];
   const menu = await parse(process.argv[2], lang === 'fi' || lang === 'en' ? lang : 'fi');
   console.log(inspect(menu, false, null));
+  process.exit(0);
 }
