@@ -1,7 +1,8 @@
 import postgres from 'postgres';
-import { databaseURL } from './environment.ts';
 import { PGlite } from '@electric-sql/pglite';
 import z from 'zod';
+
+import { databaseURL } from './environment.ts';
 
 interface Db {
   exec(query: string): void;
