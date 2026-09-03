@@ -6,7 +6,6 @@ Static data (areas, restaurant metadata and favorites) are stored in the reposit
 
 ## Local Development
 
-Run `deno install` to install dependencies.
 Start the local server by running `deno run dev`.
 
 No environment variables are required to run the server with basic functionality.
@@ -21,9 +20,9 @@ If `DATABASE_URL` is not defined, a local file-backed PGlite instance will be us
 Add a new restaurant by adding an item to the end of the list with the same schema as the rest.
 Choose a new ID by incrementing the ID of the previous restaurant.
 
-When running the server (either via `deno run dev` or `deno test --allow-all`), the data will be validated.
+When running the server (either via `deno run dev` or `deno test --allow-all`), all data will be validated.
 
-See "adding a menu parser" below if a parser for its menu format doesn't exist yet.
+See "adding a menu parser" below if a parser for the restaurant's menu format doesn't exist yet.
 
 ## Adding a menu parser
 
