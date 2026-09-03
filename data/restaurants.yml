@@ -9,16 +9,11 @@
   menuUrl: 'https://www.sodexo.fi/ruokalistat/output/weekly_json/86'
   address: 'Otakaari 3, 02150 Espoo'
   openingHours:
-    - - 900
-      - 1430
-    - - 900
-      - 1430
-    - - 900
-      - 1430
-    - - 900
-      - 1430
-    - - 900
-      - 1430
+    - null
+    - null
+    - null
+    - null
+    - null
     - null
     - null
 - id: 2
