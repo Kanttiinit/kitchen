@@ -4,12 +4,12 @@ import z from 'zod';
 const i18nString = z.object({
   fi: z.string(),
   en: z.string().optional(),
-});
+}).strict();
 
 export const areaSchema = z.object({
   id: z.number().int(),
   name_i18n: i18nString,
-});
+}).strict();
 
 export type Area = z.infer<typeof areaSchema>;
 
@@ -26,7 +26,7 @@ export const restaurantSchema = z.object({
   menuUrl: z.url(),
   address: z.string(),
   openingHours: openingHoursSchema,
-});
+}).strict();
 
 export type Restaurant = z.infer<typeof restaurantSchema>;
 
@@ -34,7 +34,7 @@ export const favoriteSchema = z.object({
   id: z.number().int(),
   regexp: z.string(),
   name_i18n: i18nString,
-});
+}).strict();
 
 export type Favorite = z.infer<typeof favoriteSchema>;
 
@@ -43,7 +43,7 @@ export const updatesSchema = z.object({
   title: z.string(),
   description: z.string(),
   createdAt: z.string(),
-});
+}).strict();
 
 export const restaurants = z.array(restaurantSchema).parse(parse(Deno.readTextFileSync('data/restaurants.yml')));
 export const areas = z.array(areaSchema).parse(parse(Deno.readTextFileSync('data/areas.yml')));

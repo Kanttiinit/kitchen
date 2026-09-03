@@ -6,7 +6,7 @@ import { menuList } from '../db.ts';
 
 export const menuParserResultSchema = z.object({
   day: z.string(),
-  courses: menuList
+  courses: menuList,
 });
 
 export type MenuItem = z.infer<typeof menuParserResultSchema>;
@@ -26,7 +26,7 @@ export default async function parse(url: string, lang: 'fi' | 'en') {
     throw new Error('No parser found for: ' + url);
   }
 
-    return z.array(menuParserResultSchema).parse(await parser.parse(url, lang));
+  return z.array(menuParserResultSchema).parse(await parser.parse(url, lang));
 }
 
 if (import.meta.main) {
