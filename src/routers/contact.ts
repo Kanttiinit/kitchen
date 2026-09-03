@@ -8,7 +8,7 @@ const chatId = environment.telegramFeedbackChatId || '';
 const botToken = environment.telegramBotToken || '';
 const telegram = new telegraf.Telegram(botToken);
 
-export default new Hono().get('/', async (c) => {
+export default new Hono().post('/', async (c) => {
   const { email = 'anonymous', message } = await c.req.json();
 
   if (email.trim() !== '' && message.trim() !== '') {
@@ -17,7 +17,7 @@ export default new Hono().get('/', async (c) => {
         chatId,
         `New feedback from ${email}:\n"${message}"`,
       );
-      c.json({ message: 'Success.' });
+      return c.json({ message: 'Success.' });
     } catch (err: unknown) {
       throw new HTTPException(500, { message: err instanceof Error ? err.message : 'Unknown error.' });
     }

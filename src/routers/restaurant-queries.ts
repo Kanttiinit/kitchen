@@ -49,7 +49,6 @@ export function getRestaurantsForQuery(query: Record<string, string>): Restauran
     const latitude = Number(latitudeString);
     const longitude = Number(longitudeString);
     const distance = Number(query.distance ?? '2000');
-    console.log(latitude, longitude, distance);
     if (isNaN(latitude) || isNaN(longitude) || isNaN(distance)) {
       throw new HTTPException(400, { message: 'Bad request.' });
     } else {

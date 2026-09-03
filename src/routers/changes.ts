@@ -16,7 +16,7 @@ const botToken = environment.telegramBotToken ?? '';
 interface ChangeModel<T, F> {
   changeSchema: z.ZodType<T>;
   filterSchema: z.ZodType<F>;
-  applyChange(filter: F, change: T): Promise<void>;
+  applyChange(filter: F, change: T, approvedBy: string): Promise<void>;
   formatChangeMessage(filter: F, change: T): string;
 }
 
@@ -31,11 +31,11 @@ const models = {
       latitude: z.number().optional(),
       longitude: z.number().optional(),
       openingHours: openingHoursSchema,
-    }),
+    }).strict(),
     filterSchema: z.object({
       id: z.number().int(),
-    }),
-    async applyChange(filter, change) {
+    }).strict(),
+    async applyChange(filter, change, approvedBy) {
       const { commitRestaurantsFile, getLatestRestaurantsFile } = await import('./git.ts');
       const restaurantsClone = z.array(restaurantSchema).parse(parse(await getLatestRestaurantsFile()));
       const idx = restaurantsClone.findIndex((r) => r.id === filter.id);
@@ -43,7 +43,7 @@ const models = {
         restaurantsClone[idx] = { ...restaurantsClone[idx], ...change };
       }
       const newContents = stringify(restaurantsClone);
-      await commitRestaurantsFile(newContents, 'Update restaurants.yml with user change');
+      await commitRestaurantsFile(newContents, `Update restaurants.yml with user change\n\nApproved by: ${approvedBy}`);
     },
     formatChangeMessage(filter, change) {
       const latLngLink = (lat: number, lon: number) =>
@@ -92,7 +92,6 @@ let bot: Telegraf.Telegraf<Telegraf.Context>;
 if ((chatId && botToken) || environment.isTest) {
   telegram = new Telegraf.Telegram(botToken);
   bot = new Telegraf.Telegraf(botToken);
-  bot.on('text', (ctx) => console.log(ctx));
   bot.on('callback_query', async (ctx) => {
     if (!ctx.callbackQuery) {
       return;
@@ -109,7 +108,7 @@ if ((chatId && botToken) || environment.isTest) {
           const model = models[change.data_type];
           const modelChange = model.changeSchema.parse(change.change);
           const modelFilter = model.filterSchema.parse(change.filter);
-          await model.applyChange(modelFilter, modelChange);
+          await model.applyChange(modelFilter, modelChange, user.username || 'unknown user');
 
           // await change.apply(user.username);
           await ctx.editMessageText(
@@ -149,19 +148,25 @@ if ((chatId && botToken) || environment.isTest) {
   bot.startPolling();
 }
 
-async function createChange(dataType: 'restaurant', filter: Record<string, unknown>, change: unknown) {
+async function createChange(dataType: 'restaurant', filter: unknown, change: unknown) {
   const model = models[dataType];
   if (!model) {
     throw new Error('Change model does not exist.');
   }
   const modelChange = model.changeSchema.parse(change);
-  const modelFilter = model.filterSchema.parse(change);
-  await db.queryObject('INSERT INTO changes (data_type, filter, change) VALUES ($1, $2, $3)', [
-    dataType,
-    JSON.stringify(filter),
-    JSON.stringify(change),
-  ]);
-  return model.formatChangeMessage(modelFilter, modelChange);
+  const modelFilter = model.filterSchema.parse(filter);
+  const dbChange = await db.queryObject<Change>(
+    'INSERT INTO changes (data_type, filter, change) VALUES ($1, $2, $3) RETURNING *',
+    [
+      dataType,
+      JSON.stringify(filter),
+      JSON.stringify(change),
+    ],
+  );
+  return {
+    uuid: dbChange.uuid,
+    prettyPrint: model.formatChangeMessage(modelFilter, modelChange),
+  };
 }
 
 export default new Hono()
@@ -179,9 +184,9 @@ export default new Hono()
   })
   .post('/', async (c) => {
     try {
-      const { modelFilter, modelName, change } = await c.req.json();
+      const { filter, dataType, change } = await c.req.json();
 
-      const prettyPrint = await createChange(modelName, modelFilter, change);
+      const { uuid, prettyPrint } = await createChange(dataType, filter, change);
 
       await telegram.sendMessage(
         chatId,
@@ -190,13 +195,13 @@ export default new Hono()
           .webPreview(false)
           .markup((m) =>
             m.inlineKeyboard([
-              m.callbackButton('Accept', `accept:${change.uuid}`),
-              m.callbackButton('Reject', `reject:${change.uuid}`),
+              m.callbackButton('Accept', `accept:${uuid}`),
+              m.callbackButton('Reject', `reject:${uuid}`),
             ])
           ),
       );
 
-      return c.json({ uuid: change.uuid });
+      return c.json({ uuid });
     } catch (e: unknown) {
       throw new HTTPException(400, { message: e instanceof Error ? e.message : 'Unknown error' });
     }
