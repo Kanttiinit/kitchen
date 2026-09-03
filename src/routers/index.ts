@@ -5,13 +5,14 @@ import changeRouter from './changes.ts';
 import contactRouter from './contact.ts';
 
 import { getRestaurantsForQuery } from './restaurant-queries.ts';
-import { areasWithRestaurantIds, areasWithRestaurants, favorites, restaurants } from '../../data/data.ts';
+import { areasWithRestaurantIds, areasWithRestaurants, favorites, restaurants, updates } from '../../data/data.ts';
 import { db, Menu } from '../db.ts';
 import { HTTPException } from 'hono/http-exception';
 import { formatFields, formatIds, parseLanguage } from '../utils.ts';
 
 export default new Hono()
   .get('/help', (c) => c.redirect('https://github.com/Kanttiinit/kitchen'))
+  .get('/updates', (c) => c.json(updates))
   .route('/contact', contactRouter)
   .route('/changes', changeRouter)
   .use(parseLanguage)
@@ -48,9 +49,9 @@ export default new Hono()
       carry[restaurantId] = menuList.reduce((menus, menu) => {
         menus[moment(menu.day).format('YYYY-MM-DD')] = menu.courses_i18n[c.var.lang];
         return menus;
-      }, {} as Record<string, any>);
+      }, {} as Record<string, { title: string; properties: string[] }[]>);
       return carry;
-    }, {} as Record<number, any>);
+    }, {} as Record<number, Record<string, { title: string; properties: string[] }[]>>);
     return c.json(response);
   })
   .get(

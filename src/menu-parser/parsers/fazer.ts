@@ -1,7 +1,8 @@
 import moment from 'moment';
 import { Parser } from '../index.ts';
 
-import { createPropertyNormalizer, flatten, formatUrl, json, Property } from '../utils.ts';
+import { createPropertyNormalizer, flatten, formatUrl, json } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 type MenuFormat = {
   LunchMenus: Array<{
@@ -17,14 +18,14 @@ type MenuFormat = {
 };
 
 const normalizeProperties = createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  L: Property.LACTOSE_FREE,
-  VL: Property.LOW_IN_LACTOSE,
-  M: Property.MILK_FREE,
-  '*': Property.HEALTHIER_CHOICE,
-  Veg: Property.VEGAN,
-  VS: Property.CONTAINS_GARLIC,
-  A: Property.CONTAINS_ALLERGENS,
+  G: MenuProperty.GLUTEN_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  VL: MenuProperty.LOW_IN_LACTOSE,
+  M: MenuProperty.MILK_FREE,
+  '*': MenuProperty.HEALTHIER_CHOICE,
+  Veg: MenuProperty.VEGAN,
+  VS: MenuProperty.CONTAINS_GARLIC,
+  A: MenuProperty.CONTAINS_ALLERGENS,
 });
 
 const parser: Parser = {

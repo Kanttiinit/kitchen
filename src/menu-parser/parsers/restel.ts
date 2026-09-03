@@ -1,13 +1,14 @@
 import moment from 'moment';
 
-import { createPropertyNormalizer, formatUrl, json, Property, propertyRegex } from '../utils.ts';
+import { createPropertyNormalizer, formatUrl, json, propertyRegex } from '../utils.ts';
 import { Parser } from '../index.ts';
+import { MenuProperty } from '../../db.ts';
 
 const normalizeProperties = createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  M: Property.MILK_FREE,
-  L: Property.LACTOSE_FREE,
-  VE: Property.VEGETARIAN,
+  G: MenuProperty.GLUTEN_FREE,
+  M: MenuProperty.MILK_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  VE: MenuProperty.VEGETARIAN,
 });
 
 type Response = {

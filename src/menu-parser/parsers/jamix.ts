@@ -1,15 +1,16 @@
 import moment from 'moment';
 
 import { Parser } from '../index.ts';
-import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { createPropertyNormalizer, json } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const normalizeProperties = createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  Mu: Property.EGG_FREE,
-  VEG: Property.VEGAN,
-  '*': Property.HEALTHIER_CHOICE,
+  G: MenuProperty.GLUTEN_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  Mu: MenuProperty.EGG_FREE,
+  VEG: MenuProperty.VEGAN,
+  '*': MenuProperty.HEALTHIER_CHOICE,
 });
 
 interface MenuItem {
@@ -46,7 +47,7 @@ const parser: Parser = {
     // courses of a day into a single menu.
     const days = new Map<
       number,
-      Array<{ title: string; properties: Array<Property> }>
+      Array<{ title: string; properties: Array<MenuProperty> }>
     >();
 
     for (const kitchen of kitchens) {

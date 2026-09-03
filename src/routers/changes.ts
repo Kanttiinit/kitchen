@@ -64,7 +64,7 @@ const models = {
             return [weekday, formatHours(previousHours), formatHours(nextHours)];
           })
           .filter(([, prev, next]) => prev !== next)
-          .map(([weekday, prev, next], i) => `${weekday}: ${prev} -> ${next}`)
+          .map(([weekday, prev, next]) => `${weekday}: ${prev} -> ${next}`)
           .join('\n');
       }
 
@@ -137,10 +137,10 @@ if ((chatId && botToken) || environment.isTest) {
           break;
         }
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.log(e);
       ctx.reply(
-        `[${user.username}](tg://user?id=${user.id}), Error: ${e.message}`,
+        `[${user.username}](tg://user?id=${user.id}), Error: ${e instanceof Error ? e.message : 'unknown'}`,
         Telegraf.Extra.markdown(),
       );
     }
@@ -149,7 +149,7 @@ if ((chatId && botToken) || environment.isTest) {
   bot.startPolling();
 }
 
-async function createChange(dataType: 'restaurant', filter: Record<string, any>, change: unknown) {
+async function createChange(dataType: 'restaurant', filter: Record<string, unknown>, change: unknown) {
   const model = models[dataType];
   if (!model) {
     throw new Error('Change model does not exist.');
@@ -197,7 +197,7 @@ export default new Hono()
       );
 
       return c.json({ uuid: change.uuid });
-    } catch (e: any) {
-      throw new HTTPException(400, { message: e.message });
+    } catch (e: unknown) {
+      throw new HTTPException(400, { message: e instanceof Error ? e.message : 'Unknown error' });
     }
   });

@@ -2,16 +2,17 @@ import moment from 'moment';
 import * as utils from '../utils.ts';
 
 import { Parser } from '../index.ts';
-import { createPropertyNormalizer, Property, propertyRegex } from '../utils.ts';
+import { createPropertyNormalizer, propertyRegex } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyMap = {
-  G: Property.GLUTEN_FREE,
-  K: Property.VEGETARIAN,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  O: Property.IGNORE,
-  VL: Property.LOW_IN_LACTOSE,
-  VEGA: Property.VEGAN,
+  G: MenuProperty.GLUTEN_FREE,
+  K: MenuProperty.VEGETARIAN,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  O: MenuProperty.IGNORE,
+  VL: MenuProperty.LOW_IN_LACTOSE,
+  VEGA: MenuProperty.VEGAN,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);

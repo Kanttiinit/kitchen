@@ -1,33 +1,32 @@
 import { inspect } from 'node:util';
-import parsers from './parsers/index.ts';
-import { Property } from './utils.ts';
+import z from 'zod';
 
-export interface MenuItem {
-  day: string;
-  courses: Array<{
-    title: string;
-    properties: Array<Property>;
-  }>;
-}
+import parsers from './parsers/index.ts';
+import { menuList } from '../db.ts';
+
+export const menuParserResultSchema = z.object({
+  day: z.string(),
+  courses: menuList
+});
+
+export type MenuItem = z.infer<typeof menuParserResultSchema>;
 
 export interface Parser {
   pattern: RegExp;
   parse: (url: string, lang: 'fi' | 'en') => Promise<Array<MenuItem>>;
 }
 
-export default function parse(url: string, lang: 'fi' | 'en') {
+export default async function parse(url: string, lang: 'fi' | 'en') {
   if (!lang) {
     throw new Error('The second argument (lang) is required!');
   }
 
-  // find a suitable parser
   const parser = parsers.find((p) => url.match(p.pattern));
-
-  if (parser) {
-    return parser.parse(url, lang);
+  if (!parser) {
+    throw new Error('No parser found for: ' + url);
   }
 
-  throw new Error('No parser found for: ' + url);
+    return z.array(menuParserResultSchema).parse(await parser.parse(url, lang));
 }
 
 if (import.meta.main) {

@@ -18,8 +18,8 @@ export default new Hono().get('/', async (c) => {
         `New feedback from ${email}:\n"${message}"`,
       );
       c.json({ message: 'Success.' });
-    } catch (err: any) {
-      throw new HTTPException(500, { message: err.message });
+    } catch (err: unknown) {
+      throw new HTTPException(500, { message: err instanceof Error ? err.message : 'Unknown error.' });
     }
   } else {
     throw new HTTPException(400, { message: 'Bad request.' });

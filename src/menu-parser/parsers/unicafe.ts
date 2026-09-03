@@ -1,19 +1,20 @@
 import moment from 'moment';
 
 import { Parser } from '../index.ts';
-import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { createPropertyNormalizer, json } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyMap = {
-  G: Property.GLUTEN_FREE,
-  K: Property.VEGETARIAN,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  PÄ: Property.CONTAINS_NUTS,
-  SE: Property.CONTAINS_CELERY,
-  SO: Property.CONTAINS_SOY,
-  V: Property.CONTAINS_GARLIC,
-  VE: Property.VEGAN,
-  VL: Property.LOW_IN_LACTOSE,
+  G: MenuProperty.GLUTEN_FREE,
+  K: MenuProperty.VEGETARIAN,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  PÄ: MenuProperty.CONTAINS_NUTS,
+  SE: MenuProperty.CONTAINS_CELERY,
+  SO: MenuProperty.CONTAINS_SOY,
+  V: MenuProperty.CONTAINS_GARLIC,
+  VE: MenuProperty.VEGAN,
+  VL: MenuProperty.LOW_IN_LACTOSE,
 };
 
 interface Course {

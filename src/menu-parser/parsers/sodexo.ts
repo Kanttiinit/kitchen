@@ -1,12 +1,13 @@
-import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { createPropertyNormalizer, json } from '../utils.ts';
 import { Parser } from '../index.ts';
 import moment from 'moment';
+import { MenuProperty } from '../../db.ts';
 
 const propertyMap = {
-  G: Property.GLUTEN_FREE,
-  M: Property.MILK_FREE,
-  L: Property.LACTOSE_FREE,
-  VL: Property.LOW_IN_LACTOSE,
+  G: MenuProperty.GLUTEN_FREE,
+  M: MenuProperty.MILK_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  VL: MenuProperty.LOW_IN_LACTOSE,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);

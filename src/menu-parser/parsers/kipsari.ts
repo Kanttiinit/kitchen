@@ -1,14 +1,15 @@
 import moment from 'moment';
 import { JSDOM } from 'jsdom';
 import { Parser } from '../index.ts';
-import { createPropertyNormalizer, parseXml, Property, text } from '../utils.ts';
+import { createPropertyNormalizer, parseXml, text } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const normalizeProperties = createPropertyNormalizer({
-  '*': Property.HEALTHIER_CHOICE,
-  V: Property.VEGAN,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  G: Property.GLUTEN_FREE,
+  '*': MenuProperty.HEALTHIER_CHOICE,
+  V: MenuProperty.VEGAN,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  G: MenuProperty.GLUTEN_FREE,
 });
 
 // 👼👼👼👼👼

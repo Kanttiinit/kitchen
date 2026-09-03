@@ -1,6 +1,5 @@
 import parse, { MenuItem } from './index.ts';
-import { db } from '../db.ts';
-import { Property } from './utils.ts';
+import { db, MenuProperty } from '../db.ts';
 import { Restaurant, restaurants } from '../../data/data.ts';
 
 const langs: ('fi' | 'en')[] = ['fi', 'en'];
@@ -9,7 +8,7 @@ async function createOrUpdateMenu(menu: {
   day: string;
   courses_i18n: Record<'fi' | 'en', {
     title: string;
-    properties: Array<Property>;
+    properties: MenuProperty[];
   }[]>;
 }, restaurant: Restaurant) {
   await db.queryObject(

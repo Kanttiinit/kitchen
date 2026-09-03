@@ -1,17 +1,18 @@
 import moment from 'moment';
-import { createPropertyNormalizer, json, Property } from '../utils.ts';
+import { createPropertyNormalizer, json } from '../utils.ts';
 import { Parser } from '../index.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyMap = {
-  A: Property.CONTAINS_ALLERGENS,
-  G: Property.GLUTEN_FREE,
-  K: Property.EGG_FREE,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  Soijaton: Property.SOY_FREE,
-  T: Property.HEALTHIER_CHOICE,
-  VL: Property.LOW_IN_LACTOSE,
-  Veg: Property.VEGAN,
+  A: MenuProperty.CONTAINS_ALLERGENS,
+  G: MenuProperty.GLUTEN_FREE,
+  K: MenuProperty.EGG_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  Soijaton: MenuProperty.SOY_FREE,
+  T: MenuProperty.HEALTHIER_CHOICE,
+  VL: MenuProperty.LOW_IN_LACTOSE,
+  Veg: MenuProperty.VEGAN,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);

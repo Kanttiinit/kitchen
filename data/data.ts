@@ -38,9 +38,17 @@ export const favoriteSchema = z.object({
 
 export type Favorite = z.infer<typeof favoriteSchema>;
 
+export const updatesSchema = z.object({
+  id: z.number().int(),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.string(),
+});
+
 export const restaurants = z.array(restaurantSchema).parse(parse(Deno.readTextFileSync('data/restaurants.yml')));
 export const areas = z.array(areaSchema).parse(parse(Deno.readTextFileSync('data/areas.yml')));
 export const favorites = z.array(favoriteSchema).parse(parse(Deno.readTextFileSync('data/favorites.yml')));
+export const updates = z.array(updatesSchema).parse(parse(Deno.readTextFileSync('data/updates.yml')));
 export const areasWithRestaurants = areas.map((area) => {
   return {
     ...area,

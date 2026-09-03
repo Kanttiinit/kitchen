@@ -3,16 +3,17 @@ import { JSDOM } from 'jsdom';
 import moment from 'moment';
 
 import { Parser } from '../index.ts';
-import { days, Property } from '../utils.ts';
+import { days } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyNormalizer = utils.createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  M: Property.MILK_FREE,
-  L: Property.LACTOSE_FREE,
-  SE: Property.CONTAINS_CELERY,
-  PÄ: Property.CONTAINS_NUTS,
-  SO: Property.CONTAINS_SOY,
-  VS: Property.CONTAINS_GARLIC,
+  G: MenuProperty.GLUTEN_FREE,
+  M: MenuProperty.MILK_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  SE: MenuProperty.CONTAINS_CELERY,
+  PÄ: MenuProperty.CONTAINS_NUTS,
+  SO: MenuProperty.CONTAINS_SOY,
+  VS: MenuProperty.CONTAINS_GARLIC,
 });
 
 const parser: Parser = {

@@ -1,14 +1,15 @@
 import moment from 'moment';
 import { JSDOM } from 'jsdom';
 import { Parser } from '../index.ts';
-import { createPropertyNormalizer, Property, text } from '../utils.ts';
+import { createPropertyNormalizer, text } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const normalizeProperties = createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  S: Property.SOY_FREE,
-  vegan: Property.VEGAN,
+  G: MenuProperty.GLUTEN_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  S: MenuProperty.SOY_FREE,
+  vegan: MenuProperty.VEGAN,
 });
 
 // https://menssa.fi/lounas/

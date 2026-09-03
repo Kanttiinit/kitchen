@@ -1,5 +1,6 @@
 import xml2js from 'xml2js';
 import moment from 'moment';
+import { MenuProperty } from '../db.ts';
 
 export const propertyRegex = /\b([A-Z]{1,2}|veg|vega)\b/gi;
 
@@ -72,34 +73,16 @@ export const text = (url: string, setCookie = false) =>
     })
     .then((r) => r.text());
 
-export enum Property {
-  CONTAINS_ALLERGENS = 'A+',
-  CONTAINS_CELERY = 'C+',
-  EGG_FREE = 'E',
-  GLUTEN_FREE = 'G',
-  HEALTHIER_CHOICE = 'H',
-  LACTOSE_FREE = 'L',
-  LOW_IN_LACTOSE = 'LL',
-  MILK_FREE = 'M',
-  CONTAINS_NUTS = 'N+',
-  CONTAINS_GARLIC = 'O+',
-  SOY_FREE = 'S',
-  CONTAINS_SOY = 'S+',
-  VEGETARIAN = 'V',
-  VEGAN = 'VV',
-  IGNORE = '?',
-}
-
 export const createPropertyNormalizer = (map: {
-  [source: string]: Property;
+  [source: string]: MenuProperty;
 }) =>
 (properties: Array<string>) =>
   properties
     .map((p) => {
       const mapped = map[p];
-      return mapped ? mapped : Property.IGNORE;
+      return mapped ? mapped : MenuProperty.IGNORE;
     })
-    .filter((p) => p !== Property.IGNORE)
+    .filter((p) => p !== MenuProperty.IGNORE)
     .sort();
 
 export function parseXml(xml: string): Promise<unknown> {

@@ -50,14 +50,32 @@ class ProductionDb implements Db {
   }
 }
 
-const menuList = z.array(z.object({
+export enum MenuProperty {
+  CONTAINS_ALLERGENS = 'A+',
+  CONTAINS_CELERY = 'C+',
+  EGG_FREE = 'E',
+  GLUTEN_FREE = 'G',
+  HEALTHIER_CHOICE = 'H',
+  LACTOSE_FREE = 'L',
+  LOW_IN_LACTOSE = 'LL',
+  MILK_FREE = 'M',
+  CONTAINS_NUTS = 'N+',
+  CONTAINS_GARLIC = 'O+',
+  SOY_FREE = 'S',
+  CONTAINS_SOY = 'S+',
+  VEGETARIAN = 'V',
+  VEGAN = 'VV',
+  IGNORE = '?',
+}
+
+export const menuList = z.array(z.object({
   title: z.string(),
-  properties: z.array(z.string()),
+  properties: z.array(z.enum(MenuProperty)),
 }));
 
 export const menuSchema = z.object({
   restaurant_id: z.number().int(),
-  day: z.date(),
+  day: z.string(),
   courses_i18n: z.object({
     fi: menuList,
     en: menuList,
