@@ -1,4 +1,3 @@
-
 export const isProduction = Deno.env.get('NODE_ENV') === 'production';
 export const isTest = Deno.env.get('NODE_ENV') === 'test';
 

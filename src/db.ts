@@ -1,55 +1,17 @@
-import postgres from 'postgres';
 import { PGlite } from '@electric-sql/pglite';
+import { Pool } from 'pg';
+import {
+  type Generated,
+  type JSONColumnType,
+  Kysely,
+  ParseJSONResultsPlugin,
+  PGliteDialect,
+  PostgresDialect,
+  sql,
+} from 'kysely';
 import z from 'zod';
 
 import { databaseURL } from './environment.ts';
-
-interface Db {
-  exec(query: string): void;
-  queryArray<T>(query: string, params: unknown[]): Promise<T[]>;
-  queryObject<T>(query: string, params: unknown[]): Promise<T>;
-}
-
-class LocalDb implements Db {
-  instance: PGlite;
-  constructor() {
-    this.instance = new PGlite('local.db');
-  }
-
-  async exec(query: string) {
-    await this.instance.exec(query);
-  }
-
-  async queryArray<T>(query: string, params: unknown[]) {
-    const result = await this.instance.query(query, params);
-    return result.rows as T[]; // array of objects
-  }
-
-  async queryObject<T>(query: string, params: unknown[]) {
-    const result = await this.instance.query(query, params);
-    return result.rows[0] as T;
-  }
-}
-
-class ProductionDb implements Db {
-  instance: postgres.Sql;
-  constructor(url: string) {
-    this.instance = postgres(url);
-  }
-
-  async exec(query: string) {
-    await this.instance.unsafe(query).simple();
-  }
-
-  async queryArray<T>(query: string, params: any[]) {
-    return await this.instance.unsafe(query, params) as T[];
-  }
-
-  async queryObject<T>(query: string, params: any[]) {
-    const rows = await this.instance.unsafe(query, params);
-    return rows[0] as T;
-  }
-}
 
 export enum MenuProperty {
   CONTAINS_ALLERGENS = 'A+',
@@ -96,23 +58,56 @@ export const changeSchema = z.object({
 export type Menu = z.infer<typeof menuSchema>;
 export type Change = z.infer<typeof changeSchema>;
 
-export const db: Db = databaseURL ? new ProductionDb(databaseURL) : new LocalDb();
+interface MenusTable {
+  restaurant_id: number;
+  day: string;
+  courses_i18n: JSONColumnType<Menu['courses_i18n']>;
+}
 
-await db.exec(`
-CREATE TABLE IF NOT EXISTS menus (
-  restaurant_id integer,
-  day date,
-  courses_i18n json,
-  PRIMARY KEY (restaurant_id, day)
-);
+interface ChangesTable {
+  data_type: 'restaurant';
+  uuid: Generated<string>;
+  filter: JSONColumnType<object>;
+  change: JSONColumnType<object>;
+  applied_at: Date | null;
+  applied_by: string | null;
+  created_at: Generated<Date>;
+}
 
-CREATE TABLE IF NOT EXISTS changes (
-  data_type character varying(255) NOT NULL CHECK (data_type IN ('restaurant')),
-  uuid uuid NOT NULL DEFAULT gen_random_uuid(),
-  filter jsonb NOT NULL,
-  change jsonb NOT NULL,
-  applied_at timestamp with time zone,
-  applied_by character varying(255),
-  created_at timestamp with time zone NOT NULL DEFAULT now()
-);
-`);
+export interface Database {
+  menus: MenusTable;
+  changes: ChangesTable;
+}
+
+function createDialect() {
+  if (databaseURL) {
+    return new PostgresDialect({ pool: new Pool({ connectionString: databaseURL }) });
+  }
+  return new PGliteDialect({ pglite: new PGlite('local.db') });
+}
+
+export const db = new Kysely<Database>({
+  dialect: createDialect(),
+  plugins: [new ParseJSONResultsPlugin()],
+});
+
+await sql`
+  CREATE TABLE IF NOT EXISTS menus (
+    restaurant_id integer,
+    day date,
+    courses_i18n json,
+    PRIMARY KEY (restaurant_id, day)
+  )
+`.execute(db);
+
+await sql`
+  CREATE TABLE IF NOT EXISTS changes (
+    data_type character varying(255) NOT NULL CHECK (data_type IN ('restaurant')),
+    uuid uuid NOT NULL DEFAULT gen_random_uuid(),
+    filter jsonb NOT NULL,
+    change jsonb NOT NULL,
+    applied_at timestamp with time zone,
+    applied_by character varying(255),
+    created_at timestamp with time zone NOT NULL DEFAULT now()
+  )
+`.execute(db);

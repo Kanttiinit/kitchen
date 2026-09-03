@@ -7,7 +7,7 @@ export function formatIds(idString: string) {
         .split(',')
         .map((id) => +id)
         .filter((id) => !isNaN(id))
-      : null
+      : []
   );
 }
 

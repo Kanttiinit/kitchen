@@ -1,13 +1,14 @@
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import moment from 'moment';
+import { sql } from 'kysely';
 
 import changeRouter from './changes.ts';
 import contactRouter from './contact.ts';
 
 import { getRestaurantsForQuery } from './restaurant-queries.ts';
 import { areasWithRestaurantIds, areasWithRestaurants, favorites, restaurants, updates } from '../../data/data.ts';
-import { db, Menu } from '../db.ts';
+import { db } from '../db.ts';
 import { formatFields, formatIds, parseLanguage } from '../utils.ts';
 
 export default new Hono()
@@ -25,24 +26,20 @@ export default new Hono()
       .filter((m) => m.isValid())
       .map((d) => d.format('YYYY-MM-DD'));
 
-    const allRestaurantIds = restaurants.filter((r) => restaurantIds?.includes(r.id) || areaIds?.includes(r.areaId))
+    const allRestaurantIds = restaurants
+      .filter((r) => restaurantIds.includes(r.id) || areaIds?.includes(r.areaId))
       .map((r) => r.id);
-    ``;
 
-    let menus;
-    if (days.length) {
-      menus = await db.queryArray<Menu>('SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day = ANY($2)', [
-        allRestaurantIds,
-        days,
-      ]);
-    } else {
-      menus = await db.queryArray<Menu>(
-        'SELECT * FROM menus WHERE restaurant_id = ANY($1::int[]) AND day >= CURRENT_DATE',
-        [
-          allRestaurantIds,
-        ],
-      );
+    let menusQuery = await db.selectFrom('menus');
+    if (restaurantIds?.length) {
+      menusQuery = menusQuery.where('restaurant_id', 'in', allRestaurantIds);
     }
+    if (days.length) {
+      menusQuery = menusQuery.where('day', 'in', days);
+    } else {
+      menusQuery = menusQuery.where('day', '>=', sql<string>`CURRENT_DATE`);
+    }
+    const menus = await menusQuery.selectAll().execute();
 
     const response = allRestaurantIds.reduce((carry, restaurantId) => {
       const menuList = menus.filter((m) => m.restaurant_id === restaurantId);
@@ -67,10 +64,12 @@ export default new Hono()
         throw new HTTPException(404, { message: 'Restaurant not found.' });
       }
 
-      const menu = await db.queryObject<Menu>('SELECT * FROM menus WHERE restaurant_id = $1 AND day = $2', [
-        restaurant?.id,
-        day,
-      ]);
+      const menu = await db.selectFrom('menus')
+        .where('restaurant_id', '=', restaurant?.id)
+        .where('day', '=', day)
+        .selectAll()
+        .executeTakeFirst();
+
       return c.json(formatFields({
         ...restaurant,
         menus: menu

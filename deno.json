@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "start": "deno run --env-file --allow-all src/main.ts",
+    "start": "deno run --allow-all src/main.ts",
     "dev": "deno run --watch --env-file --allow-all src/main.ts",
     "update-menus": "deno run --env-file --allow-all src/menu-parser/worker.ts",
     "test-menu-parser": "deno run --allow-all src/menu-parser/index.ts"
@@ -14,9 +14,10 @@
     "hono/cors": "jsr:@hono/hono@^4.6.0/cors",
     "hono/http-exception": "jsr:@hono/hono@^4.6.0/http-exception",
     "jsdom": "npm:jsdom@^30.0.1",
+    "kysely": "npm:kysely@^0.29.5",
     "moment": "npm:moment@^2.30.1",
     "octokit": "npm:octokit@^5.0.5",
-    "postgres": "npm:postgres@^3.4.9",
+    "pg": "npm:pg@^8.23.0",
     "telegraf": "npm:telegraf@^3.23.0",
     "xml2js": "npm:xml2js@^0.6.2",
     "zod": "npm:zod@^4.5.4"

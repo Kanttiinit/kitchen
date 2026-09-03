@@ -4,9 +4,10 @@ import Telegraf from 'telegraf';
 import moment from 'moment';
 import { parse, stringify } from '@std/yaml';
 import z from 'zod';
+import { sql } from 'kysely';
 
 import * as environment from '../environment.ts';
-import { Change, db } from '../db.ts';
+import { db } from '../db.ts';
 import { openingHoursSchema, restaurants, restaurantSchema } from '../../data/data.ts';
 import { formatHours } from '../utils.ts';
 
@@ -104,15 +105,28 @@ if ((chatId && botToken) || environment.isTest) {
       const originalText = message && 'text' in message ? message.text : '';
       switch (action) {
         case 'accept': {
-          const change = await db.queryObject<Change>('SELECT * FROM changes WHERE uuid = $1', [uuid]);
+          const change = await db.selectFrom('changes')
+            .where('uuid', '=', uuid)
+            .selectAll()
+            .executeTakeFirst();
+
+          if (!change) {
+            throw new Error('Change not found in database.');
+          }
           const model = models[change.data_type];
           const modelChange = model.changeSchema.parse(change.change);
           const modelFilter = model.filterSchema.parse(change.filter);
+
           await model.applyChange(modelFilter, modelChange, user.username || 'unknown user');
-          await db.queryObject('UPDATE changes SET applied_by = $1, applied_at = now() WHERE uuid = $2', [
-            user.username || 'unknown user',
-            uuid,
-          ]);
+
+          await db.updateTable('changes')
+            .set({
+              applied_by: user.username || 'unknown user',
+              applied_at: sql<Date>`now()`,
+            })
+            .where('uuid', '=', uuid)
+            .execute();
+
           await ctx.editMessageText(
             originalText.replace(
               '📝 Change requested',
@@ -125,7 +139,7 @@ if ((chatId && botToken) || environment.isTest) {
           break;
         }
         case 'reject': {
-          await db.queryObject('DELETE FROM changes WHERE uuid = $1', [uuid]);
+          await db.deleteFrom('changes').where('uuid', '=', uuid).execute();
           await ctx.editMessageText(
             originalText.replace(
               '📝 Change requested',
@@ -157,14 +171,17 @@ async function createChange(dataType: 'restaurant', filter: unknown, change: unk
   }
   const modelChange = model.changeSchema.parse(change);
   const modelFilter = model.filterSchema.parse(filter);
-  const dbChange = await db.queryObject<Change>(
-    'INSERT INTO changes (data_type, filter, change) VALUES ($1, $2, $3) RETURNING *',
-    [
-      dataType,
-      JSON.stringify(filter),
-      JSON.stringify(change),
-    ],
-  );
+  const dbChange = await db.insertInto('changes')
+    .values({
+      data_type: dataType,
+      filter: JSON.stringify(filter),
+      change: JSON.stringify(change),
+    })
+    .returningAll()
+    .executeTakeFirst();
+  if (!dbChange) {
+    throw new Error('Failed to insert change into database.');
+  }
   return {
     uuid: dbChange.uuid,
     prettyPrint: model.formatChangeMessage(modelFilter, modelChange),
@@ -173,9 +190,11 @@ async function createChange(dataType: 'restaurant', filter: unknown, change: unk
 
 export default new Hono()
   .get('/:uuids', async (c) => {
-    const changes = await db.queryArray<Change>('SELECT * FROM changes WHERE uuid = ANY($1)', [
-      c.req.param('uuids').split(','),
-    ]);
+    const changes = await db
+      .selectFrom('changes')
+      .where('uuid', 'in', c.req.param('uuids').split(','))
+      .selectAll()
+      .execute();
     return c.json(changes.map((change) => ({
       createdAt: change.created_at,
       appliedAt: change.applied_at,

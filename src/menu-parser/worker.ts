@@ -1,25 +1,26 @@
 import parse, { MenuItem } from './index.ts';
-import { db, MenuProperty } from '../db.ts';
+import { db, Menu } from '../db.ts';
 import { Restaurant, restaurants } from '../../data/data.ts';
 
 const langs: ('fi' | 'en')[] = ['fi', 'en'];
 
 async function createOrUpdateMenu(menu: {
   day: string;
-  courses_i18n: Record<'fi' | 'en', {
-    title: string;
-    properties: MenuProperty[];
-  }[]>;
+  courses_i18n: Menu['courses_i18n'];
 }, restaurant: Restaurant) {
-  await db.queryObject(
-    `
-    INSERT INTO menus (restaurant_id, day, courses_i18n)
-    VALUES ($1, $2, $3)
-    ON CONFLICT (restaurant_id, day)
-    DO UPDATE SET courses_i18n = excluded.courses_i18n;
-  `,
-    [restaurant.id, menu.day, menu.courses_i18n],
-  );
+  await db
+    .insertInto('menus')
+    .values({
+      restaurant_id: restaurant.id,
+      day: menu.day,
+      courses_i18n: JSON.stringify(menu.courses_i18n),
+    })
+    .onConflict((oc) =>
+      oc
+        .columns(['restaurant_id', 'day'])
+        .doUpdateSet({ courses_i18n: JSON.stringify(menu.courses_i18n) })
+    )
+    .execute();
 }
 
 function joinLangMenus(langMenus: MenuItem[][]) {
