@@ -1,6 +1,7 @@
 import { App } from 'octokit';
-import { githubAppId, githubPrivateKey } from '../environment.ts';
 import { decodeBase64, encodeBase64 } from '@std/encoding/base64';
+
+import { githubAppId, githubPrivateKey } from '../environment.ts';
 
 const OWNER = 'kanttiinit';
 const REPO = 'kitchen';
