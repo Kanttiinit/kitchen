@@ -113,8 +113,6 @@ if ((chatId && botToken) || environment.isTest) {
             user.username || 'unknown user',
             uuid,
           ]);
-
-          // await change.apply(user.username);
           await ctx.editMessageText(
             originalText.replace(
               '📝 Change requested',
