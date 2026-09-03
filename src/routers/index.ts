@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
 import moment from 'moment';
 
 import changeRouter from './changes.ts';
@@ -7,7 +8,6 @@ import contactRouter from './contact.ts';
 import { getRestaurantsForQuery } from './restaurant-queries.ts';
 import { areasWithRestaurantIds, areasWithRestaurants, favorites, restaurants, updates } from '../../data/data.ts';
 import { db, Menu } from '../db.ts';
-import { HTTPException } from 'hono/http-exception';
 import { formatFields, formatIds, parseLanguage } from '../utils.ts';
 
 export default new Hono()
