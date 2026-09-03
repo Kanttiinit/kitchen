@@ -109,6 +109,10 @@ if ((chatId && botToken) || environment.isTest) {
           const modelChange = model.changeSchema.parse(change.change);
           const modelFilter = model.filterSchema.parse(change.filter);
           await model.applyChange(modelFilter, modelChange, user.username || 'unknown user');
+          await db.queryObject('UPDATE changes SET applied_by = $1, applied_at = now() WHERE uuid = $2', [
+            user.username || 'unknown user',
+            uuid,
+          ]);
 
           // await change.apply(user.username);
           await ctx.editMessageText(

@@ -5,8 +5,8 @@ import z from 'zod';
 
 interface Db {
   exec(query: string): void;
-  queryArray<T>(query: string, params: any[]): Promise<T[]>;
-  queryObject<T>(query: string, params: any[]): Promise<T>;
+  queryArray<T>(query: string, params: unknown[]): Promise<T[]>;
+  queryObject<T>(query: string, params: unknown[]): Promise<T>;
 }
 
 class LocalDb implements Db {
@@ -19,12 +19,12 @@ class LocalDb implements Db {
     await this.instance.exec(query);
   }
 
-  async queryArray<T>(query: string, params: any[]) {
+  async queryArray<T>(query: string, params: unknown[]) {
     const result = await this.instance.query(query, params);
     return result.rows as T[]; // array of objects
   }
 
-  async queryObject<T>(query: string, params: any[]) {
+  async queryObject<T>(query: string, params: unknown[]) {
     const result = await this.instance.query(query, params);
     return result.rows[0] as T;
   }
