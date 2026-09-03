@@ -1,5 +1,6 @@
 import { HTTPException } from 'hono/http-exception';
 import Haversine from '@neabyte/haversine';
+
 import { areas, Restaurant, restaurants } from '../../data/data.ts';
 
 export function getRestaurantsByQuery(query: string) {
