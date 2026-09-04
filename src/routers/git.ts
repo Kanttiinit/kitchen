@@ -6,7 +6,7 @@ import { githubAppId, githubPrivateKey } from '../environment.ts';
 const OWNER = 'kanttiinit';
 const REPO = 'kitchen';
 const RESTAURANTS_PATH = 'data/restaurants.yml';
-const BRANCH = 'deno-static-site';
+const BRANCH = 'main';
 
 if (!githubPrivateKey || !githubAppId) {
   throw new Error('Github private key and app ID need to be defined.');
