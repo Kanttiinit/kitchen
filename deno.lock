@@ -7,6 +7,7 @@
     "jsr:@std/encoding@*": "1.0.11",
     "jsr:@std/yaml@*": "1.2.0",
     "npm:@electric-sql/pglite@~0.5.8": "0.5.8",
+    "npm:hono-rate-limiter@~0.5.3": "0.5.3_hono@4.13.5",
     "npm:jsdom@^30.0.1": "30.0.1",
     "npm:kysely@~0.29.5": "0.29.5",
     "npm:moment@^2.30.1": "2.30.1",
@@ -365,6 +366,15 @@
     "entities@8.0.0": {
       "integrity": "sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA=="
     },
+    "hono-rate-limiter@0.5.3_hono@4.13.5": {
+      "integrity": "sha512-M0DxbVMpPELEzLi0AJg1XyBHLGJXz7GySjsPoK+gc5YeeBsdGDGe+2RvVuCAv8ydINiwlbxqYMNxUEyYfRji/A==",
+      "dependencies": [
+        "hono"
+      ]
+    },
+    "hono@4.13.5": {
+      "integrity": "sha512-O6+/eCYRkzzzy0rPWwKLiGBR1nFuUPZynnwjxN1MBA62NNqbT0wQEzQyK2gSO5yDIDB336sXQleAhOHrzlYyKw=="
+    },
     "html-encoding-sniffer@6.0.0": {
       "integrity": "sha512-CV9TW3Y3f8/wT0BRFc1/KAVQ3TUHiXmaAb6VW9vtiMFf7SLoMd1PdAc4W3KFOFETBJUb90KatHqlsZMWV+R9Gg==",
       "dependencies": [
@@ -661,6 +671,7 @@
       "jsr:@std/encoding@*",
       "jsr:@std/yaml@*",
       "npm:@electric-sql/pglite@~0.5.8",
+      "npm:hono-rate-limiter@~0.5.3",
       "npm:jsdom@^30.0.1",
       "npm:kysely@~0.29.5",
       "npm:moment@^2.30.1",

@@ -11,6 +11,7 @@
     "@std/yaml": "jsr:@std/yaml",
     "@std/encoding/base64": "jsr:@std/encoding/base64",
     "hono": "jsr:@hono/hono@^4.6.0",
+    "hono-rate-limiter": "npm:hono-rate-limiter@^0.5.3",
     "hono/cors": "jsr:@hono/hono@^4.6.0/cors",
     "hono/http-exception": "jsr:@hono/hono@^4.6.0/http-exception",
     "jsdom": "npm:jsdom@^30.0.1",

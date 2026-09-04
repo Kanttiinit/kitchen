@@ -1,5 +1,6 @@
-import { Hono } from 'hono';
+import { Hono, MiddlewareHandler } from 'hono';
 import { HTTPException } from 'hono/http-exception';
+import { rateLimiter } from 'hono-rate-limiter';
 import Telegraf from 'telegraf';
 import moment from 'moment';
 import { parse, stringify } from '@std/yaml';
@@ -189,6 +190,15 @@ async function createChange(dataType: 'restaurant', filter: unknown, change: unk
 }
 
 export default new Hono()
+  .use(rateLimiter({
+    // 15 requests in 15 mins
+    windowMs: 15 * 60 * 1000,
+    limit: 15,
+    keyGenerator: (c) =>
+      c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ||
+      c.req.header('x-real-ip') ||
+      '',
+  }) as unknown as MiddlewareHandler)
   .get('/:uuids', async (c) => {
     const changes = await db
       .selectFrom('changes')
