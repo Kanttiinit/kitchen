@@ -1,31 +1,32 @@
 # Kanttiinit Backend
 
-Kitchen is the backend powering Kanttiinit. It's built with Express and uses a Postgres database.
+kanttiinit/kitchen is the backend service powering Kanttiinit. It's built using Deno, Hono and Postgres. Static data
+(areas, restaurant metadata and favorites) are stored in the repository itself, while menu and user change data is
+stored in Postgres.
 
 ## Local Development
 
-Run `yarn install` to install dependencies.
+Start the local server by running `deno run dev`.
 
-See the table below and make sure that all required environment variables are available. Then run `yarn develop` to start the development server.
+No environment variables are required to run the server with basic functionality. Certain features might not work until
+the required variables are defined, though. See all used environment variables in the `environment.ts` file.
 
-Use `docker compose up db` to run a local database. This will run and host a database in `postgresql://postgres:postgres@localhost:5432/kitchen_test`
+If `DATABASE_URL` is not defined, a local file-backed PGlite instance will be used.
 
-### Environment variables
+## Adding a restaurant
 
-This project uses [dotenv](https://github.com/motdotla/dotenv), which means that you can just place the environment variables in a `.env` file at the root of the project.
+`data/restaurants.yml` contains a list of all restaurants. Add a new restaurant by adding an item to the end of the list
+with the same schema as the rest. Choose a new ID by incrementing the ID of the previous restaurant.
 
-| Key               | Description                                                           | Required                                                        |
-| ----------------- | --------------------------------------------------------------------- | --------------------------------------------------------------- |
-| DATABASE_URL      | URI for the Postgres database.                                        | Yes.                                                            |
-| ORIGINS           | Comma-separated list of origins that are allowed to do CORS requests. | If you want to make requests to the server from another domain. |
-| PORT              | Port which the server will start listening.                           | No (defaults to 3000).                                          |
-| SEQUELIZE_LOGGING | If set, outputs SQL queries executed by Sequelize.                    | No (defaults to false).                                         |
-| SESSION_SECRET    | Secret for hashing session ids (can be anything in development).      | Yes.                                                            |
+When running the server (either via `deno run dev` or `deno test --allow-all`), all data will be validated.
 
-### Testing menu parsers
+See "adding a menu parser" below if a parser for the restaurant's menu format doesn't exist yet.
 
-To test the menu parser on a certain URL, run `node dist/menu-parser "http://restaurant.com/menu.json"`.
+## Adding a menu parser
 
-### ESLint
+To add a new menu parser, add a file with the name of the parser to `src/menu-parser/parsers`. The file should default
+export an object conforming to the `Parser` interface defined in `src/menu-parser/index.ts`. Also add the parser to the
+list in `src/menu-parser/parsers/index.ts`.
 
-This code base uses ESLint for linting JavaScript in order to keep the style uniform. ESLint has integrations for all major IDE's and we highly recommend installing it. We won't accept contributions that don't pass the linter rules!
+To debug and test the parser, run `deno run test-menu-parser <menu url> <fi|en>`. For example:
+`deno run test-menu-parser https://www.compass-group.fi/menuapi/feed/json\?costNumber\=0190\&language\=fi en`

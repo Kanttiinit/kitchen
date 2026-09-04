@@ -1,0 +1,38 @@
+- id: 1
+  name_i18n:
+    fi: Otaniemi
+- id: 2
+  name_i18n:
+    fi: Helsingin keskusta
+    en: Helsinki City Centre
+- id: 3
+  name_i18n:
+    fi: Töölö
+- id: 6
+  name_i18n:
+    fi: Kallio
+    en: Kallio
+- id: 7
+  name_i18n:
+    fi: Arabia & Kumpula
+    en: Arabia & Kumpula
+- id: 8
+  name_i18n:
+    fi: Viikki
+    en: Viikki
+- id: 11
+  name_i18n:
+    fi: Meilahti
+    en: Meilahti
+- id: 12
+  name_i18n:
+    fi: Vantaa
+    en: Vantaa
+- id: 15
+  name_i18n:
+    fi: Itä-Helsinki
+    en: East Helsinki
+- id: 16
+  name_i18n:
+    fi: Pasila
+    en: Pasila

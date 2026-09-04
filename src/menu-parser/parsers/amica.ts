@@ -1,56 +1,46 @@
-import * as moment from 'moment';
-import { flatten } from 'lodash';
+import moment from 'moment';
 
-import { Parser } from '../index';
-import {
-  json,
-  formatUrl,
-  propertyRegex,
-  getWeeks,
-  Property,
-  createPropertyNormalizer
-} from '../utils';
+import { Parser } from '../index.ts';
+import { createPropertyNormalizer, flatten, formatUrl, getWeeks, json, propertyRegex } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyMap = {
-  '*': Property.HEALTHIER_CHOICE,
-  A: Property.CONTAINS_ALLERGENS,
-  G: Property.GLUTEN_FREE,
-  L: Property.LACTOSE_FREE,
-  M: Property.MILK_FREE,
-  Veg: Property.VEGAN,
-  VL: Property.LOW_IN_LACTOSE,
-  VS: Property.CONTAINS_GARLIC
+  '*': MenuProperty.HEALTHIER_CHOICE,
+  A: MenuProperty.CONTAINS_ALLERGENS,
+  G: MenuProperty.GLUTEN_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  M: MenuProperty.MILK_FREE,
+  Veg: MenuProperty.VEGAN,
+  VL: MenuProperty.LOW_IN_LACTOSE,
+  VS: MenuProperty.CONTAINS_GARLIC,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
-async function parseWithDate(url, date) {
-  const data = await json(formatUrl(url, date));
+async function parseWithDate(url: string, date: moment.Moment) {
+  const data = await json(formatUrl(url, date)) as any;
   return (data.MenusForDays
-    ? data.MenusForDays.map(day => {
-        const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
-        return {
-          day: date.format('YYYY-MM-DD'),
-          courses: day.SetMenus.map(x =>
-            x.Components.map(y => [x.Name ? x.Name + ': ' : '', y])
-          )
-            .reduce((a, x) => a.concat(x), [])
-            .map(([groupName, course]) => {
-              const regex = /\s\(.*\)$/;
-              const properties = course.match(regex);
-              return {
-                title: groupName + course.replace(regex, ''),
-                properties: properties
-                  ? normalizeProperties(
-                      properties[0].match(propertyRegex) || []
-                    )
-                  : []
-              };
-            })
-        };
-      })
-    : []
-  ).filter(day => day.courses.length);
+    ? data.MenusForDays.map((day) => {
+      const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
+      return {
+        day: date.format('YYYY-MM-DD'),
+        courses: day.SetMenus.map((x) => x.Components.map((y) => [x.Name ? x.Name + ': ' : '', y]))
+          .reduce((a, x) => a.concat(x), [])
+          .map(([groupName, course]) => {
+            const regex = /\s\(.*\)$/;
+            const properties = course.match(regex);
+            return {
+              title: groupName + course.replace(regex, ''),
+              properties: properties
+                ? normalizeProperties(
+                  properties[0].match(propertyRegex) || [],
+                )
+                : [],
+            };
+          }),
+      };
+    })
+    : []).filter((day) => day.courses.length);
 }
 
 const parser: Parser = {
@@ -59,13 +49,13 @@ const parser: Parser = {
     url = url.replace('language=fi', 'language=' + lang);
     if (url.match('amica')) {
       const menusPerWeek = await Promise.all(
-        getWeeks().map(date => parseWithDate(url, date))
+        getWeeks().map((date) => parseWithDate(url, date)),
       );
       return flatten(menusPerWeek);
     } else {
       return parseWithDate(url, moment());
     }
-  }
+  },
 };
 
 export default parser;

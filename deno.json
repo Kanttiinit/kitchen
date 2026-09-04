@@ -1,0 +1,38 @@
+{
+  "tasks": {
+    "start": "deno run --allow-all src/main.ts",
+    "dev": "deno run --watch --env-file --allow-all src/main.ts",
+    "update-menus": "deno run --env-file --allow-all src/menu-parser/worker.ts",
+    "test-menu-parser": "deno run --allow-all src/menu-parser/index.ts"
+  },
+  "imports": {
+    "@electric-sql/pglite": "npm:@electric-sql/pglite@^0.5.8",
+    "@neabyte/haversine": "jsr:@neabyte/haversine@^0.1.0",
+    "@std/yaml": "jsr:@std/yaml",
+    "@std/encoding/base64": "jsr:@std/encoding/base64",
+    "hono": "jsr:@hono/hono@^4.6.0",
+    "hono-rate-limiter": "npm:hono-rate-limiter@^0.5.3",
+    "hono/cors": "jsr:@hono/hono@^4.6.0/cors",
+    "hono/http-exception": "jsr:@hono/hono@^4.6.0/http-exception",
+    "jsdom": "npm:jsdom@^30.0.1",
+    "kysely": "npm:kysely@^0.29.5",
+    "moment": "npm:moment@^2.30.1",
+    "octokit": "npm:octokit@^5.0.5",
+    "pg": "npm:pg@^8.23.0",
+    "telegraf": "npm:telegraf@^3.23.0",
+    "xml2js": "npm:xml2js@^0.6.2",
+    "zod": "npm:zod@^4.5.4"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window", "deno.unstable"]
+  },
+  "fmt": {
+    "singleQuote": true,
+    "semiColons": true,
+    "lineWidth": 120,
+    "useBraces": "always",
+    "quoteProps": "asNeeded"
+  },
+  "version": "5.0.0"
+}

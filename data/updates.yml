@@ -1,0 +1,50 @@
+- id: 2
+  title: Implement update system
+  createdAt: '2017-11-08T11:45:47.84+00:00'
+  description: Implement a first version of this update system.
+- id: 7
+  title: Coherent food properties between all restaurants
+  createdAt: '2018-01-12T11:57:20.968+00:00'
+  description: >-
+    We now normalise food properties between restaurants. Finally all letters
+    mean the same things!
+- id: 9
+  title: Offline-support
+  createdAt: '2018-02-26T10:45:22.749+00:00'
+  description: >-
+    The site should now work also offline taken that all required assets have
+    been downloaded previously.
+- id: 13
+  title: Dark mode
+  createdAt: '2018-09-03T11:36:25.969+00:00'
+  description: >-
+    You can now toggle between dark and light mode in the settings. This release
+    also introduces some minor bug fixes.
+- id: 14
+  title: Suggest fixes to restaurant information
+  createdAt: '2019-02-11T15:03:04.662+00:00'
+  description: >-
+    You can now suggest fixes to opening hours and location information of
+    restaurants by clicking on the icon in the lower left corner of a restaurant
+    card.
+- id: 15
+  title: New iOS app
+  createdAt: '2020-07-17T10:44:22.887+00:00'
+  description: >-
+    A completely rewritten iOS app is now available on the App Store. [Click
+    here to download](https://apps.apple.com/fi/app/kanttiinit/id1069903670).
+- id: 16
+  title: Price categories
+  createdAt: '2020-09-15T16:19:46.597+00:00'
+  description: >-
+    Each restaurant now has a price category which indicates what kind of
+    student discounts they offer (if any). You can change which restaurants you
+    want to see based on this information in the settings. This update also
+    finally fixes the maps.
+- id: 17
+  title: New web client
+  createdAt: '2023-01-09T16:29:45.615+00:00'
+  description: >-
+    The web client has been rewritten using more modern technologies (mainly
+    SolidJS) to make it load faster and feel snappier. Let us know if you
+    encounter any bugs!

@@ -1,19 +1,18 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+export const isProduction = Deno.env.get('NODE_ENV') === 'production';
+export const isTest = Deno.env.get('NODE_ENV') === 'test';
 
-export const sessionSecret = process.env.SESSION_SECRET;
-export const origins = process.env.ORIGINS
-  ? process.env.ORIGINS.split(',')
-  : [];
-export const isProduction = process.env.NODE_ENV === 'production';
-export const isTest = process.env.NODE_ENV === 'test';
-export const universalAnalyticsId = process.env.UA_ID;
-export const adminPassword = process.env.ADMIN_PASSWORD;
-export const port = process.env.PORT || 3000;
-export const databaseURL = process.env.DATABASE_URL;
-export const sequelizeLogging = Boolean(Number(process.env.SEQUELIZE_LOGGING));
-export const telegramModeratorChatId = Number(process.env.TG_CHAT_ID);
-export const telegramFeedbackChatId = Number(process.env.TG_FEEDBACK_CHAT_ID);
-export const telegramBotToken = process.env.BOT_TOKEN;
-export const dropboxToken = process.env.DROPBOX_TOKEN;
-export const sentryDSN = process.env.SENTRY_DSN;
+// comma separated list of allowed CORS origins
+const o = Deno.env.get('ORIGINS');
+export const origins = o ? o.split(',') : [];
+
+// URL to Postgres database, will use file-backed PGlite database if missing
+export const databaseURL = Deno.env.get('DATABASE_URL');
+
+// Telegram bot token and chat IDs for feedback endpoint and user change system
+export const telegramBotToken = Deno.env.get('BOT_TOKEN');
+export const telegramModeratorChatId = Number(Deno.env.get('TG_CHAT_ID'));
+export const telegramFeedbackChatId = Number(Deno.env.get('TG_FEEDBACK_CHAT_ID'));
+
+// Github credentials for user change system
+export const githubAppId = Deno.env.get('GITHUB_APP_ID');
+export const githubPrivateKey = Deno.env.get('GITHUB_PRIVATE_KEY');

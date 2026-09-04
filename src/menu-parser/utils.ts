@@ -1,6 +1,6 @@
-const xml2js = require('xml2js').parseString;
-import * as moment from 'moment';
-import fetch from 'node-fetch';
+import xml2js from 'xml2js';
+import moment from 'moment';
+import { MenuProperty } from '../db.ts';
 
 export const propertyRegex = /\b([A-Z]{1,2}|veg|vega)\b/gi;
 
@@ -12,7 +12,7 @@ export const days = {
     'torstai',
     'perjantai',
     'lauantai',
-    'sunnuntai'
+    'sunnuntai',
   ],
   en: [
     'monday',
@@ -21,24 +21,33 @@ export const days = {
     'thursday',
     'friday',
     'saturday',
-    'sunday'
-  ]
+    'sunday',
+  ],
 };
 
-export const getWeeks = () =>
-  [moment(), moment().add({ weeks: 1 })].map(d =>
-    d.startOf('week').add({ days: 1 })
-  );
+export function flatten<T>(array: (T | T[])[]): T[] {
+  const result: T[] = [];
+  for (const item of array) {
+    if (Array.isArray(item)) {
+      result.push(...item);
+    } else {
+      result.push(item);
+    }
+  }
+  return result;
+}
 
-export const formatUrl = (url, date = moment()) =>
+export const getWeeks = () => [moment(), moment().add({ weeks: 1 })].map((d) => d.startOf('week').add({ days: 1 }));
+
+export const formatUrl = (url: string, date = moment()) =>
   url
     .replace('%year%', date.format('YYYY'))
     .replace('%month%', date.format('MM'))
     .replace('%day%', date.format('DD'))
     .replace('%week%', date.format('w'));
 
-const cache = {};
-const cachedJSONFetch = async url => {
+const cache: Record<string, Promise<unknown>> = {};
+const cachedJSONFetch = async (url: string) => {
   if (!(url in cache)) {
     const response = await fetch(url);
     cache[url] = response.json();
@@ -47,55 +56,38 @@ const cachedJSONFetch = async url => {
   return cache[url];
 };
 
-export const json = url => cachedJSONFetch(url);
-export const text = (url, setCookie = false) =>
+export const json = (url: string) => cachedJSONFetch(url);
+export const text = (url: string, setCookie = false) =>
   fetch(url)
-    .then(r => {
+    .then((r) => {
       if (setCookie) {
-        const cookie = r.headers.get('set-cookie');
+        const cookie = r.headers.get('set-cookie') ?? '';
         return fetch(url, {
           headers: {
-            Cookie: cookie
-          }
+            Cookie: cookie,
+          },
         });
       } else {
         return r;
       }
     })
-    .then(r => r.text());
-
-export enum Property {
-  CONTAINS_ALLERGENS = 'A+',
-  CONTAINS_CELERY = 'C+',
-  EGG_FREE = 'E',
-  GLUTEN_FREE = 'G',
-  HEALTHIER_CHOICE = 'H',
-  LACTOSE_FREE = 'L',
-  LOW_IN_LACTOSE = 'LL',
-  MILK_FREE = 'M',
-  CONTAINS_NUTS = 'N+',
-  CONTAINS_GARLIC = 'O+',
-  SOY_FREE = 'S',
-  CONTAINS_SOY = 'S+',
-  VEGETARIAN = 'V',
-  VEGAN = 'VV',
-  IGNORE = '?'
-}
+    .then((r) => r.text());
 
 export const createPropertyNormalizer = (map: {
-  [source: string]: Property;
-}) => (properties: Array<string>) =>
+  [source: string]: MenuProperty;
+}) =>
+(properties: Array<string>) =>
   properties
-    .map(p => {
+    .map((p) => {
       const mapped = map[p];
-      return mapped ? mapped : Property.IGNORE;
+      return mapped ? mapped : MenuProperty.IGNORE;
     })
-    .filter(p => p !== Property.IGNORE)
+    .filter((p) => p !== MenuProperty.IGNORE)
     .sort();
 
-export function parseXml(xml): Promise<any> {
+export function parseXml(xml: string): Promise<unknown> {
   return new Promise((resolve, reject) => {
-    xml2js(xml, function(err, data) {
+    xml2js.parseString(xml, function (err: unknown, data: unknown) {
       if (err) {
         reject(err);
       } else {
@@ -105,8 +97,8 @@ export function parseXml(xml): Promise<any> {
   });
 }
 
-export function parseCourse(input: string, propertyNormalizer: Function) {
-  let properties = [];
+export function parseCourse(input: string, propertyNormalizer: (p: string[]) => string[]) {
+  const properties = [];
   let property = '';
   let i;
   for (i = input.length - 1; i > -1; i--) {
@@ -118,10 +110,10 @@ export function parseCourse(input: string, propertyNormalizer: Function) {
       property = input[i] + property;
     }
 
-    if (property.trim().length > 3) break;
+    if (property.trim().length > 3) { break; }
   }
   return {
     title: input.substring(0, i + 4),
-    properties: propertyNormalizer(properties)
+    properties: propertyNormalizer(properties),
   };
 }

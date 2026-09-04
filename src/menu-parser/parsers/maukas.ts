@@ -1,18 +1,19 @@
-import * as utils from '../utils';
+import * as utils from '../utils.ts';
 import { JSDOM } from 'jsdom';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { Parser } from '../index';
-import { days, Property } from '../utils';
+import { Parser } from '../index.ts';
+import { days } from '../utils.ts';
+import { MenuProperty } from '../../db.ts';
 
 const propertyNormalizer = utils.createPropertyNormalizer({
-  G: Property.GLUTEN_FREE,
-  M: Property.MILK_FREE,
-  L: Property.LACTOSE_FREE,
-  SE: Property.CONTAINS_CELERY,
-  PÄ: Property.CONTAINS_NUTS,
-  SO: Property.CONTAINS_SOY,
-  VS: Property.CONTAINS_GARLIC
+  G: MenuProperty.GLUTEN_FREE,
+  M: MenuProperty.MILK_FREE,
+  L: MenuProperty.LACTOSE_FREE,
+  SE: MenuProperty.CONTAINS_CELERY,
+  PÄ: MenuProperty.CONTAINS_NUTS,
+  SO: MenuProperty.CONTAINS_SOY,
+  VS: MenuProperty.CONTAINS_GARLIC,
 });
 
 const parser: Parser = {
@@ -21,13 +22,13 @@ const parser: Parser = {
     if (lang === 'en') {
       url = url.replace(
         'redirect_url=https://www.mau-kas.fi/',
-        'redirect_url=https://www.mau-kas.fi/en/'
+        'redirect_url=https://www.mau-kas.fi/en/',
       );
     }
     const html = await utils.text(url, true);
     const document = new JSDOM(html).window.document;
     let currentNode: any = Array.from(document.querySelectorAll('*')).find(
-      (n: any) => n.textContent.trim().toLowerCase() === days[lang][0]
+      (n: any) => n.textContent.trim().toLowerCase() === days[lang][0],
     );
     const date = moment().startOf('isoWeek');
     let menuItems = [];
@@ -46,7 +47,7 @@ const parser: Parser = {
     }
     menuItems.push({ day: date.format('YYYY-MM-DD'), courses });
     return menuItems;
-  }
+  },
 };
 
 export default parser;

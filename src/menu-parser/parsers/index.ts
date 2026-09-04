@@ -1,17 +1,17 @@
-import amica from './amica';
-import hamis from './hamis';
-import sodexo from './sodexo';
-import taffa from './taffa';
-import unicafe from './unicafe';
-import maukas from './maukas';
-import ravioli from './ravioli';
-import fazer from './fazer';
-import kipsari from './kipsari';
-import restel from './restel';
-import menssa from './menssa';
-import jamix from './jamix';
+import amica from './amica.ts';
+import hamis from './hamis.ts';
+import sodexo from './sodexo.ts';
+import taffa from './taffa.ts';
+import unicafe from './unicafe.ts';
+import maukas from './maukas.ts';
+import ravioli from './ravioli.ts';
+import fazer from './fazer.ts';
+import kipsari from './kipsari.ts';
+import restel from './restel.ts';
+import menssa from './menssa.ts';
+import jamix from './jamix.ts';
 
-import { Parser } from '../index';
+import { Parser } from '../index.ts';
 
 const parsers: Array<Parser> = [
   amica,
@@ -25,7 +25,7 @@ const parsers: Array<Parser> = [
   kipsari,
   restel,
   menssa,
-  jamix
+  jamix,
 ];
 
 export default parsers;
