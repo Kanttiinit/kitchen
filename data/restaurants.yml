@@ -611,8 +611,7 @@
       - 1800
     - - 1100
       - 1600
-    - - 1100
-      - 1600
+    - null
 - id: 53
   name_i18n:
     fi: Musiikkitalon Klubi
