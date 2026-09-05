@@ -64,7 +64,8 @@ export default new Hono()
         throw new HTTPException(404, { message: 'Restaurant not found.' });
       }
 
-      const menu = await db.selectFrom('menus')
+      const menu = await db
+        .selectFrom('menus')
         .where('restaurant_id', '=', restaurant?.id)
         .where('day', '=', day)
         .selectAll()

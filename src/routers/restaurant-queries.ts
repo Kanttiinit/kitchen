@@ -21,21 +21,14 @@ export function getRestaurantsByQuery(query: string) {
   return areaRestaurants;
 }
 
-export function getRestaurantsByLocation(
-  latitude: number,
-  longitude: number,
-  distanceInMeters: number,
-) {
+export function getRestaurantsByLocation(latitude: number, longitude: number, distanceInMeters: number) {
   return restaurants.filter((r) =>
     Haversine.calculate({ lat: latitude, lon: longitude }, { lat: r.latitude, lon: r.longitude }, 'm') <=
       distanceInMeters
   );
 }
 
-export function getRestaurantsByIds(
-  ids: Array<number>,
-  priceCategories: Array<string>,
-) {
+export function getRestaurantsByIds(ids: Array<number>, priceCategories: Array<string>) {
   return restaurants.filter((r) =>
     (ids.length === 0 || ids.includes(r.id)) &&
     (priceCategories.length === 0 || priceCategories.includes(r.priceCategory))

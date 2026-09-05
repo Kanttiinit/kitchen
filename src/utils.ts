@@ -2,12 +2,7 @@ import { createMiddleware } from 'hono/factory';
 
 export function formatIds(idString: string) {
   return (
-    idString
-      ? idString
-        .split(',')
-        .map((id) => +id)
-        .filter((id) => !isNaN(id))
-      : []
+    idString ? idString.split(',').map((id) => +id).filter((id) => !isNaN(id)) : []
   );
 }
 
@@ -15,7 +10,7 @@ function formatHour(hour: number) {
   return String(hour).replace(/([0-9]{1,2})([0-9]{2})/, '$1:$2');
 }
 
-export function formatHours(hours: any) {
+export function formatHours(hours: [number, number] | undefined | null) {
   if (!hours) {
     return null;
   }

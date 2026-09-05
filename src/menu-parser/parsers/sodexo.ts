@@ -50,7 +50,7 @@ const normaliseWeekday = (weekday: string) => {
 const parser: Parser = {
   pattern: /www.sodexo.fi/,
   async parse(url, lang) {
-    const response: Response = await json(url);
+    const response = await json(url) as Response;
     const firstDate = moment().startOf('isoWeek');
     return response.mealdates.map((day) => {
       return {

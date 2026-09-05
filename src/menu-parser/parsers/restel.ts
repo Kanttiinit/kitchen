@@ -29,7 +29,7 @@ type Response = {
 const parser: Parser = {
   pattern: /restel\.fi/,
   async parse(url) {
-    const data: Response = await json(formatUrl(url));
+    const data: any = await json(formatUrl(url));
     const referenceDate = moment(
       `${data.lunch_weeks}-${data.list_year}`,
       'WW-YYYY',
@@ -39,7 +39,7 @@ const parser: Parser = {
       const courses = data.lunch_items[weekday];
       return {
         day: date.format('YYYY-MM-DD'),
-        courses: courses.items.map((course) => ({
+        courses: courses.items.map((course: any) => ({
           title: course.dish_name
             .trim()
             .replace(/\([^\)]+\)/, '')

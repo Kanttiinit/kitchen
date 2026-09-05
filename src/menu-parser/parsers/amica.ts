@@ -20,12 +20,12 @@ const normalizeProperties = createPropertyNormalizer(propertyMap);
 async function parseWithDate(url: string, date: moment.Moment) {
   const data = await json(formatUrl(url, date)) as any;
   return (data.MenusForDays
-    ? data.MenusForDays.map((day) => {
+    ? data.MenusForDays.map((day: any) => {
       const date = moment(day.Date.split('T')[0], 'YYYY-MM-DD');
       return {
         day: date.format('YYYY-MM-DD'),
-        courses: day.SetMenus.map((x) => x.Components.map((y) => [x.Name ? x.Name + ': ' : '', y]))
-          .reduce((a, x) => a.concat(x), [])
+        courses: day.SetMenus.map((x: any) => x.Components.map((y) => [x.Name ? x.Name + ': ' : '', y]))
+          .reduce((a: any, x: any) => a.concat(x), [])
           .map(([groupName, course]) => {
             const regex = /\s\(.*\)$/;
             const properties = course.match(regex);
@@ -40,7 +40,7 @@ async function parseWithDate(url: string, date: moment.Moment) {
           }),
       };
     })
-    : []).filter((day) => day.courses.length);
+    : []).filter((day: any) => day.courses.length);
 }
 
 const parser: Parser = {

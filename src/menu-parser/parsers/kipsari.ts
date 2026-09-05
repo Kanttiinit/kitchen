@@ -13,7 +13,7 @@ const normalizeProperties = createPropertyNormalizer({
 });
 
 // 👼👼👼👼👼
-const handleKipsariLang = (url: string, lang) => {
+const handleKipsariLang = (url: string, lang: 'fi' | 'en') => {
   if (lang === 'en') {
     if (url.includes('rss-studio')) {
       return url.replace('rss-studio', 'rss-studio-english');
@@ -24,7 +24,7 @@ const handleKipsariLang = (url: string, lang) => {
   return url;
 };
 
-const getDateFormat = (lang) => {
+const getDateFormat = (lang: 'fi' | 'en') => {
   if (lang === 'en') {
     return 'YYYY-MM-DD';
   } else {
@@ -36,9 +36,9 @@ const parser: Parser = {
   pattern: /^https?:\/\/www.kipsari.com/,
   async parse(raw_url, lang) {
     let url = handleKipsariLang(raw_url, lang);
-    const xml = await parseXml(await text(url));
+    const xml: any = await parseXml(await text(url));
     const items = xml.rss.channel[0].item;
-    return items.map(({ title, description }) => {
+    return items.map(({ title, description }: any) => {
       const day = moment(title[0].split(', ')[1], getDateFormat(lang)).format(
         'YYYY-MM-DD',
       );
@@ -48,7 +48,7 @@ const parser: Parser = {
       return {
         day,
         courses: (Array.from(document.querySelectorAll('span')) as any).map(
-          (course) => {
+          (course: any) => {
             const match = course.textContent.trim().match(/\(.+\)$/gi);
             return {
               title: course.textContent.trim().replace(/\(.+\)$/, ''),

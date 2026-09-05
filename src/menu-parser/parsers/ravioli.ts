@@ -26,10 +26,10 @@ const parser: Parser = {
     if (lang != 'fi') {
       url = url.replace('/FI/', '/' + lang.toUpperCase() + '/');
     }
-    const xml = await utils.text(url);
-    const json = await utils.parseXml(xml);
+    const xml: any = await utils.text(url);
+    const json: any = await utils.parseXml(xml);
     return (json.rss.channel[0]
-      ? json.rss.channel[0].item.map((item) => {
+      ? json.rss.channel[0].item.map((item: any) => {
         var date = null;
         if (lang === 'fi') {
           date = moment(item.title[0].split(' ')[1], 'DD.MM');
@@ -41,16 +41,16 @@ const parser: Parser = {
           day: date?.format('YYYY-MM-DD'),
           courses: item.description[0]
             .split('<br>')
-            .map((x) => ({
+            .map((x: any) => ({
               name: x.split(/:\s?/).length > 1 ? x.split(':')[0] : '',
               components: x
                 .split(/:\s?/)[x.split(/:\s?/).length - 1].split(/\)[,|\s]/)
-                .filter((k) => k.length > 0)
-                .map((z) => (z.endsWith(')') ? z : z + ')')),
+                .filter((k: any) => k.length > 0)
+                .map((z: any) => (z.endsWith(')') ? z : z + ')')),
             }))
-            .map((x) => x.components.map((y) => (x.name ? x.name + ': ' : '') + y))
-            .reduce((a, x) => a.concat(x), [])
-            .map((course) => {
+            .map((x: any) => x.components.map((y: any) => (x.name ? x.name + ': ' : '') + y))
+            .reduce((a: any, x: any) => a.concat(x), [])
+            .map((course: any) => {
               const regex = /\s\(.*\)$/;
               const properties = course.match(regex);
               return {
@@ -64,7 +64,7 @@ const parser: Parser = {
             }),
         };
       })
-      : []).filter((day) => day.courses.length);
+      : []).filter((day: any) => day.courses.length);
   },
 };
 

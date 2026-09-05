@@ -24,10 +24,10 @@ const parser: Parser = {
     const date = moment().startOf('isoWeek');
 
     return (Array.from(document.querySelectorAll('.lms-front-day')) as any).map(
-      (day) => {
+      (day: any) => {
         const courses = (Array.from(
           day.querySelectorAll('.lms-front-dish'),
-        ) as any).map((dish) => {
+        ) as any).map((dish: any) => {
           const fiTitle = dish
             .querySelector('.lms-front-dish-name')
             .textContent.trim();
@@ -37,10 +37,10 @@ const parser: Parser = {
           const properties = (Array.from(
             dish.querySelectorAll('.lms-front-allergens, .lms-front-dietary'),
           ) as any)
-            .map((el) => el.textContent.split(','))
-            .reduce((a, b) => a.concat(b), [])
-            .map((p) => p.trim())
-            .filter((p) => p);
+            .map((el: any) => el.textContent.split(','))
+            .reduce((a: any, b: any) => a.concat(b), [])
+            .map((p: any) => p.trim())
+            .filter((p: any) => p);
 
           return {
             title: (lang === 'en' && enTitle) || fiTitle,

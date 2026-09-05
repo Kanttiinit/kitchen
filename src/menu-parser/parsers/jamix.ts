@@ -41,7 +41,7 @@ type Response = Array<{
 const parser: Parser = {
   pattern: /jamix\.cloud/,
   async parse(url, lang) {
-    const kitchens: Response = await json(url.replace('%lang%', lang));
+    const kitchens = await json(url.replace('%lang%', lang)) as Response;
 
     // The same day can appear under several menu types, so collect the
     // courses of a day into a single menu.
@@ -65,7 +65,7 @@ const parser: Parser = {
                 courses.push({
                   title,
                   properties: normalizeProperties(
-                    (item.diets || '').split(',').map((d) => d.trim()),
+                    (item.diets || '').split(',').map((d: any) => d.trim()),
                   ),
                 });
               }

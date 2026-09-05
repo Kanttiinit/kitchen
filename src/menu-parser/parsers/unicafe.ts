@@ -45,9 +45,7 @@ const normalizeProperties = createPropertyNormalizer(propertyMap);
 const parser: Parser = {
   pattern: /unicafe\.fi/,
   async parse(url, lang) {
-    const restaurants: Array<Restaurant> = await json(
-      url.replace('%lang%', lang),
-    );
+    const restaurants = await json(url.replace('%lang%', lang)) as Array<Restaurant>;
     const [, slug] = url.split('#');
     const restaurant = restaurants.find((r) => r.slug === slug);
     if (restaurant) {

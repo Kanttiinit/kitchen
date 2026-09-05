@@ -13,15 +13,10 @@ if (environment.isProduction) {
   }
 }
 
-const app = new Hono();
-
-app
+const app = new Hono()
   .use(
     '*',
-    cors({
-      credentials: true,
-      origin: environment.origins,
-    }),
+    cors({ credentials: true, origin: environment.origins }),
   )
   .route('/', router)
   .get('/', (c) => c.json({ version: denoJSON.version }))

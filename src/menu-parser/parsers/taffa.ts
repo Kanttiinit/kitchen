@@ -23,7 +23,7 @@ const parser: Parser = {
   pattern: /newapi\.tf\.fi/,
   async parse(url: string, lang: string): Promise<any[]> {
     let formattedUrl = url.replace('/fi/', '/' + lang + '/');
-    const data = await json(formattedUrl);
+    const data: any = await json(formattedUrl);
     return data.map((day: any) => {
       const courses = Object.keys(day)
         .filter((k) => !ignoredKeys.includes(k))
