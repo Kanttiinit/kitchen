@@ -1,5 +1,6 @@
 import { parse } from '@std/yaml';
 import z from 'zod';
+import moment from 'moment';
 
 const i18nString = z.object({
   fi: z.string(),
@@ -48,7 +49,7 @@ export const updatesSchema = z.object({
 export const restaurants = z.array(restaurantSchema).parse(parse(Deno.readTextFileSync('data/restaurants.yml')));
 export const areas = z.array(areaSchema).parse(parse(Deno.readTextFileSync('data/areas.yml')));
 export const favorites = z.array(favoriteSchema).parse(parse(Deno.readTextFileSync('data/favorites.yml')));
-export const updates = z.array(updatesSchema).parse(parse(Deno.readTextFileSync('data/updates.yml')));
+export const updates = z.array(updatesSchema).parse(parse(Deno.readTextFileSync('data/updates.yml'))).sort((a, b) => moment(a.createdAt).isBefore(b.createdAt) ? 1 : -1);
 export const areasWithRestaurants = areas.map((area) => {
   return {
     ...area,
