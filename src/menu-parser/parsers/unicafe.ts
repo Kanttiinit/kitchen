@@ -46,8 +46,9 @@ const parser: Parser = {
   pattern: /unicafe\.fi/,
   async parse(url, lang) {
     const restaurants = await json(url.replace('%lang%', lang)) as Array<Restaurant>;
-    const [, slug] = url.split('#');
-    const restaurant = restaurants.find((r) => r.slug === slug);
+    const [, hash] = url.split('#');
+    const slugs = hash.split('|');
+    const restaurant = restaurants.find((r) => slugs.includes(r.slug));
     if (restaurant) {
       return restaurant.menuData.menus
         .filter((m) => m.data.length > 0)

@@ -148,7 +148,7 @@
   latitude: 60.169955
   longitude: 24.948389
   url: 'https://unicafe.fi/restaurants/cafe-portaali/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1353'
+  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#cafe-portaali'
   address: 'Vuorikatu 3, 00170 Helsinki'
   openingHours:
     - - 830
@@ -687,30 +687,6 @@
       - 1300
     - null
     - null
-- id: 56
-  name_i18n:
-    fi: Unicafe Ruskeasuo
-    en: Unicafe Ruskeasuo
-  areaId: 14
-  priceCategory: student
-  latitude: 60.205884
-  longitude: 24.897528
-  url: 'https://unicafe.fi/restaurants/ruskeasuo/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1371'
-  address: Kytösuontie 9  00300 Helsinki
-  openingHours:
-    - - 1030
-      - 1400
-    - - 1030
-      - 1400
-    - - 1030
-      - 1400
-    - - 1030
-      - 1400
-    - - 1030
-      - 1345
-    - null
-    - null
 - id: 57
   name_i18n:
     fi: Ravintola Agora
@@ -783,49 +759,6 @@
       - 1430
     - - 1100
       - 1430
-    - null
-    - null
-- id: 62
-  name_i18n:
-    fi: Ravintola Oliver
-    en: Ravintola Oliver
-  areaId: 2
-  priceCategory: student
-  latitude: 60.1751186
-  longitude: 24.9513197
-  url: 'https://unicafe.fi/restaurants/ravintola-oliver/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#1368'
-  address: 'Siltavuorenpenger 5 A, 00170 Helsinki'
-  openingHours:
-    - null
-    - null
-    - null
-    - null
-    - null
-    - null
-    - null
-- id: 63
-  name_i18n:
-    fi: Rotunda
-    en: Rotunda
-  areaId: 2
-  priceCategory: student
-  latitude: 60.1703345
-  longitude: 24.9483184
-  url: 'https://unicafe.fi/restaurants/rotunda/'
-  menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#rotunda'
-  address: 'Unioninkatu 36, 00101 Helsinki'
-  openingHours:
-    - - 1100
-      - 1330
-    - - 1100
-      - 1330
-    - - 1100
-      - 1330
-    - - 1100
-      - 1330
-    - - 1100
-      - 1330
     - null
     - null
 - id: 65
@@ -984,7 +917,7 @@
   longitude: 24.96354716579012
   url: 'https://unicafe.fi/restaurants/chemicum-opettajien-ravintola/'
   menuUrl: >-
-    https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#chemicum-opettajien-ravintola
+    https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#chemicum-opettajien-ravintola|chemicum-teachers-restaurant
   address: A.I.Virtasenaukio 1
   openingHours:
     - - 1030
@@ -1050,7 +983,7 @@
   longitude: 25.012324
   url: 'https://unicafe.fi/restaurants/infokeskus-alakerta/'
   menuUrl: >-
-    https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#infokeskus-alakerta
+    https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#infokeskus-alakerta|infokeskus-student-canteen
   address: 'Viikinkaari 11, 00790 Helsinki'
   openingHours:
     - - 1030
