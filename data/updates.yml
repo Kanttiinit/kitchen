@@ -55,3 +55,9 @@
     The [backend service powering Kanttiinit.fi](https://github.com/Kanttiinit/kitchen)
     has been rewritten and now statically contains all restaurant, area and favorites data.
     This means that anyone can now propose changes to the data including adding and removing restaurants.
+- id: 19
+  title: New iPhone and Apple Watch app
+  createdAt: '2026-09-25T09:00:00.000+03:00'
+  description: >-
+    Kanttiinit has a brand new app for iPhone and Apple Watch on the App Store.
+    [Download it here](https://apps.apple.com/fi/app/kanttiinit-fi/id6814973609).
