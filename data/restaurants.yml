@@ -1035,18 +1035,18 @@
   menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#biokeskus'
   address: 'Viikinkaari 9, 00710 Helsinki'
   openingHours:
-    - - 1100
-      - 1700
-    - - 1100
-      - 1700
-    - - 1100
-      - 1700
-    - - 1100
-      - 1700
-    - - 1100
-      - 1700
-    - - 1100
-      - 1600
+    - - 1030
+      - 1630
+    - - 1030
+      - 1630
+    - - 1030
+      - 1630
+    - - 1030
+      - 1630
+    - - 1030
+      - 1630
+    - - 1030
+      - 1630
     - null
 - id: 82
   name_i18n:
