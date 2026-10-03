@@ -1147,3 +1147,28 @@
     - - 1100
       - 1500
     - null
+- id: 86
+  name_i18n:
+    fi: Opetustalo
+    en: Opetustalo
+  areaId: 16
+  priceCategory: student
+  latitude: 60.2017311
+  longitude: 24.9354404
+  url: >-
+    https://www.compass-group.fi/ravintolat-ja-ruokalistat/foodco/kaupungit/helsinki/opetustalo/
+  menuUrl: 'https://www.compass-group.fi/menuapi/feed/json?costNumber=0083&language=fi'
+  address: 'Messuaukio 2, 00520 Helsinki'
+  openingHours:
+    - - 800
+      - 1400
+    - - 800
+      - 1400
+    - - 800
+      - 1400
+    - - 800
+      - 1400
+    - - 800
+      - 1400
+    - null
+    - null
