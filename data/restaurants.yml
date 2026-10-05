@@ -50,8 +50,8 @@
     fi: Täffä
   areaId: 1
   priceCategory: student
-  latitude: 60.186034690045396
-  longitude: 24.832755909262062
+  latitude: 60.1839647
+  longitude: 24.8310598
   url: 'https://www.teknologforeningen.fi'
   menuUrl: 'https://newapi.tf.fi/taffa/fi/json/week/'
   address: 'Otakaari 27, 02150 Espoo'
