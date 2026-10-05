@@ -54,7 +54,7 @@
   longitude: 24.832755909262062
   url: 'https://www.teknologforeningen.fi'
   menuUrl: 'https://newapi.tf.fi/taffa/fi/json/week/'
-  address: 'Otakaari 22, 02150 Espoo'
+  address: 'Otakaari 27, 02150 Espoo'
   openingHours:
     - - 1030
       - 1500
