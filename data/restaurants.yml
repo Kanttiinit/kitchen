@@ -968,11 +968,16 @@
   menuUrl: 'https://unicafe.fi/wp-json/swiss/v1/restaurants?lang=%lang%#well-kaisa-talo'
   address: Vuorikatu 7
   openingHours:
-    - null
-    - null
-    - null
-    - null
-    - null
+    - - 1100
+      - 1500
+    - - 1100
+      - 1500
+    - - 1100
+      - 1500
+    - - 1100
+      - 1500
+    - - 1100
+      - 1500
     - null
     - null
 - id: 75
