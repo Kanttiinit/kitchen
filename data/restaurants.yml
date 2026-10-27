@@ -651,16 +651,16 @@
   menuUrl: 'https://www.sodexo.fi/ruokalistat/output/weekly_json/152'
   address: 'Leiritie 1, 01600 Vantaa'
   openingHours:
-    - - 730
+    - - 1030
       - 1700
-    - - 730
+    - - 1030
       - 1700
-    - - 730
+    - - 1030
       - 1700
-    - - 730
+    - - 1030
       - 1700
-    - - 730
-      - 1500
+    - - 1030
+      - 1700
     - null
     - null
 - id: 55
