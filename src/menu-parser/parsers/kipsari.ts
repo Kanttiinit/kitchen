@@ -52,7 +52,12 @@ const parser: Parser = {
             const match = course.textContent.trim().match(/\(.+\)$/gi);
             return {
               title: course.textContent.trim().replace(/\(.+\)$/, ''),
-              properties: match ? normalizeProperties(match[0].split(/,\s?/g)) : [],
+              properties: [
+                ...new Set([
+                  MenuProperty.VEGAN,
+                  ...(match ? normalizeProperties(match[0].split(/,\s?/g)) : []),
+                ]),
+              ].sort(),
             };
           },
         ),
