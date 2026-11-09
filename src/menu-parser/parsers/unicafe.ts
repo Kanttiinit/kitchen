@@ -14,6 +14,7 @@ const propertyMap = {
   SO: MenuProperty.CONTAINS_SOY,
   V: MenuProperty.CONTAINS_GARLIC,
   VE: MenuProperty.VEGAN,
+  Veg: MenuProperty.VEGAN,
   VL: MenuProperty.LOW_IN_LACTOSE,
 };
 

@@ -18,6 +18,7 @@ const propertyMap = {
 const normalizeProperties = createPropertyNormalizer(propertyMap);
 
 const ignoredKeys = ['dayName', 'day'];
+const dietList = /\s*\(([\p{L},\s-]+)\)\s*$/u;
 
 const parser: Parser = {
   pattern: /newapi\.tf\.fi/,
@@ -28,10 +29,10 @@ const parser: Parser = {
       const courses = Object.keys(day)
         .filter((k) => !ignoredKeys.includes(k))
         .map((key) => {
-          const match = day[key].match(/\(([A-Za-z,\s]+)\)/);
+          const match = day[key].match(dietList);
           const properties = match ? match[1].split(',').map((p: string) => p.trim()) : [];
           return {
-            title: day[key].replace(/\s*\([A-Za-z,\s]+\)\s*$/, '').trim(),
+            title: day[key].replace(dietList, '').trim(),
             properties: normalizeProperties(properties),
           };
         })
