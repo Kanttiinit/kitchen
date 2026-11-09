@@ -50,9 +50,7 @@ const parser: Parser = {
         courses: (Array.from(document.querySelectorAll('span')) as any).map(
           (course: any) => {
             const match = course.textContent.trim().match(/\(.+\)$/gi);
-            const properties = match
-              ? normalizeProperties(match[0].split(/,\s?/g))
-              : [];
+            const properties = match ? normalizeProperties(match[0].split(/,\s?/g)) : [];
             if (!properties.includes(MenuProperty.VEGAN)) {
               properties.push(MenuProperty.VEGAN);
             }
