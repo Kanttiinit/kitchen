@@ -8,6 +8,7 @@ const propertyMap = {
   M: MenuProperty.MILK_FREE,
   L: MenuProperty.LACTOSE_FREE,
   VL: MenuProperty.LOW_IN_LACTOSE,
+  Vegaani: MenuProperty.VEGAN,
 };
 
 const normalizeProperties = createPropertyNormalizer(propertyMap);
@@ -20,7 +21,11 @@ interface Response {
       [n: string]: {
         title_fi: string;
         title_en: string;
-        properties: string | null;
+        category?: string;
+        properties?: string | null;
+        additionalDietInfo?: {
+          dietcodeImages?: string[];
+        };
       };
     };
   }>;
@@ -58,10 +63,20 @@ const parser: Parser = {
           .day(normaliseWeekday(day.date))
           .format('YYYY-MM-DD'),
         courses: Object.values(day.courses)
-          .map((course) => ({
-            title: lang == 'fi' ? course.title_fi : course.title_en,
-            properties: course.properties ? normalizeProperties(course.properties.split(', ')) : [],
-          }))
+          .map((course) => {
+            const properties = course.properties?.split(',').map((property) => property.trim()) ?? [];
+            // Sodexo also marks vegan dishes with an icon or the name of the lunch line.
+            const isVegan = course.additionalDietInfo?.dietcodeImages?.some((image) => image.endsWith('/vege.svg')) ||
+              /^(?:from the field[-\s]+vegan|vegaani\s*lounas)$/i.test(course.category?.trim() ?? '') ||
+              /^vegaaninen\s/i.test(course.title_fi?.trim() ?? '');
+            if (isVegan && !properties.includes('Vegaani')) {
+              properties.push('Vegaani');
+            }
+            return {
+              title: lang === 'fi' ? course.title_fi : course.title_en,
+              properties: normalizeProperties(properties),
+            };
+          })
           .filter((course) => !!course.title),
       };
     });
